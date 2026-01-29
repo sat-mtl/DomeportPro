@@ -1,3 +1,4 @@
-# ossia score Custom App Template
+# DomeportSAT
 
-A template repository for creating custom-branded ossia score applications with your own QML user interface.
+Standalone domemaster / equirectangular content visualizer for dome and planetariums in 3D environnement.
+
