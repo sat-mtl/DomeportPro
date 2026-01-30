@@ -10,7 +10,7 @@ ApplicationWindow {
     visible: true
     width: 800
     height: 800
-    title: "My Custom ossia score App"
+    title: "DomeportSAT"
 
     // Custom color scheme
     color: "#1e1e2e"
@@ -40,7 +40,7 @@ ApplicationWindow {
 
                 PrettyText {
                     Layout.alignment: Qt.AlignHCenter
-                    text: "Welcome to Your Custom App"
+                    text: "Welcome to DomeportSAT"
                     font.pixelSize: 24
                     font.bold: true
                 }

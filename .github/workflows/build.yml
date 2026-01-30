@@ -1,4 +1,4 @@
-name: Custom app
+name: Build DomeportSAT
 
 on:
   push:
@@ -34,10 +34,10 @@ jobs:
       - name: Package custom ossia score app
         uses: ossia/actions/package-custom-app@master
         with:
-          app-name: "My Custom App"
+          app-name: "DomeportSAT"
           qml-files: "qml"
           # Optional: Add your score file here
-          score-file: "score/app.score"
+          score-file: "score/DomeportSAT.score"
           release-tag: "continuous"
           platforms: "${{ matrix.platform }}"
           # Optional: QRC file for custom resources
