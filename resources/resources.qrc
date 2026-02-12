@@ -1,5 +1,11 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
     <file>qtquickcontrols2.conf</file>
+    <file>assets/floor.obj</file>
+    <file>assets/sato180.obj</file>
+    <file>assets/sato210.obj</file>
+    <file>assets/GridBlack.jpg</file>
+    <file>assets/GridBlack10x.jpg</file>
+    <file>assets/spherical8192.png</file>
 </qresource>
 </RCC>
