@@ -1,205 +1,116 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import io.ossia.components as CustomAppComponents
+import QtQuick3D
+import QtQuick3D.Helpers
 
 import Score.UI as UI
 
-ApplicationWindow {
+Window {
     id: root
+    width: 1280
+    height: 720
     visible: true
-    width: 800
-    height: 800
     title: "DomeportSAT"
+    color: "#1a1a2e"
 
-    // Custom color scheme
-    color: "#1e1e2e"
-
-
-    component PrettyText : Text {
-        color: "#cdd6f4"
-        font.pixelSize: 14
-        wrapMode: Text.WordWrap
-    }
-
-    ColumnLayout {
+    View3D {
+        id: view3d
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 20
+        environment: sceneEnvironment
 
-        // Header
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80
-            color: "#2a2a3e"
-            radius: 10
-
-            ColumnLayout {
-                anchors.centerIn: parent
-                spacing: 5
-
-                PrettyText {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "Welcome to DomeportSAT"
-                    font.pixelSize: 24
-                    font.bold: true
-                }
-
-                PrettyText {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "Powered by ossia score"
-                    font.pixelSize: 14
-                }
-            }
+        SceneEnvironment {
+            id: sceneEnvironment
+            antialiasingMode: SceneEnvironment.MSAA
+            antialiasingQuality: SceneEnvironment.High
+            backgroundMode: SceneEnvironment.Color
+            clearColor: "#555"
         }
 
-        // Main content area
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            ColumnLayout {
-                anchors.margins: 30
-                spacing: 20
-
-                PrettyText {
-                    text: "Getting Started"
-                    font.pixelSize: 20
-                    font.bold: true
-                }
-
-                PrettyText {
-                    Layout.fillWidth: true
-                    text: "This is a template for creating custom ossia score applications.\n\n" + "You can customize this QML interface to create your own unique user experience.\n\n" + "Features available:\n" + "• Custom QML user interfaces\n" + "• Automatic score file loading\n" + "• Multi-platform packaging (Linux, macOS, Windows)\n" + "• Native launchers for each platform"
-                    font.pixelSize: 14
-                    wrapMode: Text.WordWrap
-                    lineHeight: 1.4
-                }
-
-                Item {
-                    Layout.fillHeight: true
-                }
-
-                // Control buttons
-                RowLayout {
-                    Layout.alignment: Qt.AlignHCenter
-                    spacing: 15
-
-                    Button {
-                        text: "Play"
-                        font.pixelSize: 14
-                        implicitWidth: 100
-                        implicitHeight: 40
-
-                        background: Rectangle {
-                            color: parent.pressed ? "#94e2d5" : (parent.hovered ? "#89dceb" : "#74c7ec")
-                            radius: 6
-                        }
-
-                        contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            color: "#1e1e2e"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-
-                        onClicked: Score.play()
-                    }
-
-                    Button {
-                        text: "Stop"
-                        font.pixelSize: 14
-                        implicitWidth: 100
-                        implicitHeight: 40
-
-                        background: Rectangle {
-                            color: parent.pressed ? "#f9e2af" : (parent.hovered ? "#f5c2e7" : "#cba6f7")
-                            radius: 6
-                        }
-
-                        contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            color: "#1e1e2e"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-
-                        onClicked: Score.stop()
-                    }
-                }
-            }
-            ColumnLayout {
-                PrettyText {
-                    text: "Viewing a viewport:"
-                }
-                UI.TextureSource {
-                    id: outputTexture
-                    anchors.margins: 30
-                    width: 200
-                    height: 200
-                    process: "Triangle Square Twist"
-                    port: 0
-                }
-                PrettyText {
-                    text: "Operating a control: LFO frequency"
-                }
-                Slider {
-                    UI.PortSource on value {
-                        process: "LFO"
-                        port: 0
-                    }
-                }
-
-                PrettyText {
-                    text: "Reading the value of a control: LFO frequency"
-                }
-                PrettyText {
-                    UI.PortSource on text {
-                        process: "LFO"
-                        port: "Freq."
-                    }
-                }
-
-                PrettyText {
-                    text: "Reading the value of an inlet:"
-                }
-                PrettyText {
-                    UI.PortSource on text {
-                        process: "Value display"
-                        port: 0
-                    }
-                }
-
-                PrettyText {
-                    text: "Reading the value of any address: OSC:/foo"
-                }
-                PrettyText {
-                    UI.AddressSource on text {
-                        address: "OSC:/foo"
-                        sendUpdates: false
-                    }
-                }
-
-                PrettyText {
-                    text: "Setting the value of any address: OSC:/bar"
-                }
-                Slider {
-                    UI.AddressSource on value {
-                        address: "OSC:/bar"
-                        receiveUpdates: false
-                    }
-                }
-            }
+        PointLight {
+            position: Qt.vector3d(0, 10, 10)
+            brightness: 20.0
+            color: "#fff"
         }
 
-        // Status bar
-        CustomAppComponents.MyComponent {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 50
-            color: "#2a2a3e"
-            radius: 10
+        PerspectiveCamera {
+            id: camera
+            position: Qt.vector3d(0, 150, 400)
+            eulerRotation: Qt.vector3d(30, 0, 0)
+            clipNear: 1
+            clipFar: 10000
+            fieldOfView:90
+        }
+
+        Model {
+            id: groundPlane
+            source: "#Rectangle"
+            scale: Qt.vector3d(500, 500, 1)
+            eulerRotation: Qt.vector3d(-90, 0, 0)
+            position: Qt.vector3d(0, 0, 0)
+            castsShadows: false
+            receivesShadows: true
+
+            materials: [
+                PrincipledMaterial {
+                    baseColor: "#aaa"
+                    roughness: 0.85
+                    metalness: 0.0
+                }
+            ]
+        }
+
+
+        Model {
+            source: "sato210.mesh"
+            position: Qt.vector3d(0, 0, 0)
+            scale: Qt.vector3d(100., 100., 100.)
+
+            materials: [
+                PrincipledMaterial {
+                    baseColorMap: Texture {
+                        sourceItem: textureDome
+                    }
+                    roughness: 0.5
+                    metalness: 0.2
+                }
+            ]
         }
     }
+
+    WasdController {
+        id: wasdControl
+        controlledObject: camera
+        speed: 1.0
+        shiftSpeed: 5.0
+        mouseEnabled: true
+    }
+    
+    UI.TextureSource {
+        id: textureDome
+        width: 4096
+        height: 4096
+        process: "equirectangular_to_domemaster"
+        port: 0
+        visible: false
+    }
+
+    Button {
+        anchors.right: parent.right
+        text: "Toggle DebugView"
+        onClicked: debugView.visible = !debugView.visible
+        DebugView {
+            id: debugView
+            source: view3d
+            visible: false
+            anchors.top: parent.bottom
+            anchors.right: parent.right
+        }
+    }
+
+    Button {
+        anchors.left: parent.left
+        text: "Play"
+        onClicked:  Score.play()
+    }
+
 }
