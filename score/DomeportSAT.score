@@ -67,11 +67,11 @@
         },
         "Processes": [
           {
-            "uuid": "74ca45ff-92c9-44a0-8f1a-754dea05ee1b",
+            "uuid": "e96c5c0b-7e09-49fb-a851-ff6f4811bb00",
             "ObjectName": "gfxProcess",
-            "id": 185,
+            "id": 203,
             "Metadata": {
-              "ScriptingName": "equirectangular_to_domemaster",
+              "ScriptingName": "floor",
               "Comment": "",
               "Color": "White",
               "Label": "",
@@ -82,63 +82,85 @@
             "StartOffset": 0,
             "LoopDuration": 12400285870,
             "Pos": [
-              -611.1179121844884,
-              -2075.0908213171306
+              -923.269424540738,
+              -1748.8589970496869
             ],
             "Size": [
-              210.09375,
+              75.0,
               22.0
             ],
             "Loops": false,
-            "Vertex": "",
-            "Fragment": "/*{\n    \"DESCRIPTION\": \"Generates a Domemaster output by projecting a rotated equirectangular image. Rotations, output FOV, and horizontal flip are controllable.\",\n    \"CREDIT\": \"Edu Meneses + AI Assistant (Gemini)\",\n    \"CATEGORIES\": [\n        \"GENERATOR\",\n        \"3D\",\n        \"DOME\",\n        \"PANORAMIC\"\n    ],\n    \"INPUTS\": [\n        { \"NAME\": \"equirectangularImage\", \"TYPE\": \"image\", \"LABEL\": \"Equirectangular Input\" },\n        {\n\t      \"NAME\" :\"XYZrotate\",\n\t      \"TYPE\" : \"point3D\",\n\t      \"DEFAULT\" : [0.5, 0.5, 0.5],\n\t      \"MAX\" : [1.0, 1.0, 1.0],\n\t      \"MIN\" : [0.0, 0.0, 0.0]\n\t    },\n        {\n            \"NAME\": \"domemaster_output_fov_degrees\",\n            \"LABEL\": \"Domemaster Output FOV (degrees)\",\n            \"TYPE\": \"float\",\n            \"DEFAULT\": 180.0,\n            \"MIN\": 1.0,\n            \"MAX\": 360.0\n        },\n        {\n            \"NAME\": \"flipHorizontal\",\n            \"LABEL\": \"Flip Horizontally (Ext. Surface)\",\n            \"TYPE\": \"bool\",\n            \"DEFAULT\": false\n        }\n    ]\n}*/\n\n#define M_PI 3.14159265359\n\n// Uniforms are implicitly declared from INPUTS\n// (flipHorizontal is now also an implicit uniform)\n\nmat3 makeRotationMatrix(vec3 a) // a = (yaw, pitch, roll)\n{\n    // ... (makeRotationMatrix function remains unchanged) ...\n    float cos_ax = cos(a.x); float sin_ax = sin(a.x);\n    float cos_ay = cos(a.y); float sin_ay = sin(a.y);\n    float cos_az = cos(a.z); float sin_az = sin(a.z);\n\n    mat3 my = mat3(cos(a.x), 0, sin(a.x),  0, 1, 0,  -sin(a.x), 0, cos(a.x)); // Yaw\n    mat3 mx = mat3(1, 0, 0,  0, cos(a.y), -sin(a.y),  0, sin(a.y), cos(a.y)); // Pitch\n    mat3 mz = mat3(cos(a.z), -sin(a.z), 0,  sin(a.z), cos(a.z), 0,  0,0,1);    // Roll\n\n    return my * mx * mz;\n}\n\n\nvoid main()\n{\n    vec2 p_norm_screen = vv_FragNormCoord; // Normalized screen coords [0,1]\n    vec2 p_centered = (p_norm_screen - 0.5) * 2.0; // Centered screen coords [-1,1]\n\n    // ADDED: Apply horizontal flip if toggled\n    if (flipHorizontal) {\n        p_centered.x = -p_centered.x;\n    }\n\n    float screen_aspect = RENDERSIZE.x / RENDERSIZE.y;\n    if (screen_aspect > 1.0) { // Landscape or square\n        p_centered.x *= screen_aspect;\n    } else { // Portrait\n        p_centered.y /= screen_aspect;\n    }\n\n    float dist_from_center = length(p_centered);\n\n    if (dist_from_center > 1.0) {\n        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);\n        return;\n    }\n\n    float fisheye_half_fov_rad = (domemaster_output_fov_degrees / 2.0) * (M_PI / 180.0);\n    float ray_polar_angle_view = dist_from_center * fisheye_half_fov_rad;\n    float ray_azimuth_angle_view = atan(p_centered.y, p_centered.x);\n\n    vec3 ray_dir_view;\n    ray_dir_view.x = sin(ray_polar_angle_view) * cos(ray_azimuth_angle_view);\n    ray_dir_view.y = sin(ray_polar_angle_view) * sin(ray_azimuth_angle_view);\n    ray_dir_view.z = cos(ray_polar_angle_view);\n\n    float roll_angle  = (XYZrotate.z - 0.5) * 2.0 * M_PI;\n    float yaw_angle   = XYZrotate.x * 2.0 * M_PI;\n    float pitch_angle = XYZrotate.y * 2.0 * M_PI;\n\n    vec3 rotation_euler_angles = vec3(yaw_angle, pitch_angle, roll_angle);\n    mat3 camera_to_world_rotation_matrix = makeRotationMatrix(rotation_euler_angles);\n\n    vec3 ray_dir_world = camera_to_world_rotation_matrix * ray_dir_view;\n    vec3 norm_ray_dir_world = normalize(ray_dir_world);\n\n    float longitude = atan(norm_ray_dir_world.x, norm_ray_dir_world.z);\n    float latitude  = asin(norm_ray_dir_world.y);\n\n    float u = longitude / (2.0 * M_PI) + 0.5;\n    float v = 0.5 - latitude / M_PI;\n\n    vec2 equirect_uv = vec2(u, v);\n    vec4 sampled_color = texture(equirectangularImage, equirect_uv);\n    gl_FragColor = sampled_color;\n}",
             "Inlets": [
               {
-                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29",
+                "uuid": "238399a0-7e81-47e3-896f-08e8856e2973",
                 "ObjectName": "Inlet",
                 "id": 0,
-                "Hidden": false,
-                "Custom": "equirectangularImage",
-                "Exposed": "equirectangularimage",
-                "Format": 0,
-                "Filter": 2,
-                "AddressMode": 1
+                "Hidden": true,
+                "Custom": "Index",
+                "Exposed": "index",
+                "Value": {
+                  "Int": 0
+                },
+                "Init": {
+                  "Int": 0
+                },
+                "Domain": {
+                  "Int": {
+                    "Min": 0,
+                    "Max": 0
+                  }
+                }
               },
               {
-                "uuid": "377e8205-b442-4d54-8832-3761def522b2",
+                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925",
                 "ObjectName": "Inlet",
                 "id": 1,
                 "Hidden": true,
-                "Custom": "XYZrotate",
-                "Exposed": "xyzrotate",
+                "Custom": "Opacity",
+                "Exposed": "opacity",
                 "Value": {
-                  "Vec3f": [
-                    0.5,
-                    0.75,
-                    0.5
+                  "Float": 1.0
+                },
+                "Init": {
+                  "Float": 1.0
+                },
+                "Domain": {
+                  "Float": {
+                    "Min": 0.0,
+                    "Max": 1.0
+                  }
+                }
+              },
+              {
+                "uuid": "8093743c-584f-4bb9-97d4-6c7602f87116",
+                "ObjectName": "Inlet",
+                "id": 2,
+                "Hidden": true,
+                "Custom": "Position",
+                "Exposed": "position",
+                "Value": {
+                  "Vec2f": [
+                    0.0,
+                    0.0
                   ]
                 },
                 "Init": {
-                  "Vec3f": [
-                    0.5,
-                    0.5,
-                    0.5
+                  "Vec2f": [
+                    0.0,
+                    0.0
                   ]
                 },
                 "Domain": {
-                  "Vec3f": {
+                  "Vec2f": {
                     "Min": [
-                      0.0,
-                      0.0,
-                      0.0
+                      -5.0,
+                      -5.0
                     ],
                     "Max": [
-                      1.0,
-                      1.0,
-                      1.0
+                      5.0,
+                      5.0
                     ],
                     "Values": [
-                      [],
                       [],
                       []
                     ]
@@ -148,46 +170,165 @@
               {
                 "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925",
                 "ObjectName": "Inlet",
-                "id": 2,
+                "id": 3,
                 "Hidden": true,
-                "Custom": "domemaster_output_fov_degrees",
-                "Exposed": "domemaster_output_fov_degrees",
+                "Custom": "Scale X",
+                "Exposed": "scale x",
                 "Value": {
-                  "Float": 210.0
+                  "Float": 1.0
                 },
                 "Init": {
-                  "Float": 180.0
+                  "Float": 1.0
                 },
                 "Domain": {
                   "Float": {
-                    "Min": 1.0,
-                    "Max": 360.0
+                    "Min": -1.0,
+                    "Max": 10.0
                   }
                 }
               },
               {
-                "uuid": "fb27e4cb-ea7f-41e2-ad92-2354498c1b6b",
+                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925",
                 "ObjectName": "Inlet",
-                "id": 3,
+                "id": 4,
                 "Hidden": true,
-                "Custom": "flipHorizontal",
-                "Exposed": "fliphorizontal",
+                "Custom": "Scale Y",
+                "Exposed": "scale y",
                 "Value": {
-                  "Bool": false
+                  "Float": 1.0
                 },
                 "Init": {
-                  "Bool": false
+                  "Float": 1.0
                 },
                 "Domain": {
-                  "Bool": null
+                  "Float": {
+                    "Min": -1.0,
+                    "Max": 10.0
+                  }
                 }
+              },
+              {
+                "uuid": "e9e711ca-62c6-43b7-bb51-bbb9ca1e0306",
+                "ObjectName": "Inlet",
+                "id": 5,
+                "Hidden": true,
+                "Custom": "Images",
+                "Exposed": "images",
+                "Value": {
+                  "Tuple": [
+                    {
+                      "String": "<PROJECT>:assets/GridBlack10x.jpg"
+                    }
+                  ]
+                },
+                "Domain": {}
+              },
+              {
+                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016",
+                "ObjectName": "Inlet",
+                "id": 6,
+                "Hidden": true,
+                "Custom": "Tile",
+                "Exposed": "tile",
+                "Value": {
+                  "Int": 0
+                },
+                "Init": {
+                  "Int": 0
+                },
+                "Domain": {
+                  "Int": {
+                    "Values": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "Values": [
+                  [
+                    "Single",
+                    {
+                      "Int": 0
+                    }
+                  ],
+                  [
+                    "Clamp",
+                    {
+                      "Int": 1
+                    }
+                  ],
+                  [
+                    "Tile",
+                    {
+                      "Int": 2
+                    }
+                  ],
+                  [
+                    "Mirror",
+                    {
+                      "Int": 3
+                    }
+                  ]
+                ]
+              },
+              {
+                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016",
+                "ObjectName": "Inlet",
+                "id": 7,
+                "Hidden": true,
+                "Custom": "Scale",
+                "Exposed": "scale",
+                "Value": {
+                  "Int": 0
+                },
+                "Init": {
+                  "Int": 0
+                },
+                "Domain": {
+                  "Int": {
+                    "Values": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "Values": [
+                  [
+                    "Original",
+                    {
+                      "Int": 0
+                    }
+                  ],
+                  [
+                    "Black bars",
+                    {
+                      "Int": 1
+                    }
+                  ],
+                  [
+                    "Fill",
+                    {
+                      "Int": 2
+                    }
+                  ],
+                  [
+                    "Stretch",
+                    {
+                      "Int": 3
+                    }
+                  ]
+                ]
               }
             ],
             "Outlets": [
               {
                 "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc",
                 "ObjectName": "Outlet",
-                "id": 1,
+                "id": 0,
                 "Hidden": false,
                 "Custom": "Texture Out",
                 "Exposed": "texture out"
@@ -464,11 +605,11 @@
             ]
           },
           {
-            "uuid": "e96c5c0b-7e09-49fb-a851-ff6f4811bb00",
+            "uuid": "74ca45ff-92c9-44a0-8f1a-754dea05ee1b",
             "ObjectName": "gfxProcess",
-            "id": 203,
+            "id": 185,
             "Metadata": {
-              "ScriptingName": "floor",
+              "ScriptingName": "equirectangular_to_domemaster",
               "Comment": "",
               "Color": "White",
               "Label": "",
@@ -479,85 +620,63 @@
             "StartOffset": 0,
             "LoopDuration": 12400285870,
             "Pos": [
-              -923.269424540738,
-              -1748.8589970496869
+              -611.1179121844884,
+              -2075.0908213171306
             ],
             "Size": [
-              75.0,
+              210.09375,
               22.0
             ],
             "Loops": false,
+            "Vertex": "",
+            "Fragment": "/*{\n    \"DESCRIPTION\": \"Generates a Domemaster output by projecting a rotated equirectangular image. Rotations, output FOV, and horizontal flip are controllable.\",\n    \"CREDIT\": \"Edu Meneses + AI Assistant (Gemini)\",\n    \"CATEGORIES\": [\n        \"GENERATOR\",\n        \"3D\",\n        \"DOME\",\n        \"PANORAMIC\"\n    ],\n    \"INPUTS\": [\n        { \"NAME\": \"equirectangularImage\", \"TYPE\": \"image\", \"LABEL\": \"Equirectangular Input\" },\n        {\n\t      \"NAME\" :\"XYZrotate\",\n\t      \"TYPE\" : \"point3D\",\n\t      \"DEFAULT\" : [0.5, 0.5, 0.5],\n\t      \"MAX\" : [1.0, 1.0, 1.0],\n\t      \"MIN\" : [0.0, 0.0, 0.0]\n\t    },\n        {\n            \"NAME\": \"domemaster_output_fov_degrees\",\n            \"LABEL\": \"Domemaster Output FOV (degrees)\",\n            \"TYPE\": \"float\",\n            \"DEFAULT\": 180.0,\n            \"MIN\": 1.0,\n            \"MAX\": 360.0\n        },\n        {\n            \"NAME\": \"flipHorizontal\",\n            \"LABEL\": \"Flip Horizontally (Ext. Surface)\",\n            \"TYPE\": \"bool\",\n            \"DEFAULT\": false\n        }\n    ]\n}*/\n\n#define M_PI 3.14159265359\n\n// Uniforms are implicitly declared from INPUTS\n// (flipHorizontal is now also an implicit uniform)\n\nmat3 makeRotationMatrix(vec3 a) // a = (yaw, pitch, roll)\n{\n    // ... (makeRotationMatrix function remains unchanged) ...\n    float cos_ax = cos(a.x); float sin_ax = sin(a.x);\n    float cos_ay = cos(a.y); float sin_ay = sin(a.y);\n    float cos_az = cos(a.z); float sin_az = sin(a.z);\n\n    mat3 my = mat3(cos(a.x), 0, sin(a.x),  0, 1, 0,  -sin(a.x), 0, cos(a.x)); // Yaw\n    mat3 mx = mat3(1, 0, 0,  0, cos(a.y), -sin(a.y),  0, sin(a.y), cos(a.y)); // Pitch\n    mat3 mz = mat3(cos(a.z), -sin(a.z), 0,  sin(a.z), cos(a.z), 0,  0,0,1);    // Roll\n\n    return my * mx * mz;\n}\n\n\nvoid main()\n{\n    vec2 p_norm_screen = vv_FragNormCoord; // Normalized screen coords [0,1]\n    vec2 p_centered = (p_norm_screen - 0.5) * 2.0; // Centered screen coords [-1,1]\n\n    // ADDED: Apply horizontal flip if toggled\n    if (flipHorizontal) {\n        p_centered.x = -p_centered.x;\n    }\n\n    float screen_aspect = RENDERSIZE.x / RENDERSIZE.y;\n    if (screen_aspect > 1.0) { // Landscape or square\n        p_centered.x *= screen_aspect;\n    } else { // Portrait\n        p_centered.y /= screen_aspect;\n    }\n\n    float dist_from_center = length(p_centered);\n\n    if (dist_from_center > 1.0) {\n        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);\n        return;\n    }\n\n    float fisheye_half_fov_rad = (domemaster_output_fov_degrees / 2.0) * (M_PI / 180.0);\n    float ray_polar_angle_view = dist_from_center * fisheye_half_fov_rad;\n    float ray_azimuth_angle_view = atan(p_centered.y, p_centered.x);\n\n    vec3 ray_dir_view;\n    ray_dir_view.x = sin(ray_polar_angle_view) * cos(ray_azimuth_angle_view);\n    ray_dir_view.y = sin(ray_polar_angle_view) * sin(ray_azimuth_angle_view);\n    ray_dir_view.z = cos(ray_polar_angle_view);\n\n    float roll_angle  = (XYZrotate.z - 0.5) * 2.0 * M_PI;\n    float yaw_angle   = XYZrotate.x * 2.0 * M_PI;\n    float pitch_angle = XYZrotate.y * 2.0 * M_PI;\n\n    vec3 rotation_euler_angles = vec3(yaw_angle, pitch_angle, roll_angle);\n    mat3 camera_to_world_rotation_matrix = makeRotationMatrix(rotation_euler_angles);\n\n    vec3 ray_dir_world = camera_to_world_rotation_matrix * ray_dir_view;\n    vec3 norm_ray_dir_world = normalize(ray_dir_world);\n\n    float longitude = atan(norm_ray_dir_world.x, norm_ray_dir_world.z);\n    float latitude  = asin(norm_ray_dir_world.y);\n\n    float u = longitude / (2.0 * M_PI) + 0.5;\n    float v = 0.5 - latitude / M_PI;\n\n    vec2 equirect_uv = vec2(u, v);\n    vec4 sampled_color = texture(equirectangularImage, equirect_uv);\n    gl_FragColor = sampled_color;\n}",
             "Inlets": [
               {
-                "uuid": "238399a0-7e81-47e3-896f-08e8856e2973",
+                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29",
                 "ObjectName": "Inlet",
                 "id": 0,
-                "Hidden": true,
-                "Custom": "Index",
-                "Exposed": "index",
-                "Value": {
-                  "Int": 0
-                },
-                "Init": {
-                  "Int": 0
-                },
-                "Domain": {
-                  "Int": {
-                    "Min": 0,
-                    "Max": 0
-                  }
-                }
+                "Hidden": false,
+                "Custom": "equirectangularImage",
+                "Exposed": "equirectangularimage",
+                "Format": 0,
+                "Filter": 2,
+                "AddressMode": 1
               },
               {
-                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925",
+                "uuid": "377e8205-b442-4d54-8832-3761def522b2",
                 "ObjectName": "Inlet",
                 "id": 1,
                 "Hidden": true,
-                "Custom": "Opacity",
-                "Exposed": "opacity",
+                "Custom": "XYZrotate",
+                "Exposed": "xyzrotate",
                 "Value": {
-                  "Float": 1.0
-                },
-                "Init": {
-                  "Float": 1.0
-                },
-                "Domain": {
-                  "Float": {
-                    "Min": 0.0,
-                    "Max": 1.0
-                  }
-                }
-              },
-              {
-                "uuid": "8093743c-584f-4bb9-97d4-6c7602f87116",
-                "ObjectName": "Inlet",
-                "id": 2,
-                "Hidden": true,
-                "Custom": "Position",
-                "Exposed": "position",
-                "Value": {
-                  "Vec2f": [
-                    0.0,
-                    0.0
+                  "Vec3f": [
+                    0.5,
+                    0.75,
+                    0.5
                   ]
                 },
                 "Init": {
-                  "Vec2f": [
-                    0.0,
-                    0.0
+                  "Vec3f": [
+                    0.5,
+                    0.5,
+                    0.5
                   ]
                 },
                 "Domain": {
-                  "Vec2f": {
+                  "Vec3f": {
                     "Min": [
-                      -5.0,
-                      -5.0
+                      0.0,
+                      0.0,
+                      0.0
                     ],
                     "Max": [
-                      5.0,
-                      5.0
+                      1.0,
+                      1.0,
+                      1.0
                     ],
                     "Values": [
+                      [],
                       [],
                       []
                     ]
@@ -567,165 +686,46 @@
               {
                 "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925",
                 "ObjectName": "Inlet",
+                "id": 2,
+                "Hidden": true,
+                "Custom": "domemaster_output_fov_degrees",
+                "Exposed": "domemaster_output_fov_degrees",
+                "Value": {
+                  "Float": 210.0
+                },
+                "Init": {
+                  "Float": 180.0
+                },
+                "Domain": {
+                  "Float": {
+                    "Min": 1.0,
+                    "Max": 360.0
+                  }
+                }
+              },
+              {
+                "uuid": "fb27e4cb-ea7f-41e2-ad92-2354498c1b6b",
+                "ObjectName": "Inlet",
                 "id": 3,
                 "Hidden": true,
-                "Custom": "Scale X",
-                "Exposed": "scale x",
+                "Custom": "flipHorizontal",
+                "Exposed": "fliphorizontal",
                 "Value": {
-                  "Float": 1.0
+                  "Bool": false
                 },
                 "Init": {
-                  "Float": 1.0
+                  "Bool": false
                 },
                 "Domain": {
-                  "Float": {
-                    "Min": -1.0,
-                    "Max": 10.0
-                  }
+                  "Bool": null
                 }
-              },
-              {
-                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925",
-                "ObjectName": "Inlet",
-                "id": 4,
-                "Hidden": true,
-                "Custom": "Scale Y",
-                "Exposed": "scale y",
-                "Value": {
-                  "Float": 1.0
-                },
-                "Init": {
-                  "Float": 1.0
-                },
-                "Domain": {
-                  "Float": {
-                    "Min": -1.0,
-                    "Max": 10.0
-                  }
-                }
-              },
-              {
-                "uuid": "e9e711ca-62c6-43b7-bb51-bbb9ca1e0306",
-                "ObjectName": "Inlet",
-                "id": 5,
-                "Hidden": true,
-                "Custom": "Images",
-                "Exposed": "images",
-                "Value": {
-                  "Tuple": [
-                    {
-                      "String": "<PROJECT>:assets/GridBlack10x.jpg"
-                    }
-                  ]
-                },
-                "Domain": {}
-              },
-              {
-                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016",
-                "ObjectName": "Inlet",
-                "id": 6,
-                "Hidden": true,
-                "Custom": "Tile",
-                "Exposed": "tile",
-                "Value": {
-                  "Int": 0
-                },
-                "Init": {
-                  "Int": 0
-                },
-                "Domain": {
-                  "Int": {
-                    "Values": [
-                      0,
-                      1,
-                      2,
-                      3
-                    ]
-                  }
-                },
-                "Values": [
-                  [
-                    "Single",
-                    {
-                      "Int": 0
-                    }
-                  ],
-                  [
-                    "Clamp",
-                    {
-                      "Int": 1
-                    }
-                  ],
-                  [
-                    "Tile",
-                    {
-                      "Int": 2
-                    }
-                  ],
-                  [
-                    "Mirror",
-                    {
-                      "Int": 3
-                    }
-                  ]
-                ]
-              },
-              {
-                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016",
-                "ObjectName": "Inlet",
-                "id": 7,
-                "Hidden": true,
-                "Custom": "Scale",
-                "Exposed": "scale",
-                "Value": {
-                  "Int": 0
-                },
-                "Init": {
-                  "Int": 0
-                },
-                "Domain": {
-                  "Int": {
-                    "Values": [
-                      0,
-                      1,
-                      2,
-                      3
-                    ]
-                  }
-                },
-                "Values": [
-                  [
-                    "Original",
-                    {
-                      "Int": 0
-                    }
-                  ],
-                  [
-                    "Black bars",
-                    {
-                      "Int": 1
-                    }
-                  ],
-                  [
-                    "Fill",
-                    {
-                      "Int": 2
-                    }
-                  ],
-                  [
-                    "Stretch",
-                    {
-                      "Int": 3
-                    }
-                  ]
-                ]
               }
             ],
             "Outlets": [
               {
                 "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc",
                 "ObjectName": "Outlet",
-                "id": 0,
+                "id": 1,
                 "Hidden": false,
                 "Custom": "Texture Out",
                 "Exposed": "texture out"
@@ -1174,26 +1174,7 @@
     {
       "uuid": "6e610e1f-9de2-4c36-90dd-0ef570002a21",
       "RootNode": {},
-      "Children": [
-        {
-          "Device": {
-            "Name": "DomePort_NDI_out",
-            "Protocol": "07651c13-83de-48b8-a450-abe2891051e8",
-            "Path": "DomePort_NDI_out",
-            "Width": 4096,
-            "Height": 4096,
-            "Rate": 60.0,
-            "Format": "RGBA"
-          }
-        },
-        {
-          "Device": {
-            "Name": "Domeport_NDI_in",
-            "Protocol": "ae78b7c6-6400-483e-b45b-fd6ff87ec700",
-            "Path": ""
-          }
-        }
-      ]
+      "Children": []
     },
     {
       "uuid": "05e72689-e02c-4c9d-a0bf-fe84c32d3d96",
