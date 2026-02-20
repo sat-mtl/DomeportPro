@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import QtQuick3D
 import QtQuick3D.Helpers
 
@@ -12,6 +13,45 @@ Window {
     visible: true
     title: "DomeportSAT"
     color: "#1a1a2e"
+
+    property var ndiNamesList: []
+
+    function ndiAdded(factory, category, name, settings) {
+        console.log("NDI added: " + name + " " + settings)
+        ndiNamesList.push(name)
+        ndiSelector.model = [" ", ...ndiNamesList]
+    }
+
+    function ndiRemoved(factory, name) {
+        console.log("NDI removed: " + name)
+        const index = ndiNamesList.indexOf(name)
+        if (index !== 1) {
+            ndiNamesList.splice(index, 1);
+        }
+        ndiSelector.model = [" ", ...ndiNamesList]
+    }
+
+    function registerNDIListener() {
+        try {
+            let ndiEnumerator = Score.enumerateDevices("ae78b7c6-6400-483e-b45b-fd6ff87ec700")
+            ndiEnumerator.deviceAdded.connect(ndiAdded)
+            ndiEnumerator.deviceRemoved.connect(ndiRemoved)
+            ndiEnumerator.enumerate = true
+        } catch (error) {
+            console.log("Error registering NDI listener: " + error)
+        }
+    }
+
+    function createNDIInput(name) {
+        console.log("Create NDI input: " + name)
+        Score.startMacro()
+        Score.createDevice(name, "ae78b7c6-6400-483e-b45b-fd6ff87ec700")
+        Score.endMacro()
+    }
+
+    Component.onCompleted: {
+        registerNDIListener()
+    }
 
     View3D {
         id: view3d
@@ -59,7 +99,6 @@ Window {
             ]
         }
 
-
         Model {
             source: "sato210.mesh"
             position: Qt.vector3d(0, 0, 0)
@@ -94,23 +133,36 @@ Window {
         visible: false
     }
 
-    Button {
-        anchors.right: parent.right
-        text: "Toggle DebugView"
-        onClicked: debugView.visible = !debugView.visible
-        DebugView {
-            id: debugView
-            source: view3d
-            visible: false
-            anchors.top: parent.bottom
-            anchors.right: parent.right
+    RowLayout {
+        id: topRow
+        width: parent.width
+        Button {
+            text: "Play"
+            onClicked:  Score.play()
         }
-    }
 
-    Button {
-        anchors.left: parent.left
-        text: "Play"
-        onClicked:  Score.play()
-    }
+        ComboBox {
+            id: ndiSelector
+            Layout.minimumWidth: 200
+            model: [" ", ...ndiNamesList]
+            onCurrentIndexChanged: {
+                if (currentIndex <= 0) return;
+                const ndiName = ndiNamesList[currentIndex - 1]
+                createNDIInput(ndiName)
+            }
+        }
 
+        Button {
+            text: "Toggle DebugView"
+            onClicked: debugView.visible = !debugView.visible
+            DebugView {
+                id: debugView
+                source: view3d
+                visible: false
+                anchors.top: parent.bottom
+                anchors.right: parent.right
+            }
+        }
+
+    }
 }
