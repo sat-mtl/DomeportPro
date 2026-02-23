@@ -131,12 +131,6 @@ Window {
             clearColor: "#555"
         }
 
-        PointLight {
-            position: Qt.vector3d(0, 10, 10)
-            brightness: 20.0
-            color: "#fff"
-        }
-
         PerspectiveCamera {
             id: camera
             position: Qt.vector3d(0, 150, 400)
@@ -170,12 +164,16 @@ Window {
             scale: Qt.vector3d(100., 100., 100.)
 
             materials: [
-                PrincipledMaterial {
-                    baseColorMap: Texture {
-                        sourceItem: textureDome
+                CustomMaterial {
+                    property TextureInput tex: TextureInput {
+                        enabled: true
+                        texture: Texture {
+                            sourceItem: textureDome
+                        }
                     }
-                    roughness: 0.5
-                    metalness: 0.2
+                    shadingMode: CustomMaterial.Unshaded
+                    vertexShader: "customshader.vert"
+                    fragmentShader: "customshader.frag"
                 }
             ]
         }
