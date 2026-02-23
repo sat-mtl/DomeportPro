@@ -15,23 +15,52 @@ Window {
     color: "#1a1a2e"
 
     property bool running: true
-    property var ndiNamesList: []
-    property string ndiSourceName: ""
-    property string testPatternName: "Test pattern"
+
+    Item {
+        id: domeportModel
+
+        property var modeList: [ "Test pattern", "NDI" ]
+        property string currentMode: "Test pattern"
+        onCurrentModeChanged: {
+            console.log("changed mode: " + currentMode)
+            if (currentMode === "Test pattern") {
+                removeNDIInput()
+                displayTestPattern()
+            } else if (currentMode === "NDI") {
+                removeNDIInput()
+                createNDIInput(ndiSourceName)
+            }
+        }
+
+        property var ndiNamesList: [ "NDI sources..." ]
+
+        property string ndiSourceName: ""
+        onNdiSourceNameChanged: {
+            console.log("Updated NDI Source Name: " + ndiSourceName)
+            removeNDIInput()
+            createNDIInput(ndiSourceName)
+            currentMode = "NDI"
+        }
+
+    }
 
     function ndiAdded(factory, category, name, settings) {
         console.log("NDI added: " + name)
-        ndiNamesList.push(name)
-        ndiSelector.model = [testPatternName, ...ndiNamesList]
+        const index = domeportModel.ndiNamesList.indexOf(name)
+        if (index !== 1) {
+            domeportModel.ndiNamesList.push(name)
+            ndiSelector.model = domeportModel.ndiNamesList
+        }
     }
 
     function ndiRemoved(factory, name) {
         console.log("NDI removed: " + name)
-        const index = ndiNamesList.indexOf(name)
+        const index = domeportModel.ndiNamesList.indexOf(name)
+        console.log(index)
         if (index !== 1) {
-            ndiNamesList.splice(index, 1);
+            domeportModel.ndiNamesList.splice(index, 1);
+            ndiSelector.model = domeportModel.ndiNamesList
         }
-        ndiSelector.model = [testPatternName, ...ndiNamesList]
     }
 
     function registerNDIListener() {
@@ -51,28 +80,26 @@ Window {
         Score.play()
     }
 
-    function removeCurrentNDIInput() {
+    function removeNDIInput() {
         Score.stop()
-        try { Score.removeDevice(ndiSourceName); } catch(_) {}
+        try { Score.removeDevice("ndi_input"); } catch(_) {}
     }
 
     function createNDIInput(name) {
         console.log("Create NDI input: " + name)
         Score.stop()
 
-        removeCurrentNDIInput()
-
         // create a NDI source
         let settings = {
             "Path": name
         }
-        Score.createDevice(name, "ae78b7c6-6400-483e-b45b-fd6ff87ec700", settings)
-        ndiSourceName = name
+        Score.createDevice("ndi_input", "ae78b7c6-6400-483e-b45b-fd6ff87ec700", settings)
+        domeportModel.ndiSourceName = name
 
         // attach NDI source to image inlet
         let ndiSource = Score.find("ndi source")
         let ndiSourceInlet = Score.port(ndiSource, "inputImage")
-        Score.setAddress(ndiSourceInlet, name + ":/")
+        Score.setAddress(ndiSourceInlet, "ndi_input:/")
 
         // display NDI source
         Score.setValue(videoMixer.alpha1, 0.0)
@@ -212,17 +239,30 @@ Window {
         }
 
         ComboBox {
+            id: modeSelector
+            model: domeportModel.modeList
+            onActivated: {
+                console.log("selected mode: " + currentText)
+                domeportModel.currentMode = currentText
+            }
+        }
+
+        ComboBox {
             id: ndiSelector
             Layout.minimumWidth: 200
-            model: [testPatternName, ...ndiNamesList]
-            onCurrentIndexChanged: {
-                if (currentIndex <= 0) {
-                    removeCurrentNDIInput()
-                    displayTestPattern()
-                } else {
-                    const ndiName = ndiNamesList[currentIndex - 1]
-                    createNDIInput(ndiName)
-                }
+            model: domeportModel.ndiNamesList
+            onActivated: {
+                console.log("selected NDI: " + currentText)
+                domeportModel.ndiSourceName = currentText
+                currentIndex = 0
+            }
+        }
+
+        TextField {
+            id: ndiSourceNameTextField
+            text: domeportModel.ndiSourceName
+            onEditingFinished: {
+                domeportModel.ndiSourceName = text
             }
         }
 
