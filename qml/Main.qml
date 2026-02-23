@@ -14,12 +14,15 @@ Window {
     title: "DomeportSAT"
     color: "#1a1a2e"
 
+    property bool running: true
     property var ndiNamesList: []
+    property string ndiSourceName: ""
+    property string testPatternName: "Test pattern"
 
     function ndiAdded(factory, category, name, settings) {
-        console.log("NDI added: " + name + " " + settings)
+        console.log("NDI added: " + name)
         ndiNamesList.push(name)
-        ndiSelector.model = [" ", ...ndiNamesList]
+        ndiSelector.model = [testPatternName, ...ndiNamesList]
     }
 
     function ndiRemoved(factory, name) {
@@ -28,7 +31,7 @@ Window {
         if (index !== 1) {
             ndiNamesList.splice(index, 1);
         }
-        ndiSelector.model = [" ", ...ndiNamesList]
+        ndiSelector.model = [testPatternName, ...ndiNamesList]
     }
 
     function registerNDIListener() {
@@ -42,14 +45,76 @@ Window {
         }
     }
 
+    function displayTestPattern() {
+        Score.setValue(videoMixer.alpha1, 1.0)
+        Score.setValue(videoMixer.alpha2, 0.0)
+        Score.play()
+    }
+
+    function removeCurrentNDIInput() {
+        Score.stop()
+        try { Score.removeDevice(ndiSourceName); } catch(_) {}
+    }
+
     function createNDIInput(name) {
         console.log("Create NDI input: " + name)
-        Score.startMacro()
-        Score.createDevice(name, "ae78b7c6-6400-483e-b45b-fd6ff87ec700")
-        Score.endMacro()
+        Score.stop()
+
+        removeCurrentNDIInput()
+
+        // create a NDI source
+        let settings = {
+            "Path": name
+        }
+        Score.createDevice(name, "ae78b7c6-6400-483e-b45b-fd6ff87ec700", settings)
+        ndiSourceName = name
+
+        // attach NDI source to image inlet
+        let ndiSource = Score.find("ndi source")
+        let ndiSourceInlet = Score.port(ndiSource, "inputImage")
+        Score.setAddress(ndiSourceInlet, name + ":/")
+
+        // display NDI source
+        Score.setValue(videoMixer.alpha1, 0.0)
+        Score.setValue(videoMixer.alpha2, 1.0)
+
+        console.log("Created NDI input: " + name)
+        Score.play()
+    }
+
+    Item {
+        QtObject { id: videoMixer
+            property var process_object : Score.find("Video Mixer");
+            property var alpha1 : Score.inlet(process_object, 8);
+            property var alpha2 : Score.inlet(process_object, 9);
+        }
+    }
+
+    function toggleTransport() {
+        if (running) {
+            console.log("stopping...")
+            Score.stop()
+        } else {
+            console.log("starting...")
+            Score.play()
+        }
+    }
+
+    function onPlay() {
+        console.log("onPlay")
+        transportButton.text = "Stop"
+        running = true
+    }
+
+    function onStop() {
+        console.log("onStopped")
+        transportButton.text = "Play"
+        running = false
     }
 
     Component.onCompleted: {
+        Score.transport().play.connect(onPlay)
+        Score.transport().stop.connect(onStop)
         registerNDIListener()
     }
 
@@ -137,18 +202,23 @@ Window {
         id: topRow
         width: parent.width
         Button {
-            text: "Play"
-            onClicked:  Score.play()
+            id: transportButton
+            text: "Stop"
+            onClicked:  toggleTransport()
         }
 
         ComboBox {
             id: ndiSelector
             Layout.minimumWidth: 200
-            model: [" ", ...ndiNamesList]
+            model: [testPatternName, ...ndiNamesList]
             onCurrentIndexChanged: {
-                if (currentIndex <= 0) return;
-                const ndiName = ndiNamesList[currentIndex - 1]
-                createNDIInput(ndiName)
+                if (currentIndex <= 0) {
+                    removeCurrentNDIInput()
+                    displayTestPattern()
+                } else {
+                    const ndiName = ndiNamesList[currentIndex - 1]
+                    createNDIInput(ndiName)
+                }
             }
         }
 
