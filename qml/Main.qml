@@ -137,7 +137,7 @@ Window {
             eulerRotation: Qt.vector3d(30, 0, 0)
             clipNear: 1
             clipFar: 10000
-            fieldOfView:90
+            fieldOfView: 90
         }
 
         Model {
@@ -146,19 +146,25 @@ Window {
             scale: Qt.vector3d(500, 500, 1)
             eulerRotation: Qt.vector3d(-90, 0, 0)
             position: Qt.vector3d(0, 0, 0)
-            castsShadows: false
-            receivesShadows: true
 
             materials: [
-                PrincipledMaterial {
-                    baseColor: "#aaa"
-                    roughness: 0.85
-                    metalness: 0.0
+                CustomMaterial {
+                    property TextureInput tex: TextureInput {
+                        enabled: true
+                        texture: Texture {
+                            source: "GridBlack.jpg"
+                        }
+                    }
+                    shadingMode: CustomMaterial.Unshaded
+                    vertexShader: "groundshader.vert"
+                    fragmentShader: "groundshader.frag"
                 }
+
             ]
         }
 
         Model {
+            id: dome
             source: "sato210.mesh"
             position: Qt.vector3d(0, 0, 0)
             scale: Qt.vector3d(100., 100., 100.)
@@ -172,8 +178,8 @@ Window {
                         }
                     }
                     shadingMode: CustomMaterial.Unshaded
-                    vertexShader: "customshader.vert"
-                    fragmentShader: "customshader.frag"
+                    vertexShader: "domeshader.vert"
+                    fragmentShader: "domeshader.frag"
                 }
             ]
         }
