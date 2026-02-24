@@ -143,6 +143,7 @@ Window {
         Score.transport().play.connect(onPlay)
         Score.transport().stop.connect(onStop)
         registerNDIListener()
+        Score.play()
     }
 
     View3D {
