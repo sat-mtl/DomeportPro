@@ -1,205 +1,287 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import io.ossia.components as CustomAppComponents
+import QtQuick3D
+import QtQuick3D.Helpers
 
 import Score.UI as UI
 
-ApplicationWindow {
+Window {
     id: root
+    width: 1280
+    height: 720
     visible: true
-    width: 800
-    height: 800
     title: "DomeportSAT"
+    color: "#1a1a2e"
 
-    // Custom color scheme
-    color: "#1e1e2e"
+    property bool running: true
 
+    Item {
+        id: domeportModel
 
-    component PrettyText : Text {
-        color: "#cdd6f4"
-        font.pixelSize: 14
-        wrapMode: Text.WordWrap
+        property var modeList: [ "Test pattern", "NDI" ]
+        property string currentMode: "Test pattern"
+        onCurrentModeChanged: {
+            console.log("changed mode: " + currentMode)
+            if (currentMode === "Test pattern") {
+                removeNDIInput()
+                displayTestPattern()
+            } else if (currentMode === "NDI") {
+                removeNDIInput()
+                createNDIInput(ndiSourceName)
+            }
+        }
+
+        property var ndiNamesList: [ "NDI sources..." ]
+
+        property string ndiSourceName: ""
+        onNdiSourceNameChanged: {
+            if (ndiSourceName !== "") {
+                console.log("updated NDI Source Name: " + ndiSourceName)
+                currentMode = "NDI"
+                removeNDIInput()
+                createNDIInput(ndiSourceName)
+            }
+        }
+
     }
 
-    ColumnLayout {
+    function ndiAdded(factory, category, name, settings) {
+        console.log("NDI added: " + name)
+        const index = domeportModel.ndiNamesList.indexOf(name)
+        if (index !== 1) {
+            domeportModel.ndiNamesList.push(name)
+            ndiSelector.model = domeportModel.ndiNamesList
+        }
+    }
+
+    function ndiRemoved(factory, name) {
+        console.log("NDI removed: " + name)
+        const index = domeportModel.ndiNamesList.indexOf(name)
+        if (index !== 1) {
+            domeportModel.ndiNamesList.splice(index, 1);
+            ndiSelector.model = domeportModel.ndiNamesList
+        }
+    }
+
+    function registerNDIListener() {
+        try {
+            let ndiEnumerator = Score.enumerateDevices("ae78b7c6-6400-483e-b45b-fd6ff87ec700")
+            ndiEnumerator.deviceAdded.connect(ndiAdded)
+            ndiEnumerator.deviceRemoved.connect(ndiRemoved)
+            ndiEnumerator.enumerate = true
+        } catch (error) {
+            console.log("Error registering NDI listener: " + error)
+        }
+    }
+
+    function displayTestPattern() {
+        Score.setValue(videoMixer.alpha1, 1.0)
+        Score.setValue(videoMixer.alpha2, 0.0)
+        Score.play()
+    }
+
+    function removeNDIInput() {
+        Score.stop()
+        try { Score.removeDevice("ndi_input"); } catch(_) {}
+    }
+
+    function createNDIInput(name) {
+        console.log("Create NDI input: " + name)
+        Score.stop()
+
+        // create a NDI source
+        let settings = {
+            "Path": name
+        }
+        Score.createDevice("ndi_input", "ae78b7c6-6400-483e-b45b-fd6ff87ec700", settings)
+
+        // attach NDI source to image inlet
+        let ndiSource = Score.find("ndi source")
+        let ndiSourceInlet = Score.port(ndiSource, "inputImage")
+        Score.setAddress(ndiSourceInlet, "ndi_input:/")
+
+        // display NDI source
+        Score.setValue(videoMixer.alpha1, 0.0)
+        Score.setValue(videoMixer.alpha2, 1.0)
+
+        console.log("Created NDI input: " + name)
+        Score.play()
+    }
+
+    Item {
+        QtObject { id: videoMixer
+            property var process_object : Score.find("Video Mixer");
+            property var alpha1 : Score.inlet(process_object, 8);
+            property var alpha2 : Score.inlet(process_object, 9);
+        }
+    }
+
+    function toggleTransport() {
+        if (running) {
+            console.log("stopping...")
+            Score.stop()
+        } else {
+            console.log("starting...")
+            Score.play()
+        }
+    }
+
+    function onPlay() {
+        console.log("onPlay")
+        transportButton.text = "Stop"
+        running = true
+    }
+
+    function onStop() {
+        console.log("onStopped")
+        transportButton.text = "Play"
+        running = false
+    }
+
+    Component.onCompleted: {
+        Score.transport().play.connect(onPlay)
+        Score.transport().stop.connect(onStop)
+        registerNDIListener()
+    }
+
+    View3D {
+        id: view3d
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 20
+        environment: sceneEnvironment
 
-        // Header
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 80
-            color: "#2a2a3e"
-            radius: 10
+        SceneEnvironment {
+            id: sceneEnvironment
+            antialiasingMode: SceneEnvironment.MSAA
+            antialiasingQuality: SceneEnvironment.High
+            backgroundMode: SceneEnvironment.Color
+            clearColor: "#555"
+        }
 
-            ColumnLayout {
-                anchors.centerIn: parent
-                spacing: 5
+        PerspectiveCamera {
+            id: camera
+            position: Qt.vector3d(0, 150, 400)
+            eulerRotation: Qt.vector3d(30, 0, 0)
+            clipNear: 1
+            clipFar: 10000
+            fieldOfView: 90
+        }
 
-                PrettyText {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "Welcome to DomeportSAT"
-                    font.pixelSize: 24
-                    font.bold: true
+        Model {
+            id: groundPlane
+            source: "#Rectangle"
+            scale: Qt.vector3d(500, 500, 1)
+            eulerRotation: Qt.vector3d(-90, 0, 0)
+            position: Qt.vector3d(0, 0, 0)
+
+            materials: [
+                CustomMaterial {
+                    property TextureInput tex: TextureInput {
+                        enabled: true
+                        texture: Texture {
+                            source: "GridBlack.jpg"
+                        }
+                    }
+                    shadingMode: CustomMaterial.Unshaded
+                    vertexShader: "groundshader.vert"
+                    fragmentShader: "groundshader.frag"
                 }
 
-                PrettyText {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "Powered by ossia score"
-                    font.pixelSize: 14
+            ]
+        }
+
+        Model {
+            id: dome
+            source: "sato210.mesh"
+            position: Qt.vector3d(0, 0, 0)
+            scale: Qt.vector3d(100., 100., 100.)
+
+            materials: [
+                CustomMaterial {
+                    property TextureInput tex: TextureInput {
+                        enabled: true
+                        texture: Texture {
+                            sourceItem: textureDome
+                        }
+                    }
+                    shadingMode: CustomMaterial.Unshaded
+                    vertexShader: "domeshader.vert"
+                    fragmentShader: "domeshader.frag"
+                }
+            ]
+        }
+    }
+
+    WasdController {
+        id: wasdControl
+        controlledObject: camera
+        speed: 1.0
+        shiftSpeed: 5.0
+        mouseEnabled: true
+    }
+    
+    UI.TextureSource {
+        id: textureDome
+        width: 4096
+        height: 4096
+        process: "equirectangular_to_domemaster"
+        port: 0
+        visible: false
+    }
+
+    RowLayout {
+        id: topRow
+        width: parent.width
+        Button {
+            id: transportButton
+            text: "Stop"
+            onClicked:  toggleTransport()
+        }
+
+        ComboBox {
+            id: modeSelector
+            model: domeportModel.modeList
+            onActivated: domeportModel.currentMode = currentValue
+            Component.onCompleted: {
+                let index = indexOfValue(domeportModel.currentMode)
+                if (index >=0) {
+                    currentIndex = index
                 }
             }
         }
 
-        // Main content area
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            ColumnLayout {
-                anchors.margins: 30
-                spacing: 20
-
-                PrettyText {
-                    text: "Getting Started"
-                    font.pixelSize: 20
-                    font.bold: true
-                }
-
-                PrettyText {
-                    Layout.fillWidth: true
-                    text: "This is a template for creating custom ossia score applications.\n\n" + "You can customize this QML interface to create your own unique user experience.\n\n" + "Features available:\n" + "• Custom QML user interfaces\n" + "• Automatic score file loading\n" + "• Multi-platform packaging (Linux, macOS, Windows)\n" + "• Native launchers for each platform"
-                    font.pixelSize: 14
-                    wrapMode: Text.WordWrap
-                    lineHeight: 1.4
-                }
-
-                Item {
-                    Layout.fillHeight: true
-                }
-
-                // Control buttons
-                RowLayout {
-                    Layout.alignment: Qt.AlignHCenter
-                    spacing: 15
-
-                    Button {
-                        text: "Play"
-                        font.pixelSize: 14
-                        implicitWidth: 100
-                        implicitHeight: 40
-
-                        background: Rectangle {
-                            color: parent.pressed ? "#94e2d5" : (parent.hovered ? "#89dceb" : "#74c7ec")
-                            radius: 6
-                        }
-
-                        contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            color: "#1e1e2e"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-
-                        onClicked: Score.play()
-                    }
-
-                    Button {
-                        text: "Stop"
-                        font.pixelSize: 14
-                        implicitWidth: 100
-                        implicitHeight: 40
-
-                        background: Rectangle {
-                            color: parent.pressed ? "#f9e2af" : (parent.hovered ? "#f5c2e7" : "#cba6f7")
-                            radius: 6
-                        }
-
-                        contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            color: "#1e1e2e"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-
-                        onClicked: Score.stop()
-                    }
-                }
-            }
-            ColumnLayout {
-                PrettyText {
-                    text: "Viewing a viewport:"
-                }
-                UI.TextureSource {
-                    id: outputTexture
-                    anchors.margins: 30
-                    width: 200
-                    height: 200
-                    process: "Triangle Square Twist"
-                    port: 0
-                }
-                PrettyText {
-                    text: "Operating a control: LFO frequency"
-                }
-                Slider {
-                    UI.PortSource on value {
-                        process: "LFO"
-                        port: 0
-                    }
-                }
-
-                PrettyText {
-                    text: "Reading the value of a control: LFO frequency"
-                }
-                PrettyText {
-                    UI.PortSource on text {
-                        process: "LFO"
-                        port: "Freq."
-                    }
-                }
-
-                PrettyText {
-                    text: "Reading the value of an inlet:"
-                }
-                PrettyText {
-                    UI.PortSource on text {
-                        process: "Value display"
-                        port: 0
-                    }
-                }
-
-                PrettyText {
-                    text: "Reading the value of any address: OSC:/foo"
-                }
-                PrettyText {
-                    UI.AddressSource on text {
-                        address: "OSC:/foo"
-                        sendUpdates: false
-                    }
-                }
-
-                PrettyText {
-                    text: "Setting the value of any address: OSC:/bar"
-                }
-                Slider {
-                    UI.AddressSource on value {
-                        address: "OSC:/bar"
-                        receiveUpdates: false
-                    }
-                }
+        ComboBox {
+            id: ndiSelector
+            Layout.minimumWidth: 200
+            model: domeportModel.ndiNamesList
+            onActivated: {
+                domeportModel.ndiSourceName = currentText
+                currentIndex = 0
+                domeportModel.currentMode = "NDI"
+                modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
             }
         }
 
-        // Status bar
-        CustomAppComponents.MyComponent {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 50
-            color: "#2a2a3e"
-            radius: 10
+        TextField {
+            id: ndiSourceNameTextField
+            text: domeportModel.ndiSourceName
+            onEditingFinished: {
+                domeportModel.ndiSourceName = text
+                modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
+            }
         }
+
+        Button {
+            text: "Toggle DebugView"
+            onClicked: debugView.visible = !debugView.visible
+            DebugView {
+                id: debugView
+                source: view3d
+                visible: false
+                anchors.top: parent.bottom
+                anchors.right: parent.right
+            }
+        }
+
     }
 }
