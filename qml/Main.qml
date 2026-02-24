@@ -36,10 +36,12 @@ Window {
 
         property string ndiSourceName: ""
         onNdiSourceNameChanged: {
-            console.log("Updated NDI Source Name: " + ndiSourceName)
-            removeNDIInput()
-            createNDIInput(ndiSourceName)
-            currentMode = "NDI"
+            if (ndiSourceName !== "") {
+                console.log("updated NDI Source Name: " + ndiSourceName)
+                currentMode = "NDI"
+                removeNDIInput()
+                createNDIInput(ndiSourceName)
+            }
         }
 
     }
@@ -56,7 +58,6 @@ Window {
     function ndiRemoved(factory, name) {
         console.log("NDI removed: " + name)
         const index = domeportModel.ndiNamesList.indexOf(name)
-        console.log(index)
         if (index !== 1) {
             domeportModel.ndiNamesList.splice(index, 1);
             ndiSelector.model = domeportModel.ndiNamesList
@@ -94,7 +95,6 @@ Window {
             "Path": name
         }
         Score.createDevice("ndi_input", "ae78b7c6-6400-483e-b45b-fd6ff87ec700", settings)
-        domeportModel.ndiSourceName = name
 
         // attach NDI source to image inlet
         let ndiSource = Score.find("ndi source")
@@ -241,9 +241,12 @@ Window {
         ComboBox {
             id: modeSelector
             model: domeportModel.modeList
-            onActivated: {
-                console.log("selected mode: " + currentText)
-                domeportModel.currentMode = currentText
+            onActivated: domeportModel.currentMode = currentValue
+            Component.onCompleted: {
+                let index = indexOfValue(domeportModel.currentMode)
+                if (index >=0) {
+                    currentIndex = index
+                }
             }
         }
 
@@ -252,9 +255,10 @@ Window {
             Layout.minimumWidth: 200
             model: domeportModel.ndiNamesList
             onActivated: {
-                console.log("selected NDI: " + currentText)
                 domeportModel.ndiSourceName = currentText
                 currentIndex = 0
+                domeportModel.currentMode = "NDI"
+                modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
             }
         }
 
@@ -263,6 +267,7 @@ Window {
             text: domeportModel.ndiSourceName
             onEditingFinished: {
                 domeportModel.ndiSourceName = text
+                modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
             }
         }
 
