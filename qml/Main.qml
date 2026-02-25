@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import QtQuick3D
 import QtQuick3D.Helpers
 
@@ -19,7 +20,18 @@ Window {
     Item {
         id: domeportModel
 
-        property var modeList: [ "Test pattern", "NDI" ]
+        QtObject { id: videoMixer
+            property var process_object : Score.find("Video Mixer");
+            property var alpha1 : Score.inlet(process_object, 8);
+            property var alpha2 : Score.inlet(process_object, 9);
+            property var alpha3 : Score.inlet(process_object, 10);
+        }
+
+        QtObject { id: video
+            property var process_object : Score.find("Video");
+        }
+
+        property var modeList: [ "Test pattern", "NDI", "Video playback" ]
         property string currentMode: "Test pattern"
         onCurrentModeChanged: {
             console.log("changed mode: " + currentMode)
@@ -28,7 +40,11 @@ Window {
                 displayTestPattern()
             } else if (currentMode === "NDI") {
                 removeNDIInput()
-                createNDIInput(ndiSourceName)
+                if (ndiSourceName !== "") { createNDIInput(ndiSourceName) }
+                displayNDI()
+            } else if (currentMode === "Video playback") {
+                removeNDIInput()
+                displayVideoPlayback()
             }
         }
 
@@ -38,12 +54,19 @@ Window {
         onNdiSourceNameChanged: {
             if (ndiSourceName !== "") {
                 console.log("updated NDI Source Name: " + ndiSourceName)
-                currentMode = "NDI"
                 removeNDIInput()
                 createNDIInput(ndiSourceName)
+                currentMode = "NDI"
             }
         }
 
+        property string videoFilePath: ""
+        onVideoFilePathChanged: {
+            console.log("videoFilePath: " + videoFilePath)
+            if (videoFilePath === "") return
+            video.process_object.path = videoFilePath
+            currentMode = "Video playback"
+        }
     }
 
     function ndiAdded(factory, category, name, settings) {
@@ -78,6 +101,21 @@ Window {
     function displayTestPattern() {
         Score.setValue(videoMixer.alpha1, 1.0)
         Score.setValue(videoMixer.alpha2, 0.0)
+        Score.setValue(videoMixer.alpha3, 0.0)
+        Score.play()
+    }
+
+    function displayNDI() {
+        Score.setValue(videoMixer.alpha1, 0.0)
+        Score.setValue(videoMixer.alpha2, 1.0)
+        Score.setValue(videoMixer.alpha3, 0.0)
+        Score.play()
+    }
+
+    function displayVideoPlayback() {
+        Score.setValue(videoMixer.alpha1, 0.0)
+        Score.setValue(videoMixer.alpha2, 0.0)
+        Score.setValue(videoMixer.alpha3, 1.0)
         Score.play()
     }
 
@@ -101,20 +139,8 @@ Window {
         let ndiSourceInlet = Score.port(ndiSource, "inputImage")
         Score.setAddress(ndiSourceInlet, "ndi_input:/")
 
-        // display NDI source
-        Score.setValue(videoMixer.alpha1, 0.0)
-        Score.setValue(videoMixer.alpha2, 1.0)
-
         console.log("Created NDI input: " + name)
         Score.play()
-    }
-
-    Item {
-        QtObject { id: videoMixer
-            property var process_object : Score.find("Video Mixer");
-            property var alpha1 : Score.inlet(process_object, 8);
-            property var alpha2 : Score.inlet(process_object, 9);
-        }
     }
 
     function toggleTransport() {
@@ -284,5 +310,37 @@ Window {
             }
         }
 
+    }
+
+    RowLayout {
+        id:bottomRow
+        width: parent.width
+        anchors.bottom: parent.bottom
+
+        Button {
+            id: browseVideoButton
+            text: "Browse..."
+            onClicked:  videoFileDialog.open()
+        }
+
+        Label {
+            id: videoFilePathLabel
+            text: domeportModel.videoFilePath
+            color: "#E5E5E7"
+        }
+    }
+
+    FileDialog {
+        id: videoFileDialog
+        title: "Select Video File"
+        nameFilters: ["Video Files (*.mp4 *.avi *.mov *.mkv *.webm)", "All Files (*)"]
+        onAccepted: {
+            if (!selectedFile) return
+            var filePath = selectedFile.toString()
+            if (filePath.startsWith("file://")) filePath = filePath.substring(7)
+            domeportModel.videoFilePath = filePath
+            domeportModel.currentMode = "Video playback"
+            modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
+        }
     }
 }
