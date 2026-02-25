@@ -29,6 +29,35 @@ Window {
 
         QtObject { id: video
             property var process_object : Score.find("Video");
+            property double videoDurationMsec: 0.0;
+            onVideoDurationMsecChanged: {
+                console.log("videoDurationMsecChanged: " + videoDurationMsec)
+            }
+
+            property double playheadRequestMsec: 0.0;
+            onPlayheadRequestMsecChanged: {
+                //console.log("playheadRequestMsecChanged: " + playheadRequestMsec)
+                Score.scrub(playheadRequestMsec)
+            }
+
+            property double playheadMsec: 0.0;
+            onPlayheadMsecChanged: {
+                console.log("playheadMsecChanged: " + playheadMsec)
+            }
+
+            function onLoopDurationChanged(loopDuration) {
+                const loopDurationMsec = Util.toMilliseconds(loopDuration)
+                videoDurationMsec = loopDurationMsec
+            }
+
+            function onPositionChanged(positionPercent) {
+                //console.log("positionChanged: " + positionPercent)
+            }
+
+            Component.onCompleted: {
+                process_object.loopDurationChanged.connect(onLoopDurationChanged)
+                Score.rootInterval().durations.positionChanged.connect(onPositionChanged)
+            }
         }
 
         property var modeList: [ "Test pattern", "NDI", "Video playback" ]
@@ -328,6 +357,19 @@ Window {
             text: domeportModel.videoFilePath
             color: "#E5E5E7"
         }
+
+        Slider {
+            id: transportSlider
+            Layout.minimumWidth: 800
+            from: 0.0
+            to: video.videoDurationMsec
+            value: video.playheadMsec
+            stepSize: 1
+            onMoved: {
+                video.playheadRequestMsec = value
+            }
+        }
+
     }
 
     FileDialog {
