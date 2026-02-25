@@ -400,8 +400,8 @@ Window {
         nameFilters: ["Video Files (*.mp4 *.avi *.mov *.mkv *.webm)", "All Files (*)"]
         onAccepted: {
             if (!selectedFile) return
-            var filePath = selectedFile.toString()
-            if (filePath.startsWith("file://")) filePath = filePath.substring(7)
+            var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
+
             domeportModel.videoFilePath = filePath
             domeportModel.currentMode = "Video playback"
             modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
