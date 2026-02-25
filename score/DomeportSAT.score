@@ -69,275 +69,6 @@
           {
             "uuid": "e96c5c0b-7e09-49fb-a851-ff6f4811bb00",
             "ObjectName": "gfxProcess",
-            "id": 203,
-            "Metadata": {
-              "ScriptingName": "floor",
-              "Comment": "",
-              "Color": "White",
-              "Label": "",
-              "Touched": true
-            },
-            "Duration": 12400285870,
-            "Height": 300.0,
-            "StartOffset": 0,
-            "LoopDuration": 12400285870,
-            "Pos": [
-              -987.269424540738,
-              -2179.858997049687
-            ],
-            "Size": [
-              75.0,
-              22.0
-            ],
-            "Loops": false,
-            "Inlets": [
-              {
-                "uuid": "238399a0-7e81-47e3-896f-08e8856e2973",
-                "ObjectName": "Inlet",
-                "id": 0,
-                "Hidden": true,
-                "Custom": "Index",
-                "Exposed": "index",
-                "Value": {
-                  "Int": 0
-                },
-                "Init": {
-                  "Int": 0
-                },
-                "Domain": {
-                  "Int": {
-                    "Min": 0,
-                    "Max": 0
-                  }
-                }
-              },
-              {
-                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925",
-                "ObjectName": "Inlet",
-                "id": 1,
-                "Hidden": true,
-                "Custom": "Opacity",
-                "Exposed": "opacity",
-                "Value": {
-                  "Float": 1.0
-                },
-                "Init": {
-                  "Float": 1.0
-                },
-                "Domain": {
-                  "Float": {
-                    "Min": 0.0,
-                    "Max": 1.0
-                  }
-                }
-              },
-              {
-                "uuid": "8093743c-584f-4bb9-97d4-6c7602f87116",
-                "ObjectName": "Inlet",
-                "id": 2,
-                "Hidden": true,
-                "Custom": "Position",
-                "Exposed": "position",
-                "Value": {
-                  "Vec2f": [
-                    0.0,
-                    0.0
-                  ]
-                },
-                "Init": {
-                  "Vec2f": [
-                    0.0,
-                    0.0
-                  ]
-                },
-                "Domain": {
-                  "Vec2f": {
-                    "Min": [
-                      -5.0,
-                      -5.0
-                    ],
-                    "Max": [
-                      5.0,
-                      5.0
-                    ],
-                    "Values": [
-                      [],
-                      []
-                    ]
-                  }
-                }
-              },
-              {
-                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925",
-                "ObjectName": "Inlet",
-                "id": 3,
-                "Hidden": true,
-                "Custom": "Scale X",
-                "Exposed": "scale x",
-                "Value": {
-                  "Float": 1.0
-                },
-                "Init": {
-                  "Float": 1.0
-                },
-                "Domain": {
-                  "Float": {
-                    "Min": -1.0,
-                    "Max": 10.0
-                  }
-                }
-              },
-              {
-                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925",
-                "ObjectName": "Inlet",
-                "id": 4,
-                "Hidden": true,
-                "Custom": "Scale Y",
-                "Exposed": "scale y",
-                "Value": {
-                  "Float": 1.0
-                },
-                "Init": {
-                  "Float": 1.0
-                },
-                "Domain": {
-                  "Float": {
-                    "Min": -1.0,
-                    "Max": 10.0
-                  }
-                }
-              },
-              {
-                "uuid": "e9e711ca-62c6-43b7-bb51-bbb9ca1e0306",
-                "ObjectName": "Inlet",
-                "id": 5,
-                "Hidden": true,
-                "Custom": "Images",
-                "Exposed": "images",
-                "Value": {
-                  "Tuple": [
-                    {
-                      "String": "<PROJECT>:assets/GridBlack10x.jpg"
-                    }
-                  ]
-                },
-                "Domain": {}
-              },
-              {
-                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016",
-                "ObjectName": "Inlet",
-                "id": 6,
-                "Hidden": true,
-                "Custom": "Tile",
-                "Exposed": "tile",
-                "Value": {
-                  "Int": 0
-                },
-                "Init": {
-                  "Int": 0
-                },
-                "Domain": {
-                  "Int": {
-                    "Values": [
-                      0,
-                      1,
-                      2,
-                      3
-                    ]
-                  }
-                },
-                "Values": [
-                  [
-                    "Single",
-                    {
-                      "Int": 0
-                    }
-                  ],
-                  [
-                    "Clamp",
-                    {
-                      "Int": 1
-                    }
-                  ],
-                  [
-                    "Tile",
-                    {
-                      "Int": 2
-                    }
-                  ],
-                  [
-                    "Mirror",
-                    {
-                      "Int": 3
-                    }
-                  ]
-                ]
-              },
-              {
-                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016",
-                "ObjectName": "Inlet",
-                "id": 7,
-                "Hidden": true,
-                "Custom": "Scale",
-                "Exposed": "scale",
-                "Value": {
-                  "Int": 0
-                },
-                "Init": {
-                  "Int": 0
-                },
-                "Domain": {
-                  "Int": {
-                    "Values": [
-                      0,
-                      1,
-                      2,
-                      3
-                    ]
-                  }
-                },
-                "Values": [
-                  [
-                    "Original",
-                    {
-                      "Int": 0
-                    }
-                  ],
-                  [
-                    "Black bars",
-                    {
-                      "Int": 1
-                    }
-                  ],
-                  [
-                    "Fill",
-                    {
-                      "Int": 2
-                    }
-                  ],
-                  [
-                    "Stretch",
-                    {
-                      "Int": 3
-                    }
-                  ]
-                ]
-              }
-            ],
-            "Outlets": [
-              {
-                "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc",
-                "ObjectName": "Outlet",
-                "id": 0,
-                "Hidden": false,
-                "Custom": "Texture Out",
-                "Exposed": "texture out"
-              }
-            ]
-          },
-          {
-            "uuid": "e96c5c0b-7e09-49fb-a851-ff6f4811bb00",
-            "ObjectName": "gfxProcess",
             "id": 186,
             "Metadata": {
               "ScriptingName": "dome grid",
@@ -2448,6 +2179,46 @@
                 "Exposed": "texture out"
               }
             ]
+          },
+          {
+            "uuid": "32dc5341-7748-4c31-a226-82e6bd685744",
+            "ObjectName": "VideoProcess",
+            "id": 206,
+            "Metadata": {
+              "ScriptingName": "Video",
+              "Comment": "",
+              "Color": "White",
+              "Label": "",
+              "Touched": true
+            },
+            "Duration": 12400285870,
+            "Height": 300.0,
+            "StartOffset": 0,
+            "LoopDuration": 12400285870,
+            "Pos": [
+              -929.3979121844884,
+              -2286.5913179700365
+            ],
+            "Size": [
+              200.0,
+              54.0
+            ],
+            "Loops": true,
+            "Inlets": [],
+            "Outlets": [
+              {
+                "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc",
+                "ObjectName": "Outlet",
+                "id": 0,
+                "Hidden": false,
+                "Custom": "Video Out",
+                "Exposed": "video out"
+              }
+            ],
+            "FilePath": "",
+            "Scale": 3,
+            "Tempo": 120.0,
+            "IgnoreTempo": false
           }
         ],
         "SmallViewRack": [
@@ -2455,19 +2226,30 @@
             "Processes": [
               185,
               186,
-              203,
               204,
               205
             ],
             "Process": null,
             "Height": 200.0,
             "Nodal": true
+          },
+          {
+            "Processes": [
+              206
+            ],
+            "Process": 206,
+            "Height": 55.0,
+            "Nodal": false
           }
         ],
         "FullViewRack": [
           {
             "Process": 0,
             "Nodal": true
+          },
+          {
+            "Process": 206,
+            "Nodal": false
           }
         ],
         "DefaultDuration": 12400285870,
@@ -2496,8 +2278,8 @@
         "Zoom": 686927.2364361702,
         "Center": 645368138,
         "NodalOffset": [
-          -363.0,
-          309.0
+          -115.0,
+          -96.0
         ],
         "ViewMode": 1,
         "SmallViewShown": true,
@@ -2975,6 +2757,55 @@
           {
             "ObjectName": "Inlet",
             "ObjectId": 0
+          }
+        ]
+      },
+      {
+        "ObjectName": "Process::Cable",
+        "id": 4,
+        "Type": 0,
+        "Source": [
+          {
+            "ObjectName": "Scenario::ScenarioDocumentModel",
+            "ObjectId": 1
+          },
+          {
+            "ObjectName": "Scenario::BaseScenario",
+            "ObjectId": 0
+          },
+          {
+            "ObjectName": "Scenario::IntervalModel",
+            "ObjectId": 0
+          },
+          {
+            "ObjectName": "VideoProcess",
+            "ObjectId": 206
+          },
+          {
+            "ObjectName": "Outlet",
+            "ObjectId": 0
+          }
+        ],
+        "Sink": [
+          {
+            "ObjectName": "Scenario::ScenarioDocumentModel",
+            "ObjectId": 1
+          },
+          {
+            "ObjectName": "Scenario::BaseScenario",
+            "ObjectId": 0
+          },
+          {
+            "ObjectName": "Scenario::IntervalModel",
+            "ObjectId": 0
+          },
+          {
+            "ObjectName": "gfxProcess",
+            "ObjectId": 205
+          },
+          {
+            "ObjectName": "Inlet",
+            "ObjectId": 2
           }
         ]
       }
