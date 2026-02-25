@@ -31,27 +31,24 @@ Window {
             property var process_object : Score.find("Video");
             property double videoDurationMsec: 0.0;
             onVideoDurationMsecChanged: {
-                console.log("videoDurationMsecChanged: " + videoDurationMsec)
+                // resize interval to video duration
+                Score.setIntervalDuration(Score.rootInterval(), Util.timevalFromMilliseconds(videoDurationMsec))
             }
 
             property double playheadRequestMsec: 0.0;
             onPlayheadRequestMsecChanged: {
-                //console.log("playheadRequestMsecChanged: " + playheadRequestMsec)
                 Score.scrub(playheadRequestMsec)
             }
 
             property double playheadMsec: 0.0;
-            onPlayheadMsecChanged: {
-                console.log("playheadMsecChanged: " + playheadMsec)
-            }
 
             function onLoopDurationChanged(loopDuration) {
                 const loopDurationMsec = Util.toMilliseconds(loopDuration)
                 videoDurationMsec = loopDurationMsec
             }
 
-            function onPositionChanged(positionPercent) {
-                //console.log("positionChanged: " + positionPercent)
+            function onPositionChanged(position) {
+                playheadMsec = videoDurationMsec * position % videoDurationMsec
             }
 
             Component.onCompleted: {
@@ -182,9 +179,20 @@ Window {
         }
     }
 
+    function togglePause() {
+        if (running) {
+            console.log("pausing...")
+            Score.pause()
+        } else {
+            console.log("unpausing...")
+            Score.play()
+        }
+    }
+
     function onPlay() {
         console.log("onPlay")
         transportButton.text = "Stop"
+        pauseButton.text = "Pause"
         running = true
     }
 
@@ -194,9 +202,17 @@ Window {
         running = false
     }
 
+    function onPause() {
+        console.log("onPause")
+        transportButton.text = "Play"
+        pauseButton.text = "Unpause"
+        running = false
+    }
+
     Component.onCompleted: {
         Score.transport().play.connect(onPlay)
         Score.transport().stop.connect(onStop)
+        Score.transport().pause.connect(onPause)
         registerNDIListener()
         Score.play()
     }
@@ -288,10 +304,11 @@ Window {
     RowLayout {
         id: topRow
         width: parent.width
+
         Button {
             id: transportButton
             text: "Stop"
-            onClicked:  toggleTransport()
+            onClicked: toggleTransport()
         }
 
         ComboBox {
@@ -338,7 +355,6 @@ Window {
                 anchors.right: parent.right
             }
         }
-
     }
 
     RowLayout {
@@ -364,10 +380,16 @@ Window {
             from: 0.0
             to: video.videoDurationMsec
             value: video.playheadMsec
-            stepSize: 1
+            stepSize: 0.0
             onMoved: {
                 video.playheadRequestMsec = value
             }
+        }
+
+        Button {
+            id: pauseButton
+            text: "Pause"
+            onClicked: togglePause()
         }
 
     }
