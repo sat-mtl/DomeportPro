@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import QtQuick3D
 import QtQuick3D.Helpers
 
@@ -19,7 +20,44 @@ Window {
     Item {
         id: domeportModel
 
-        property var modeList: [ "Test pattern", "NDI" ]
+        QtObject { id: videoMixer
+            property var process_object : Score.find("Video Mixer");
+            property var alpha1 : Score.inlet(process_object, 8);
+            property var alpha2 : Score.inlet(process_object, 9);
+            property var alpha3 : Score.inlet(process_object, 10);
+        }
+
+        QtObject { id: video
+            property var process_object : Score.find("Video");
+            property double videoDurationMsec: 0.0;
+            onVideoDurationMsecChanged: {
+                // resize interval to video duration
+                Score.setIntervalDuration(Score.rootInterval(), Util.timevalFromMilliseconds(videoDurationMsec))
+            }
+
+            property double playheadRequestMsec: 0.0;
+            onPlayheadRequestMsecChanged: {
+                Score.scrub(playheadRequestMsec)
+            }
+
+            property double playheadMsec: 0.0;
+
+            function onLoopDurationChanged(loopDuration) {
+                const loopDurationMsec = Util.toMilliseconds(loopDuration)
+                videoDurationMsec = loopDurationMsec
+            }
+
+            function onPositionChanged(position) {
+                playheadMsec = videoDurationMsec * position % videoDurationMsec
+            }
+
+            Component.onCompleted: {
+                process_object.loopDurationChanged.connect(onLoopDurationChanged)
+                Score.rootInterval().durations.positionChanged.connect(onPositionChanged)
+            }
+        }
+
+        property var modeList: [ "Test pattern", "NDI", "Video playback" ]
         property string currentMode: "Test pattern"
         onCurrentModeChanged: {
             console.log("changed mode: " + currentMode)
@@ -28,7 +66,11 @@ Window {
                 displayTestPattern()
             } else if (currentMode === "NDI") {
                 removeNDIInput()
-                createNDIInput(ndiSourceName)
+                if (ndiSourceName !== "") { createNDIInput(ndiSourceName) }
+                displayNDI()
+            } else if (currentMode === "Video playback") {
+                removeNDIInput()
+                displayVideoPlayback()
             }
         }
 
@@ -38,12 +80,19 @@ Window {
         onNdiSourceNameChanged: {
             if (ndiSourceName !== "") {
                 console.log("updated NDI Source Name: " + ndiSourceName)
-                currentMode = "NDI"
                 removeNDIInput()
                 createNDIInput(ndiSourceName)
+                currentMode = "NDI"
             }
         }
 
+        property string videoFilePath: ""
+        onVideoFilePathChanged: {
+            console.log("videoFilePath: " + videoFilePath)
+            if (videoFilePath === "") return
+            video.process_object.path = videoFilePath
+            currentMode = "Video playback"
+        }
     }
 
     function ndiAdded(factory, category, name, settings) {
@@ -78,6 +127,21 @@ Window {
     function displayTestPattern() {
         Score.setValue(videoMixer.alpha1, 1.0)
         Score.setValue(videoMixer.alpha2, 0.0)
+        Score.setValue(videoMixer.alpha3, 0.0)
+        Score.play()
+    }
+
+    function displayNDI() {
+        Score.setValue(videoMixer.alpha1, 0.0)
+        Score.setValue(videoMixer.alpha2, 1.0)
+        Score.setValue(videoMixer.alpha3, 0.0)
+        Score.play()
+    }
+
+    function displayVideoPlayback() {
+        Score.setValue(videoMixer.alpha1, 0.0)
+        Score.setValue(videoMixer.alpha2, 0.0)
+        Score.setValue(videoMixer.alpha3, 1.0)
         Score.play()
     }
 
@@ -101,20 +165,8 @@ Window {
         let ndiSourceInlet = Score.port(ndiSource, "inputImage")
         Score.setAddress(ndiSourceInlet, "ndi_input:/")
 
-        // display NDI source
-        Score.setValue(videoMixer.alpha1, 0.0)
-        Score.setValue(videoMixer.alpha2, 1.0)
-
         console.log("Created NDI input: " + name)
         Score.play()
-    }
-
-    Item {
-        QtObject { id: videoMixer
-            property var process_object : Score.find("Video Mixer");
-            property var alpha1 : Score.inlet(process_object, 8);
-            property var alpha2 : Score.inlet(process_object, 9);
-        }
     }
 
     function toggleTransport() {
@@ -127,9 +179,20 @@ Window {
         }
     }
 
+    function togglePause() {
+        if (running) {
+            console.log("pausing...")
+            Score.pause()
+        } else {
+            console.log("unpausing...")
+            Score.play()
+        }
+    }
+
     function onPlay() {
         console.log("onPlay")
         transportButton.text = "Stop"
+        pauseButton.text = "Pause"
         running = true
     }
 
@@ -139,10 +202,19 @@ Window {
         running = false
     }
 
+    function onPause() {
+        console.log("onPause")
+        transportButton.text = "Play"
+        pauseButton.text = "Unpause"
+        running = false
+    }
+
     Component.onCompleted: {
         Score.transport().play.connect(onPlay)
         Score.transport().stop.connect(onStop)
+        Score.transport().pause.connect(onPause)
         registerNDIListener()
+        Score.play()
     }
 
     View3D {
@@ -232,10 +304,11 @@ Window {
     RowLayout {
         id: topRow
         width: parent.width
+
         Button {
             id: transportButton
             text: "Stop"
-            onClicked:  toggleTransport()
+            onClicked: toggleTransport()
         }
 
         ComboBox {
@@ -282,6 +355,56 @@ Window {
                 anchors.right: parent.right
             }
         }
+    }
 
+    RowLayout {
+        id:bottomRow
+        width: parent.width
+        anchors.bottom: parent.bottom
+
+        Button {
+            id: browseVideoButton
+            text: "Browse..."
+            onClicked:  videoFileDialog.open()
+        }
+
+        Label {
+            id: videoFilePathLabel
+            text: domeportModel.videoFilePath
+            color: "#E5E5E7"
+        }
+
+        Slider {
+            id: transportSlider
+            Layout.minimumWidth: 800
+            from: 0.0
+            to: video.videoDurationMsec
+            value: video.playheadMsec
+            stepSize: 0.0
+            onMoved: {
+                video.playheadRequestMsec = value
+            }
+        }
+
+        Button {
+            id: pauseButton
+            text: "Pause"
+            onClicked: togglePause()
+        }
+
+    }
+
+    FileDialog {
+        id: videoFileDialog
+        title: "Select Video File"
+        nameFilters: ["Video Files (*.mp4 *.avi *.mov *.mkv *.webm)", "All Files (*)"]
+        onAccepted: {
+            if (!selectedFile) return
+            var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
+
+            domeportModel.videoFilePath = filePath
+            domeportModel.currentMode = "Video playback"
+            modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
+        }
     }
 }
