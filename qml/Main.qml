@@ -57,24 +57,62 @@ Window {
             }
         }
 
-        property var modeList: [ "Test pattern", "NDI", "Video playback" ]
+        property var modeList: 
+            if (Qt.platform.os === "windows") {
+                [ 
+                    "Test pattern",
+                    "Video playback",
+                    "NDI",
+                    "Spout",
+                ]
+            } else {
+                [ 
+                    "Test pattern",
+                    "Video playback",
+                    "NDI",
+                ]
+            }
+
         property string currentMode: "Test pattern"
         onCurrentModeChanged: {
             console.log("changed mode: " + currentMode)
+            removeNDIInput()
+            removeSpoutInput()
             if (currentMode === "Test pattern") {
-                removeNDIInput()
                 displayTestPattern()
-            } else if (currentMode === "NDI") {
-                removeNDIInput()
-                if (ndiSourceName !== "") { createNDIInput(ndiSourceName) }
-                displayNDI()
             } else if (currentMode === "Video playback") {
-                removeNDIInput()
                 displayVideoPlayback()
+            } else if (currentMode === "NDI") {
+                updateSources()
+                sourceName = ndiSourceName
+                if (ndiSourceName !== "") { createNDIInput(ndiSourceName) }
+                displayLiveSource()
+            } else if (currentMode === "Spout") {
+                sourceName = spoutSourceName
+                updateSources()
+                if (spoutSourceName !== "") { createSpoutInput(spoutSourceName) }
+                displayLiveSource()
+            }
+        }
+        property bool testPatternMode: currentMode === "Test pattern"
+        property bool ndiMode: currentMode === "NDI"
+        property bool spoutMode: currentMode === "Spout"
+        property bool liveMode: ndiMode || spoutMode
+        property bool videoPlaybackMode: currentMode === "Video playback"
+
+        property var sourceList: [ "" ]
+        property string sourceName: ""
+        onSourceNameChanged: {
+            if (currentMode === "NDI") {
+                ndiSourceName = sourceName
+            } else if (currentMode === "Spout") {
+                spoutSourceName = sourceName
             }
         }
 
         property var ndiNamesList: [ "NDI sources..." ]
+
+        property var spoutNamesList: [ "Spout sources..." ]
 
         property string ndiSourceName: ""
         onNdiSourceNameChanged: {
@@ -82,7 +120,15 @@ Window {
                 console.log("updated NDI Source Name: " + ndiSourceName)
                 removeNDIInput()
                 createNDIInput(ndiSourceName)
-                currentMode = "NDI"
+            }
+        }
+
+        property string spoutSourceName: ""
+        onSpoutSourceNameChanged: {
+            if (spoutSourceName !== "") {
+                console.log("updated Spout Source Name: " + spoutSourceName)
+                removeSpoutInput()
+                createSpoutInput(spoutSourceName)
             }
         }
 
@@ -95,7 +141,6 @@ Window {
             console.log("videoFilePath: " + videoFilePath)
             if (videoFilePath === "") return
             video.process_object.path = videoFilePath
-            currentMode = "Video playback"
         }
     }
 
@@ -104,7 +149,6 @@ Window {
         const index = domeportModel.ndiNamesList.indexOf(name)
         if (index !== 1) {
             domeportModel.ndiNamesList.push(name)
-            ndiSelector.model = domeportModel.ndiNamesList
         }
     }
 
@@ -113,7 +157,6 @@ Window {
         const index = domeportModel.ndiNamesList.indexOf(name)
         if (index !== 1) {
             domeportModel.ndiNamesList.splice(index, 1);
-            ndiSelector.model = domeportModel.ndiNamesList
         }
     }
 
@@ -128,6 +171,34 @@ Window {
         }
     }
 
+    function spoutAdded(factory, category, name, settings) {
+        console.log("Spout added: " + name)
+        const index = domeportModel.spoutNamesList.indexOf(name)
+        if (index !== 1) {
+            domeportModel.spoutNamesList.push(name)
+        }
+    }
+
+    function enumerateSpout() {
+        domeportModel.spoutNamesList = [ "Spout sources..." ]
+        try {
+            let spoutEnumerator = Score.enumerateDevices("3c995cb6-052b-4c52-a8fd-841b33b81b29")
+            spoutEnumerator.deviceAdded.connect(spoutAdded)
+            spoutEnumerator.enumerate = true
+        } catch (error) {
+            console.log("Error enumerating Spout sources: " + error)
+        }
+    }
+
+    function updateSources() {
+        if (domeportModel.currentMode === "NDI") {
+            domeportModel.sourceList = domeportModel.ndiNamesList
+        } else if (domeportModel.currentMode === "Spout") {
+            enumerateSpout()
+            domeportModel.sourceList = domeportModel.spoutNamesList
+        }
+    }
+
     function displayTestPattern() {
         Score.setValue(videoMixer.alpha1, 1.0)
         Score.setValue(videoMixer.alpha2, 0.0)
@@ -135,7 +206,7 @@ Window {
         Score.play()
     }
 
-    function displayNDI() {
+    function displayLiveSource() {
         Score.setValue(videoMixer.alpha1, 0.0)
         Score.setValue(videoMixer.alpha2, 1.0)
         Score.setValue(videoMixer.alpha3, 0.0)
@@ -165,11 +236,35 @@ Window {
         Score.createDevice("ndi_input", "ae78b7c6-6400-483e-b45b-fd6ff87ec700", settings)
 
         // attach NDI source to image inlet
-        let ndiSource = Score.find("ndi source")
-        let ndiSourceInlet = Score.port(ndiSource, "inputImage")
-        Score.setAddress(ndiSourceInlet, "ndi_input:/")
+        let liveSource = Score.find("live_source")
+        let liveSourceInlet = Score.port(liveSource, "inputImage")
+        Score.setAddress(liveSourceInlet, "ndi_input:/")
 
         console.log("Created NDI input: " + name)
+        Score.play()
+    }
+
+    function removeSpoutInput() {
+        Score.stop()
+        try { Score.removeDevice("spout_input"); } catch(_) {}
+    }
+
+    function createSpoutInput(name) {
+        console.log("Create Spout input: " + name)
+        Score.stop()
+
+        // create a Spout source
+        let settings = {
+            "Path": name
+        }
+        Score.createDevice("spout_input", "3c995cb6-052b-4c52-a8fd-841b33b81b29", settings)
+
+        // attach Spout source to image inlet
+        let liveSource = Score.find("live_source")
+        let liveSourceInlet = Score.port(liveSource, "inputImage")
+        Score.setAddress(liveSourceInlet, "spout_input:/")
+
+        console.log("Created Spout input: " + name)
         Score.play()
     }
 
@@ -213,12 +308,16 @@ Window {
         running = false
     }
 
-    Component.onCompleted: {
+    function initialize() {
         Score.transport().play.connect(onPlay)
         Score.transport().stop.connect(onStop)
         Score.transport().pause.connect(onPause)
         registerNDIListener()
         Score.play()
+    }
+
+    Component.onCompleted: {
+        initialize()
     }
 
     View3D {
@@ -328,24 +427,28 @@ Window {
         }
 
         ComboBox {
-            id: ndiSelector
+            id: sourceSelector
             Layout.minimumWidth: 200
-            model: domeportModel.ndiNamesList
+            model: domeportModel.sourceList
             onActivated: {
-                domeportModel.ndiSourceName = currentText
+                domeportModel.sourceName = currentText
                 currentIndex = 0
-                domeportModel.currentMode = "NDI"
-                modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
             }
+            onDownChanged: {
+                if (down && pressed) {
+                    updateSources()
+                }
+            }
+            visible: domeportModel.liveMode
         }
 
         TextField {
-            id: ndiSourceNameTextField
-            text: domeportModel.ndiSourceName
+            id: sourceNameTextField
+            text: domeportModel.sourceName
             onEditingFinished: {
-                domeportModel.ndiSourceName = text
-                modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
+                domeportModel.sourceName = text
             }
+            visible: domeportModel.liveMode
         }
 
         SpinBox {
@@ -379,13 +482,15 @@ Window {
         Button {
             id: browseVideoButton
             text: "Browse..."
-            onClicked:  videoFileDialog.open()
+            onClicked: videoFileDialog.open()
+            visible: domeportModel.videoPlaybackMode
         }
 
         Label {
             id: videoFilePathLabel
             text: domeportModel.videoFilePath
             color: "#E5E5E7"
+            visible: domeportModel.videoPlaybackMode
         }
 
         Slider {
@@ -398,12 +503,14 @@ Window {
             onMoved: {
                 video.playheadRequestMsec = value
             }
+            visible: domeportModel.videoPlaybackMode
         }
 
         Button {
             id: pauseButton
             text: "Pause"
             onClicked: togglePause()
+            visible: domeportModel.videoPlaybackMode
         }
 
     }
@@ -415,10 +522,7 @@ Window {
         onAccepted: {
             if (!selectedFile) return
             var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
-
             domeportModel.videoFilePath = filePath
-            domeportModel.currentMode = "Video playback"
-            modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
         }
     }
 }
