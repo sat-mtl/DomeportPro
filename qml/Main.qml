@@ -86,6 +86,10 @@ Window {
             }
         }
 
+        property double cameraFovMin: 1.0
+        property double cameraFovMax: 179.0
+        property double cameraFov: 90.0
+
         property string videoFilePath: ""
         onVideoFilePathChanged: {
             console.log("videoFilePath: " + videoFilePath)
@@ -236,7 +240,7 @@ Window {
             eulerRotation: Qt.vector3d(30, 0, 0)
             clipNear: 1
             clipFar: 10000
-            fieldOfView: 90
+            fieldOfView: domeportModel.cameraFov
         }
 
         Model {
@@ -341,6 +345,16 @@ Window {
             onEditingFinished: {
                 domeportModel.ndiSourceName = text
                 modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
+            }
+        }
+
+        SpinBox {
+            id: cameraFovSpinBox
+            from: domeportModel.cameraFovMin
+            to: domeportModel.cameraFovMax
+            value: domeportModel.cameraFov
+            onValueModified: {
+                domeportModel.cameraFov = value
             }
         }
 
