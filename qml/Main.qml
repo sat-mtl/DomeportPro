@@ -166,7 +166,9 @@ Window {
         onVideoFilePathChanged: {
             console.log("videoFilePath: " + videoFilePath)
             if (videoFilePath === "") return
+            Score.stop()
             video.process_object.path = videoFilePath
+            Score.play()
         }
 
         property var formatList: ["equirectangular", "domemaster"]
