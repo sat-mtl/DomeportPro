@@ -168,6 +168,25 @@ Window {
             if (videoFilePath === "") return
             video.process_object.path = videoFilePath
         }
+
+        property var formatList: ["equirectangular", "domemaster"]
+        property string currentFormat: "equirectangular"
+        onCurrentFormatChanged: {
+            console.log("changed format: " + currentFormat)
+            if (currentFormat === "equirectangular") {
+                enableEquirectangularFormat()
+            } else if (currentFormat === "domemaster") {
+                enableDomemasterFormat()
+            }
+        }
+    }
+
+    function enableEquirectangularFormat() {
+        textureDome.process = "equirectangular_to_domemaster"
+    }
+
+    function enableDomemasterFormat() {
+        textureDome.process = "Video Mixer"
     }
 
     function ndiAdded(factory, category, name, settings) {
@@ -507,6 +526,18 @@ Window {
                 domeportModel.sourceName = text
             }
             visible: domeportModel.liveMode
+        }
+
+        ComboBox {
+            id: formatSelector
+            model: domeportModel.formatList
+            onActivated: domeportModel.currentFormat = currentValue
+            Component.onCompleted: {
+                let index = indexOfValue(domeportModel.currentFormat)
+                if (index >=0) {
+                    currentIndex = index
+                }
+            }
         }
 
         SpinBox {
