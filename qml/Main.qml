@@ -83,9 +83,7 @@ Window {
         property string currentMode: "Test pattern"
         onCurrentModeChanged: {
             console.log("changed mode: " + currentMode)
-            removeNDIInput()
-            removeSpoutInput()
-            removeSyphonInput()
+            removeLiveInput()
             if (currentMode === "Test pattern") {
                 displayTestPattern()
             } else if (currentMode === "Video playback") {
@@ -137,7 +135,7 @@ Window {
         onNdiSourceNameChanged: {
             if (ndiSourceName !== "") {
                 console.log("updated NDI Source Name: " + ndiSourceName)
-                removeNDIInput()
+                removeLiveInput()
                 createNDIInput(ndiSourceName)
             }
         }
@@ -146,7 +144,7 @@ Window {
         onSpoutSourceNameChanged: {
             if (spoutSourceName !== "") {
                 console.log("updated Spout Source Name: " + spoutSourceName)
-                removeSpoutInput()
+                removeLiveInput()
                 createSpoutInput(spoutSourceName)
             }
         }
@@ -155,7 +153,7 @@ Window {
         onSyphonSourceNameChanged: {
             if (syphonSourceName !== "") {
                 console.log("updated Syphon Source Name: " + syphonSourceName)
-                removeSyphonInput()
+                removeLiveInput()
                 createSyphonInput(syphonSourceName)
             }
         }
@@ -267,9 +265,9 @@ Window {
         Score.play()
     }
 
-    function removeNDIInput() {
+    function removeLiveInput() {
         Score.stop()
-        try { Score.removeDevice("ndi_input"); } catch(_) {}
+        try { Score.removeDevice("live_input"); } catch(_) {}
     }
 
     function createNDIInput(name) {
@@ -280,20 +278,15 @@ Window {
         let settings = {
             "Path": name
         }
-        Score.createDevice("ndi_input", "ae78b7c6-6400-483e-b45b-fd6ff87ec700", settings)
+        Score.createDevice("live_input", "ae78b7c6-6400-483e-b45b-fd6ff87ec700", settings)
 
         // attach NDI source to image inlet
         let liveSource = Score.find("live_source")
         let liveSourceInlet = Score.port(liveSource, "inputImage")
-        Score.setAddress(liveSourceInlet, "ndi_input:/")
+        Score.setAddress(liveSourceInlet, "live_input:/")
 
         console.log("Created NDI input: " + name)
         Score.play()
-    }
-
-    function removeSpoutInput() {
-        Score.stop()
-        try { Score.removeDevice("spout_input"); } catch(_) {}
     }
 
     function createSpoutInput(name) {
@@ -304,20 +297,15 @@ Window {
         let settings = {
             "Path": name
         }
-        Score.createDevice("spout_input", "3c995cb6-052b-4c52-a8fd-841b33b81b29", settings)
+        Score.createDevice("live_input", "3c995cb6-052b-4c52-a8fd-841b33b81b29", settings)
 
         // attach Spout source to image inlet
         let liveSource = Score.find("live_source")
         let liveSourceInlet = Score.port(liveSource, "inputImage")
-        Score.setAddress(liveSourceInlet, "spout_input:/")
+        Score.setAddress(liveSourceInlet, "live_input:/")
 
         console.log("Created Spout input: " + name)
         Score.play()
-    }
-
-    function removeSyphonInput() {
-        Score.stop()
-        try { Score.removeDevice("syphon_input"); } catch(_) {}
     }
 
     function createSyphonInput(name) {
@@ -327,12 +315,12 @@ Window {
         // create a Syphon source
         const index = domeportModel.syphonNamesList.indexOf(name)
         const settings = domeportModel.syphonList[index - 1].settings
-        Score.createDevice("syphon_input", "398cec01-c4ea-43b7-8281-d848748e0f68", settings)
+        Score.createDevice("live_input", "398cec01-c4ea-43b7-8281-d848748e0f68", settings)
 
         // attach Syphon source to image inlet
         let liveSource = Score.find("live_source")
         let liveSourceInlet = Score.port(liveSource, "inputImage")
-        Score.setAddress(liveSourceInlet, "syphon_input:/")
+        Score.setAddress(liveSourceInlet, "live_input:/")
 
         console.log("Created Syphon input: " + name)
         Score.play()
