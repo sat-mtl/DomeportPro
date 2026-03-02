@@ -65,6 +65,13 @@ Window {
                     "NDI",
                     "Spout",
                 ]
+            } else if (Qt.platform.os === "osx") {
+                [ 
+                    "Test pattern",
+                    "Video playback",
+                    "NDI",
+                    "Syphon",
+                ]
             } else {
                 [ 
                     "Test pattern",
@@ -78,6 +85,7 @@ Window {
             console.log("changed mode: " + currentMode)
             removeNDIInput()
             removeSpoutInput()
+            removeSyphonInput()
             if (currentMode === "Test pattern") {
                 displayTestPattern()
             } else if (currentMode === "Video playback") {
@@ -92,12 +100,18 @@ Window {
                 updateSources()
                 if (spoutSourceName !== "") { createSpoutInput(spoutSourceName) }
                 displayLiveSource()
+            } else if (currentMode === "Syphon") {
+                sourceName = syphonSourceName
+                updateSources()
+                if (syphonSourceName !== "") { createSyphonInput(syphonSourceName) }
+                displayLiveSource()
             }
         }
         property bool testPatternMode: currentMode === "Test pattern"
         property bool ndiMode: currentMode === "NDI"
         property bool spoutMode: currentMode === "Spout"
-        property bool liveMode: ndiMode || spoutMode
+        property bool syphonMode: currentMode === "Syphon"
+        property bool liveMode: ndiMode || spoutMode || syphonMode
         property bool videoPlaybackMode: currentMode === "Video playback"
 
         property var sourceList: [ "" ]
@@ -107,12 +121,17 @@ Window {
                 ndiSourceName = sourceName
             } else if (currentMode === "Spout") {
                 spoutSourceName = sourceName
+            } else if (currentMode === "Syphon") {
+                syphonSourceName = sourceName
             }
         }
 
         property var ndiNamesList: [ "NDI sources..." ]
 
         property var spoutNamesList: [ "Spout sources..." ]
+
+        property var syphonList: []
+        property var syphonNamesList: [ "Syphon sources..." ]
 
         property string ndiSourceName: ""
         onNdiSourceNameChanged: {
@@ -129,6 +148,15 @@ Window {
                 console.log("updated Spout Source Name: " + spoutSourceName)
                 removeSpoutInput()
                 createSpoutInput(spoutSourceName)
+            }
+        }
+
+        property string syphonSourceName: ""
+        onSyphonSourceNameChanged: {
+            if (syphonSourceName !== "") {
+                console.log("updated Syphon Source Name: " + syphonSourceName)
+                removeSyphonInput()
+                createSyphonInput(syphonSourceName)
             }
         }
 
@@ -190,12 +218,31 @@ Window {
         }
     }
 
+    function enumerateSyphon() {
+        domeportModel.syphonList = []
+        domeportModel.syphonNamesList = [ "Syphon sources..." ]
+        try {
+            let syphonEnumerator = Score.enumerateDevices("398cec01-c4ea-43b7-8281-d848748e0f68")
+            syphonEnumerator.enumerate = true
+            for (let dev of syphonEnumerator.devices) {
+                domeportModel.syphonList.push(dev)
+                domeportModel.syphonNamesList.push(dev.name)
+                console.log("Syphon added: " + dev.name)
+            }
+        } catch (error) {
+            console.log("Error enumerating Syphon sources: " + error)
+        }
+    }
+
     function updateSources() {
         if (domeportModel.currentMode === "NDI") {
             domeportModel.sourceList = domeportModel.ndiNamesList
         } else if (domeportModel.currentMode === "Spout") {
             enumerateSpout()
             domeportModel.sourceList = domeportModel.spoutNamesList
+        } else if (domeportModel.currentMode === "Syphon") {
+            enumerateSyphon()
+            domeportModel.sourceList = domeportModel.syphonNamesList
         }
     }
 
@@ -265,6 +312,29 @@ Window {
         Score.setAddress(liveSourceInlet, "spout_input:/")
 
         console.log("Created Spout input: " + name)
+        Score.play()
+    }
+
+    function removeSyphonInput() {
+        Score.stop()
+        try { Score.removeDevice("syphon_input"); } catch(_) {}
+    }
+
+    function createSyphonInput(name) {
+        console.log("Create Syphon input: " + name)
+        Score.stop()
+
+        // create a Syphon source
+        const index = domeportModel.syphonNamesList.indexOf(name)
+        const settings = domeportModel.syphonList[index - 1].settings
+        Score.createDevice("syphon_input", "398cec01-c4ea-43b7-8281-d848748e0f68", settings)
+
+        // attach Syphon source to image inlet
+        let liveSource = Score.find("live_source")
+        let liveSourceInlet = Score.port(liveSource, "inputImage")
+        Score.setAddress(liveSourceInlet, "syphon_input:/")
+
+        console.log("Created Syphon input: " + name)
         Score.play()
     }
 
