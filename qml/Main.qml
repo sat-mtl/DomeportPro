@@ -607,7 +607,7 @@ Window {
     FileDialog {
         id: videoFileDialog
         title: "Select Video File"
-        nameFilters: ["Video Files (*.mp4 *.avi *.mov *.mkv *.webm)", "All Files (*)"]
+        nameFilters: ["Video Files (*.mkv *.mov *.mp4 *.h264 *.avi *.hap *.mpg *.mpeg *.imf *.mxf *.mts *.m2ts *.mj2 *.webm)", "All Files (*)"]
         onAccepted: {
             if (!selectedFile) return
             var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
