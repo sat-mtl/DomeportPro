@@ -1,4 +1,4 @@
-name: Build DomeportSAT
+name: Build Domeport Pro
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
       - name: Package custom ossia score app
         uses: ossia/actions/package-custom-app@master
         with:
-          app-name: "DomeportSAT"
+          app-name: "Domeport Pro"
           qml-files: "qml"
           # Optional: Add your score file here
           score-file: "score/DomeportSAT.score"
@@ -43,7 +43,7 @@ jobs:
           # App metadata
           app-organization: "SAT"
           app-domain: "sat.qc.ca"
-          app-identifier: "ca.qc.sat.domeportsat"
+          app-identifier: "ca.qc.sat.domeportpro"
           app-description: "domemaster / equirectangular content visualizer in dome and planetariums in 3D environment"
           app-copyright: "Société des Arts Technologiques"
           app-version: "1.0"
