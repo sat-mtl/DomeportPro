@@ -20,6 +20,11 @@ Window {
     Item {
         id: domeportModel
 
+        QtObject { id: equirectangularToDomemaster
+            property var process_object : Score.find("equirectangular_to_domemaster");
+            property var domemaster_master_output_fov_degrees : Score.inlet(process_object, 2);
+        }
+
         QtObject { id: videoMixer
             property var process_object : Score.find("Video Mixer");
             property var alpha1 : Score.inlet(process_object, 8);
@@ -181,6 +186,27 @@ Window {
                 enableDomemasterFormat()
             }
         }
+
+        property var modelList: ["210 degrees", "180 degrees"]
+        property string currentModel: "210 degrees"
+        onCurrentModelChanged: {
+            console.log("changed model: " + currentModel)
+            if (currentModel === "210 degrees") {
+                load210DegreesModel()
+            } else if (currentModel === "180 degrees") {
+                load180DegreesModel()
+            }
+        }
+    }
+
+    function load210DegreesModel() {
+        dome.source = "sato210.mesh"
+        Score.setValue(equirectangularToDomemaster.domemaster_master_output_fov_degrees, 210.0)
+    }
+
+    function load180DegreesModel() {
+        dome.source = "sato180.mesh"
+        Score.setValue(equirectangularToDomemaster.domemaster_master_output_fov_degrees, 180.0)
     }
 
     function enableEquirectangularFormat() {
@@ -536,6 +562,18 @@ Window {
             onActivated: domeportModel.currentFormat = currentValue
             Component.onCompleted: {
                 let index = indexOfValue(domeportModel.currentFormat)
+                if (index >=0) {
+                    currentIndex = index
+                }
+            }
+        }
+
+        ComboBox {
+            id:  modelSelector
+            model: domeportModel.modelList
+            onActivated: domeportModel.currentModel = currentValue
+            Component.onCompleted: {
+                let index = indexOfValue(domeportModel.currentModel)
                 if (index >=0) {
                     currentIndex = index
                 }
