@@ -37,7 +37,7 @@ jobs:
           app-name: "Domeport Pro"
           qml-files: "qml"
           # Optional: Add your score file here
-          score-file: "score/DomeportSAT.score"
+          score-file: "score/app.score"
           release-tag: "continuous"
           platforms: "${{ matrix.platform }}"
           # App metadata
