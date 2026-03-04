@@ -1,4 +1,4 @@
-name: Build DomeportSAT
+name: Build Domeport Pro
 
 on:
   push:
@@ -34,22 +34,22 @@ jobs:
       - name: Package custom ossia score app
         uses: ossia/actions/package-custom-app@master
         with:
-          app-name: "DomeportSAT"
+          app-name: "Domeport Pro"
           qml-files: "qml"
           # Optional: Add your score file here
-          score-file: "score/DomeportSAT.score"
+          score-file: "score/app.score"
           release-tag: "continuous"
           platforms: "${{ matrix.platform }}"
           # App metadata
           app-organization: "SAT"
           app-domain: "sat.qc.ca"
-          app-identifier: "ca.qc.sat.domeportsat"
-          app-description: "domemaster / equirectangular content visualizer in dome and planetariums in 3D environment"
+          app-identifier: "ca.qc.sat.domeportpro"
+          app-description: "domemaster / equirectangular content visualizer for dome and planetariums in 3D environment"
           app-copyright: "Société des Arts Technologiques"
           app-version: "1.0"
-          app-png: "qml/domeportsat/resources/images/DomeportSAT.png"
-          app-ico: "qml/domeportsat/resources/images/DomeportSAT.ico"
-          app-icns: "qml/domeportsat/resources/images/DomeportSAT.icns"
+          app-png: "qml/domeportpro/resources/images/DomeportPro.png"
+          app-ico: "qml/domeportpro/resources/images/DomeportPro.ico"
+          app-icns: "qml/domeportpro/resources/images/DomeportPro.icns"
           # Optional: macOS code signing (requires secrets to be set in repository)
           macos-certificate-base64: ${{ secrets.MAC_CERT_B64 }}
           macos-certificate-password: ${{ secrets.MAC_CERT_PASSWORD }}
@@ -60,7 +60,7 @@ jobs:
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
-          name: domeportsat-${{ matrix.artifact-name }}
+          name: domeportpro-${{ matrix.artifact-name }}
           path: packages/
           retention-days: 30
 

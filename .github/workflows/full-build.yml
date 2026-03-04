@@ -1,4 +1,4 @@
-name: Custom score and app
+name: Custom full build
 
 on:
   push:
@@ -35,7 +35,10 @@ jobs:
         id: score
         uses: ossia/actions/custom-score-build@master
         with:
-          cmake-options: -DSCORE_ENABLE_ADDONS=score-addon-onnx -DSCORE_DISABLE_PLUGINS=score-plugin-faust,score-plugin-jit,score-plugin-vst,score-plugin-vst3,score-plugin-clap,score-plugin-lv2,score-plugin-avnd,score-plugin-pd,score-plugin-ysfx,score-plugin-packagemanager,score-plugin-controlsurface
+          cmake-options: >
+            -DSCORE_DISABLE_ADDONS=1
+            -DSCORE_DISABLE_PLUGINS=score-plugin-faust,score-plugin-jit,score-plugin-vst,score-plugin-vst3,score-plugin-clap,score-plugin-lv2,score-plugin-avnd,score-plugin-pd,score-plugin-ysfx,score-plugin-packagemanager,score-plugin-controlsurface,score-plugin-spline,score-plugin-spline3d
+
           macos-certificate-base64: ${{ secrets.MAC_CERT_B64 }}
           macos-certificate-password: ${{ secrets.MAC_CERT_PASSWORD }}
           macos-notarize-team-id: ${{ secrets.MAC_NOTARIZE_TEAM_ID }}
@@ -45,12 +48,22 @@ jobs:
       - name: Package custom ossia score app
         uses: ossia/actions/package-custom-app@master
         with:
-          app-name: "My Custom App"
+          app-name: "Domeport Pro"
           qml-files: "qml"
           # Optional: Add your score file here
           score-file: "score/app.score"
           score-build-id: ${{ steps.score.outputs.artifact-id }}
           platforms: "${{ matrix.platform }}"
+          # App metadata
+          app-organization: "SAT"
+          app-domain: "sat.qc.ca"
+          app-identifier: "ca.qc.sat.domeportpro"
+          app-description: "Domemaster / equirectangular content visualizer for dome and planetariums in 3D environment"
+          app-copyright: "Société des Arts Technologiques"
+          app-version: "1.0"
+          app-png: "qml/domeportpro/resources/images/DomeportPro.png"
+          app-ico: "qml/domeportpro/resources/images/DomeportPro.ico"
+          app-icns: "qml/domeportpro/resources/images/DomeportPro.icns"
           # Optional: macOS code signing (requires secrets to be set in repository)
           macos-certificate-base64: ${{ secrets.MAC_CERT_B64 }}
           macos-certificate-password: ${{ secrets.MAC_CERT_PASSWORD }}
@@ -61,7 +74,7 @@ jobs:
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
-          name: custom-app-${{ matrix.artifact-name }}
+          name: domeportpro-${{ matrix.artifact-name }}
           path: packages/
           retention-days: 30
 
