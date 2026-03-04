@@ -12,7 +12,7 @@ Window {
     width: 1280
     height: 720
     visible: true
-    title: "DomeportSAT"
+    title: "Domeport Pro"
     color: "#1a1a2e"
 
     property bool running: true
