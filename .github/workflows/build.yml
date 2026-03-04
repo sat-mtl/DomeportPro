@@ -44,7 +44,7 @@ jobs:
           app-organization: "SAT"
           app-domain: "sat.qc.ca"
           app-identifier: "ca.qc.sat.domeportpro"
-          app-description: "domemaster / equirectangular content visualizer in dome and planetariums in 3D environment"
+          app-description: "domemaster / equirectangular content visualizer for dome and planetariums in 3D environment"
           app-copyright: "Société des Arts Technologiques"
           app-version: "1.0"
           app-png: "qml/domeportpro/resources/images/DomeportPro.png"
@@ -60,7 +60,7 @@ jobs:
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
-          name: domeportsat-${{ matrix.artifact-name }}
+          name: domeportpro-${{ matrix.artifact-name }}
           path: packages/
           retention-days: 30
 
