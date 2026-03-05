@@ -171,13 +171,13 @@ Window {
             Score.play()
         }
 
-        property var formatList: ["equirectangular", "domemaster"]
-        property string currentFormat: "equirectangular"
+        property var formatList: ["Equirectangular", "Domemaster"]
+        property string currentFormat: "Equirectangular"
         onCurrentFormatChanged: {
             console.log("changed format: " + currentFormat)
-            if (currentFormat === "equirectangular") {
+            if (currentFormat === "Equirectangular") {
                 enableEquirectangularFormat()
-            } else if (currentFormat === "domemaster") {
+            } else if (currentFormat === "Domemaster") {
                 enableDomemasterFormat()
             }
         }
