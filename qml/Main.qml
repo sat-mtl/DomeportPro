@@ -544,6 +544,7 @@ Window {
             onDownChanged: {
                 if (down && pressed) {
                     updateSources()
+                    model = domeportModel.sourceList
                 }
             }
             visible: domeportModel.liveMode
