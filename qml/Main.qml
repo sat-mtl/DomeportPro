@@ -220,7 +220,7 @@ Window {
     function ndiAdded(factory, category, name, settings) {
         console.log("NDI added: " + name)
         const index = domeportModel.ndiNamesList.indexOf(name)
-        if (index !== 1) {
+        if (index === -1) {
             domeportModel.ndiNamesList.push(name)
         }
     }
@@ -228,10 +228,10 @@ Window {
     function ndiRemoved(factory, name) {
         console.log("NDI removed: " + name)
         const index = domeportModel.ndiNamesList.indexOf(name)
-        if (index !== 1) {
+        if (index !== -1) {
             domeportModel.ndiNamesList.splice(index, 1);
         }
-    }
+     }
 
     function registerNDIListener() {
         try {
@@ -544,6 +544,7 @@ Window {
             onDownChanged: {
                 if (down && pressed) {
                     updateSources()
+                    model = domeportModel.sourceList
                 }
             }
             visible: domeportModel.liveMode
