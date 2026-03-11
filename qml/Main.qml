@@ -460,6 +460,8 @@ Window {
                         enabled: true
                         texture: Texture {
                             source: "GridBlack.jpg"
+                            generateMipmaps: true 
+                            mipFilter: Texture.Linear
                         }
                     }
                     shadingMode: CustomMaterial.Unshaded
