@@ -376,11 +376,9 @@ Window {
 
     function toggleCameraFlyMode() {
         if (domeportModel.cameraFly) {
-            console.log("camera walk mode")
             domeportModel.cameraFly = false
             camera.position.y = camera.cameraHeight
         } else {
-            console.log("camera fly mode")
             domeportModel.cameraFly = true
         }
     }
