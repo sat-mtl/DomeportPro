@@ -166,6 +166,7 @@ Window {
         property double cameraFovMin: 1.0
         property double cameraFovMax: 179.0
         property double cameraFov: 90.0
+        property bool cameraFly: false
 
         property string videoFilePath: ""
         onVideoFilePathChanged: {
@@ -373,6 +374,15 @@ Window {
         Score.play()
     }
 
+    function toggleCameraFlyMode() {
+        if (domeportModel.cameraFly) {
+            domeportModel.cameraFly = false
+            camera.position.y = camera.cameraHeight
+        } else {
+            domeportModel.cameraFly = true
+        }
+    }
+
     function toggleTransport() {
         if (running) {
             console.log("stopping...")
@@ -440,11 +450,19 @@ Window {
 
         PerspectiveCamera {
             id: camera
-            position: Qt.vector3d(0, 150, 400)
+            property real cameraHeight: 150
+            position: Qt.vector3d(0, cameraHeight, 400)
             eulerRotation: Qt.vector3d(30, 0, 0)
             clipNear: 1
             clipFar: 10000
             fieldOfView: domeportModel.cameraFov
+
+            onPositionChanged: {
+                if (!domeportModel.cameraFly) {
+                    // keep camera height fixed
+                    position.y = cameraHeight
+                }
+            }
         }
 
         Model {
@@ -591,6 +609,12 @@ Window {
             onValueModified: {
                 domeportModel.cameraFov = value
             }
+        }
+
+        Button {
+            id: flyButton
+            text: { domeportModel.cameraFly ? "Walk" : "Fly" }
+            onClicked: toggleCameraFlyMode()
         }
 
         Button {
