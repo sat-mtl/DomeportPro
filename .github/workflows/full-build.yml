@@ -35,9 +35,8 @@ jobs:
         uses: ossia/actions/custom-score-build@master
         with:
           cmake-options: >
-            -DSCORE_DISABLE_ADDONS=1
+            -DSCORE_ENABLED_ADDONS=score-addon-ndi
             -DSCORE_DISABLE_PLUGINS=score-plugin-faust,score-plugin-jit,score-plugin-vst,score-plugin-vst3,score-plugin-clap,score-plugin-lv2,score-plugin-avnd,score-plugin-pd,score-plugin-ysfx,score-plugin-packagemanager,score-plugin-controlsurface,score-plugin-spline,score-plugin-spline3d
-
           macos-certificate-base64: ${{ secrets.MAC_CERT_B64 }}
           macos-certificate-password: ${{ secrets.MAC_CERT_PASSWORD }}
           macos-notarize-team-id: ${{ secrets.MAC_NOTARIZE_TEAM_ID }}
