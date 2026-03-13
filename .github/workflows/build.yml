@@ -1,11 +1,8 @@
 name: Build Domeport Pro
 
 on:
-  push:
-    branches: [ main, master, dev, develop ]
-    tags:
-      - 'v*'
   pull_request:
+    branches: [ dev, develop ]
   workflow_dispatch:
 
 jobs:
