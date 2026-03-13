@@ -1,4 +1,4 @@
-name: Custom full build
+name: Full build Domeport Pro 
 
 on:
   # push:
