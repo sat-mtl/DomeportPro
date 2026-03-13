@@ -87,7 +87,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: all-packages
-          pattern: custom-app-*
+          pattern: domeportpro-*
           merge-multiple: true
 
       - name: Create Release (on tags)
