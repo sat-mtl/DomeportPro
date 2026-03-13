@@ -36,7 +36,7 @@ jobs:
         with:
           cmake-options: >
             -DSCORE_ENABLED_ADDONS=score-addon-ndi
-            -DSCORE_DISABLE_PLUGINS=score-plugin-faust,score-plugin-jit,score-plugin-vst,score-plugin-vst3,score-plugin-clap,score-plugin-lv2,score-plugin-avnd,score-plugin-pd,score-plugin-ysfx,score-plugin-packagemanager,score-plugin-controlsurface,score-plugin-spline,score-plugin-spline3d
+            -DSCORE_DISABLE_PLUGINS=score-plugin-avnd,score-plugin-clap,score-plugin-controlsurface,score-plugin-faust,score-plugin-jit,score-plugin-lv2,score-plugin-mapping,score-plugin-nodal,score-plugin-packagemanager,score-plugin-pd,score-plugin-recording,score-plugin-remotecontrol,score-plugin-spline,score-plugin-spline3d,score-plugin-threedim,score-plugin-vst,score-plugin-vst3,score-plugin-ysfx
           macos-certificate-base64: ${{ secrets.MAC_CERT_B64 }}
           macos-certificate-password: ${{ secrets.MAC_CERT_PASSWORD }}
           macos-notarize-team-id: ${{ secrets.MAC_NOTARIZE_TEAM_ID }}
