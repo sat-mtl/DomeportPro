@@ -8,6 +8,7 @@ Domeport Pro supports a wide range of input sources:
 
 - **Video playback**: load standard image and video formats directly
 - **NDI**: receive live video streams over a local network
+- **Spout** (Windows): share textures in real time between applications
 - **Syphon** (macOS): share textures in real time between applications
 
 > NDI, Spout, and Syphon are only available in the standalone version. The [web version](https://dev.domeport.sat.qc.ca/) supports file-based content only.

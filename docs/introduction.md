@@ -1,6 +1,6 @@
 Domeport Pro is a standalone fulldome content visualizer for dome and planetarium environments. Load DomeMaster or equirectangular content (video files, live streams, or real-time sources) and preview it instantly in a 3D dome projection.
 
-A [web version](https://dev.domeport.sat.qc.ca/) is also available for quick previews. The standalone app goes further: it adds live streaming support via **NDI** and **Syphon**, making it suited for live production and broadcast workflows.
+A [web version](https://dev.domeport.sat.qc.ca/) is also available for quick previews. The standalone app goes further: it adds live streaming support via **NDI**, **Spout** and **Syphon**, making it suited for live production and broadcast workflows.
 
 <video src="images/domeport.mp4" autoplay loop muted></video>
 
