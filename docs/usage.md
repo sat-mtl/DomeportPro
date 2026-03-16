@@ -31,8 +31,8 @@ When a video file is loaded:
 
 Navigate the 3D dome view with the built-in camera:
 
-- **Fly mode**: free-fly navigation through the scene: use `W` `A` `S` `D` to move and the mouse to look around
-- **Walk mode**: ground-level navigation: `W` `A` `S` `D` moves along the floor plane
+- **Walk mode**: ground-level navigation: `W` `A` `S` `D` moves along the floor plane and the mouse to look around
+- **Fly mode**: free-fly navigation through the scene: use `W` `A` `S` `D` `R` and `F` to move and the mouse to look around
 - **Aperture**: set the dome coverage angle (180° for a full hemisphere, 210° for an extended dome)
 
 ## Use cases
