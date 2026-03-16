@@ -1,0 +1,15 @@
+[book]
+title = "Domeport Pro documentation"
+description = "Documentation for Domeport Pro, a fulldome content visualizer"
+authors = ["Société des Arts Technologiques"]
+language = "en"
+src = "docs"
+
+[build]
+build-dir = "book"
+
+[output.html]
+default-theme = "auto"
+preferred-dark-theme = "navy"
+git-repository-url = "https://github.com/sat-mtl/DomeportPro"
+site-url = "/DomeportPro/"
