@@ -62,26 +62,26 @@ Window {
             }
         }
 
-        property var modeList: 
+        property var modeList:
             if (Qt.platform.os === "windows") {
-                [ 
-                    "Test pattern",
-                    "Video playback",
-                    "NDI",
-                    "Spout",
+                [
+                "Test pattern",
+                "Video playback",
+                "NDI",
+                "Spout",
                 ]
             } else if (Qt.platform.os === "osx") {
-                [ 
-                    "Test pattern",
-                    "Video playback",
-                    "NDI",
-                    "Syphon",
+                [
+                "Test pattern",
+                "Video playback",
+                "NDI",
+                "Syphon",
                 ]
             } else {
-                [ 
-                    "Test pattern",
-                    "Video playback",
-                    "NDI",
+                [
+                "Test pattern",
+                "Video playback",
+                "NDI",
                 ]
             }
 
@@ -531,127 +531,198 @@ Window {
 
     RowLayout {
         id: topRow
-        width: parent.width
+        anchors.top: parent.top
+        width: parent.width - 2 * 12
+        x: 12
+        spacing: 12
 
-        Button {
-            id: transportButton
-            text: "Stop"
-            onClicked: toggleTransport()
-        }
+        RowLayout {
+            id: modeControls
+            Layout.alignment: Qt.AlignLeft
 
-        ComboBox {
-            id: modeSelector
-            model: domeportModel.modeList
-            onActivated: domeportModel.currentMode = currentValue
-            Component.onCompleted: {
-                let index = indexOfValue(domeportModel.currentMode)
-                if (index >=0) {
-                    currentIndex = index
+            Label {
+                id: modeSelectorLabel
+                text: "Input\nMode"
+                horizontalAlignment: Text.AlignHCenter
+                color: "#FFFFFF"
+            }
+
+            ComboBox {
+                id: modeSelector
+                model: domeportModel.modeList
+                onActivated: domeportModel.currentMode = currentValue
+                Component.onCompleted: {
+                    let index = indexOfValue(domeportModel.currentMode)
+                    if (index >=0) {
+                        currentIndex = index
+                    }
                 }
             }
+
         }
 
-        ComboBox {
-            id: sourceSelector
-            Layout.minimumWidth: 200
-            model: domeportModel.sourceList
-            onActivated: {
-                domeportModel.sourceName = currentText
-                currentIndex = 0
-            }
-            onDownChanged: {
-                if (down && pressed) {
-                    updateSources()
-                    model = domeportModel.sourceList
-                }
-            }
+        RowLayout {
+            id: sourceControls
+            Layout.alignment: Qt.AlignLeft
             visible: domeportModel.liveMode
-        }
 
-        TextField {
-            id: sourceNameTextField
-            text: domeportModel.sourceName
-            onEditingFinished: {
-                domeportModel.sourceName = text
+            Label {
+                id: sourceSelectorLabel
+                text: "Available\nSources"
+                horizontalAlignment: Text.AlignHCenter
+                color: "#FFFFFF"
             }
-            visible: domeportModel.liveMode
-        }
 
-        ComboBox {
-            id: formatSelector
-            model: domeportModel.formatList
-            onActivated: domeportModel.currentFormat = currentValue
-            Component.onCompleted: {
-                let index = indexOfValue(domeportModel.currentFormat)
-                if (index >=0) {
-                    currentIndex = index
+            ComboBox {
+                id: sourceSelector
+                Layout.preferredWidth: 180
+                model: domeportModel.sourceList
+                onActivated: {
+                    domeportModel.sourceName = currentText
+                    currentIndex = 0
+                }
+                onDownChanged: {
+                    if (down && pressed) {
+                        updateSources()
+                        model = domeportModel.sourceList
+                    }
                 }
             }
+
+            Label {
+                id: sourceNameLabel
+                text: "Current\nSource"
+                horizontalAlignment: Text.AlignHCenter
+                color: "#FFFFFF"
+            }
+
+            TextField {
+                id: sourceNameTextField
+                text: domeportModel.sourceName
+                onEditingFinished: {
+                    domeportModel.sourceName = text
+                }
+                visible: domeportModel.liveMode
+            }
         }
 
-        ComboBox {
-            id:  modelSelector
-            model: domeportModel.modelList
-            onActivated: domeportModel.currentModel = currentValue
-            Component.onCompleted: {
-                let index = indexOfValue(domeportModel.currentModel)
-                if (index >=0) {
-                    currentIndex = index
+        RowLayout {
+            id: configControls
+            Layout.alignment: Qt.AlignRight
+
+            Label {
+                id: formatLabel
+                text: "Format"
+                color: "#FFFFFF"
+            }
+
+            ComboBox {
+                id: formatSelector
+                model: domeportModel.formatList
+                onActivated: domeportModel.currentFormat = currentValue
+                Component.onCompleted: {
+                    let index = indexOfValue(domeportModel.currentFormat)
+                    if (index >=0) {
+                        currentIndex = index
+                    }
                 }
             }
-        }
 
-        SpinBox {
-            id: cameraFovSpinBox
-            from: domeportModel.cameraFovMin
-            to: domeportModel.cameraFovMax
-            value: domeportModel.cameraFov
-            onValueModified: {
-                domeportModel.cameraFov = value
+            Label {
+                id: modelSelectorLabel
+                text: "Model"
+                color: "#FFFFFF"
             }
-        }
 
-        Button {
-            id: flyButton
-            text: { domeportModel.cameraFly ? "Walk" : "Fly" }
-            onClicked: toggleCameraFlyMode()
-        }
-
-        Button {
-            text: "Toggle DebugView"
-            onClicked: debugView.visible = !debugView.visible
-            DebugView {
-                id: debugView
-                source: view3d
-                visible: false
-                anchors.top: parent.bottom
-                anchors.right: parent.right
+            ComboBox {
+                id:  modelSelector
+                model: domeportModel.modelList
+                onActivated: domeportModel.currentModel = currentValue
+                Component.onCompleted: {
+                    let index = indexOfValue(domeportModel.currentModel)
+                    if (index >=0) {
+                        currentIndex = index
+                    }
+                }
             }
+
+            Label {
+                id: cameraFovLabel
+                text: "Camera\nFoV"
+                horizontalAlignment: Text.AlignHCenter
+                color: "#FFFFFF"
+            }
+
+            SpinBox {
+                id: cameraFovSpinBox
+                Layout.preferredWidth: 50
+                from: domeportModel.cameraFovMin
+                to: domeportModel.cameraFovMax
+                value: domeportModel.cameraFov
+                onValueModified: {
+                    domeportModel.cameraFov = value
+                }
+            }
+
+            Button {
+                id: flyButton
+                text: { domeportModel.cameraFly ? "Walk" : "Fly" }
+                Layout.preferredWidth: 50
+                onClicked: toggleCameraFlyMode()
+            }
+
+            Button {
+                id: transportButton
+                visible: true
+                text: "Stop"
+                Layout.preferredWidth: 50
+                onClicked: toggleTransport()
+            }
+
+            Button {
+                text: "Debug"
+                Layout.preferredWidth: 50
+                Layout.alignment: Qt.AlignRight
+                onClicked: debugView.visible = !debugView.visible
+                DebugView {
+                    id: debugView
+                    source: view3d
+                    visible: false
+                    anchors.top: parent.bottom
+                    anchors.right: parent.right
+                }
+            }
+
         }
+
     }
 
     RowLayout {
-        id:bottomRow
-        width: parent.width
+        id: playbackControls
         anchors.bottom: parent.bottom
+        width: parent.width - 2 * 12
+        x: 12
+        spacing: 12
+        visible: domeportModel.videoPlaybackMode
 
         Button {
             id: browseVideoButton
             text: "Browse..."
+            Layout.preferredWidth: 60
             onClicked: videoFileDialog.open()
-            visible: domeportModel.videoPlaybackMode
         }
 
-        Label {
+        Text {
             id: videoFilePathLabel
             text: domeportModel.videoFilePath
-            color: "#E5E5E7"
-            visible: domeportModel.videoPlaybackMode
+            elide: Text.ElideLeft
+            Layout.preferredWidth: 200
+            color: "#FFFFFF"
         }
 
         Slider {
             id: transportSlider
-            Layout.minimumWidth: 800
+            Layout.fillWidth: true
             from: 0.0
             to: video.videoDurationMsec
             value: video.playheadMsec
@@ -659,14 +730,13 @@ Window {
             onMoved: {
                 video.playheadRequestMsec = value
             }
-            visible: domeportModel.videoPlaybackMode
         }
 
         Button {
             id: pauseButton
             text: "Pause"
+            Layout.preferredWidth: 60
             onClicked: togglePause()
-            visible: domeportModel.videoPlaybackMode
         }
 
     }
