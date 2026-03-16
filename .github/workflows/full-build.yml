@@ -1,11 +1,10 @@
-name: Custom full build
+name: Full build Domeport Pro 
 
 on:
-  # push:
-  #   branches: [ main, master ]
-  #   tags:
-  #     - 'v*'
-  # pull_request:
+  push:
+    branches: [ dev, develop ]
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
@@ -35,9 +34,8 @@ jobs:
         uses: ossia/actions/custom-score-build@master
         with:
           cmake-options: >
-            -DSCORE_DISABLE_ADDONS=1
-            -DSCORE_DISABLE_PLUGINS=score-plugin-faust,score-plugin-jit,score-plugin-vst,score-plugin-vst3,score-plugin-clap,score-plugin-lv2,score-plugin-avnd,score-plugin-pd,score-plugin-ysfx,score-plugin-packagemanager,score-plugin-controlsurface,score-plugin-spline,score-plugin-spline3d
-
+            -DSCORE_ENABLED_ADDONS=score-addon-ndi
+            -DSCORE_DISABLE_PLUGINS=score-plugin-avnd,score-plugin-clap,score-plugin-controlsurface,score-plugin-faust,score-plugin-jit,score-plugin-lv2,score-plugin-mapping,score-plugin-nodal,score-plugin-packagemanager,score-plugin-pd,score-plugin-recording,score-plugin-remotecontrol,score-plugin-spline,score-plugin-spline3d,score-plugin-threedim,score-plugin-vst,score-plugin-vst3,score-plugin-ysfx
           macos-certificate-base64: ${{ secrets.MAC_CERT_B64 }}
           macos-certificate-password: ${{ secrets.MAC_CERT_PASSWORD }}
           macos-notarize-team-id: ${{ secrets.MAC_NOTARIZE_TEAM_ID }}
@@ -81,14 +79,14 @@ jobs:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/develop'
 
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: all-packages
-          pattern: custom-app-*
+          pattern: domeportpro-*
           merge-multiple: true
 
       - name: Create Release (on tags)
@@ -100,8 +98,8 @@ jobs:
           prerelease: false
           generate_release_notes: true
 
-      - name: Upload to Continuous Release (on main/master)
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      - name: Upload to Continuous Release (on dev/develop)
+        if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/develop'
         uses: softprops/action-gh-release@v2
         with:
           name: "Continuous Build"
