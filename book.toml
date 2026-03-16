@@ -11,5 +11,5 @@ build-dir = "book"
 [output.html]
 default-theme = "auto"
 preferred-dark-theme = "navy"
-git-repository-url = "https://github.com/sat-mtl/DomeportSAT"
-site-url = "/DomeportSAT/"
+git-repository-url = "https://github.com/sat-mtl/DomeportPro"
+site-url = "/DomeportPro/"

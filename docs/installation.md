@@ -7,4 +7,4 @@
 
 ## Download
 
-Pre-built packages are available from the [Releases](https://github.com/sat-mtl/DomeportSAT/releases) page. Download the artifact for your platform.
+Pre-built packages are available from the [Releases](https://github.com/sat-mtl/DomeportPro/releases) page. Download the artifact for your platform.

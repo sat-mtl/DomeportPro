@@ -9,7 +9,7 @@ A [web version](https://dev.domeport.sat.qc.ca/) is also available for quick pre
 
 ## Quick start
 
-1. [Download](https://github.com/sat-mtl/DomeportSAT/releases) the build for your platform
+1. [Download](https://github.com/sat-mtl/DomeportPro/releases) the build for your platform
 2. Launch Domeport Pro and load your content
 3. Select your projection format and adjust the view
 
