@@ -3,7 +3,7 @@
     "Document": {
         "BaseScenario": {
             "Constraint": {
-                "Center": 645371754,
+                "Center": 645368138,
                 "DefaultDuration": 12400285870,
                 "EndState": 1,
                 "FullViewRack": [
@@ -39,8 +39,8 @@
                 "MinDuration": 12400285870,
                 "MinNull": false,
                 "NodalOffset": [
-                    397,
-                    84
+                    228,
+                    31
                 ],
                 "NodalSlotHeight": 900,
                 "ObjectName": "Scenario::IntervalModel",
@@ -100,7 +100,7 @@
                                 "Custom": "Index",
                                 "Domain": {
                                     "Int": {
-                                        "Max": 0,
+                                        "Max": 1,
                                         "Min": 0
                                     }
                                 },
@@ -225,6 +225,9 @@
                                     "Tuple": [
                                         {
                                             "string": "<PROJECT>:assets/spherical8192.png"
+                                        },
+                                        {
+                                            "string": "<PROJECT>:assets/8192.png"
                                         }
                                     ]
                                 },
@@ -338,7 +341,7 @@
                             "Color": "White",
                             "Comment": "",
                             "Label": "",
-                            "ScriptingName": "Images",
+                            "ScriptingName": "test_pattern",
                             "Touched": true
                         },
                         "ObjectName": "gfxProcess",
@@ -353,11 +356,11 @@
                             }
                         ],
                         "Pos": [
-                            -989.1179121844884,
-                            -2719.0908213171306
+                            -988.1179121844884,
+                            -2794.0908213171306
                         ],
                         "Size": [
-                            75,
+                            84.65625,
                             22
                         ],
                         "StartOffset": 0,
@@ -534,8 +537,8 @@
                             }
                         ],
                         "Pos": [
-                            -871.112910800832,
-                            -2390.612817831671
+                            -872.112910800832,
+                            -2114.612817831671
                         ],
                         "Size": [
                             75.625,
@@ -2242,8 +2245,8 @@
                         "OutputFormat": 0,
                         "Playback": 0,
                         "Pos": [
-                            -929.3979121844884,
-                            -2286.5913179700365
+                            -931.3979121844884,
+                            -2213.5913179700365
                         ],
                         "Scale": 3,
                         "Size": [
@@ -2255,6 +2258,275 @@
                         "Tonemap": 0,
                         "id": 206,
                         "uuid": "32dc5341-7748-4c31-a226-82e6bd685744"
+                    },
+                    {
+                        "Duration": 12400285870,
+                        "Height": 300,
+                        "Inlets": [
+                            {
+                                "Custom": "Index",
+                                "Domain": {
+                                    "Int": {
+                                        "Max": 0,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "index",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 0
+                                },
+                                "id": 0,
+                                "uuid": "238399a0-7e81-47e3-896f-08e8856e2973"
+                            },
+                            {
+                                "Custom": "Opacity",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 1,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "opacity",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 1
+                                },
+                                "id": 1,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "Position",
+                                "Domain": {
+                                    "Vec2f": {
+                                        "Max": [
+                                            5,
+                                            5
+                                        ],
+                                        "Min": [
+                                            -5,
+                                            -5
+                                        ],
+                                        "Values": [
+                                            [
+                                            ],
+                                            [
+                                            ]
+                                        ]
+                                    }
+                                },
+                                "Exposed": "position",
+                                "Hidden": true,
+                                "Init": {
+                                    "Vec2f": [
+                                        0,
+                                        0
+                                    ]
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Vec2f": [
+                                        0,
+                                        0
+                                    ]
+                                },
+                                "id": 2,
+                                "uuid": "8093743c-584f-4bb9-97d4-6c7602f87116"
+                            },
+                            {
+                                "Custom": "Scale X",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 10,
+                                        "Min": -1
+                                    }
+                                },
+                                "Exposed": "scale x",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 1
+                                },
+                                "id": 3,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "Scale Y",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 10,
+                                        "Min": -1
+                                    }
+                                },
+                                "Exposed": "scale y",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 1
+                                },
+                                "id": 4,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "Images",
+                                "Domain": {
+                                },
+                                "Exposed": "images",
+                                "Hidden": true,
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Tuple": [
+                                    ]
+                                },
+                                "id": 5,
+                                "uuid": "e9e711ca-62c6-43b7-bb51-bbb9ca1e0306"
+                            },
+                            {
+                                "Custom": "Tile",
+                                "Domain": {
+                                    "Int": {
+                                        "Values": [
+                                            0,
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "Exposed": "tile",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 0
+                                },
+                                "Values": [
+                                    [
+                                        "Single",
+                                        {
+                                            "Int": 0
+                                        }
+                                    ],
+                                    [
+                                        "Clamp",
+                                        {
+                                            "Int": 1
+                                        }
+                                    ],
+                                    [
+                                        "Tile",
+                                        {
+                                            "Int": 2
+                                        }
+                                    ],
+                                    [
+                                        "Mirror",
+                                        {
+                                            "Int": 3
+                                        }
+                                    ]
+                                ],
+                                "id": 6,
+                                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016"
+                            },
+                            {
+                                "Custom": "Scale",
+                                "Domain": {
+                                    "Int": {
+                                        "Values": [
+                                            0,
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "Exposed": "scale",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 3
+                                },
+                                "Values": [
+                                    [
+                                        "Original",
+                                        {
+                                            "Int": 0
+                                        }
+                                    ],
+                                    [
+                                        "Black bars",
+                                        {
+                                            "Int": 1
+                                        }
+                                    ],
+                                    [
+                                        "Fill",
+                                        {
+                                            "Int": 2
+                                        }
+                                    ],
+                                    [
+                                        "Stretch",
+                                        {
+                                            "Int": 3
+                                        }
+                                    ]
+                                ],
+                                "id": 7,
+                                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016"
+                            }
+                        ],
+                        "LoopDuration": 12400285870,
+                        "Loops": false,
+                        "Metadata": {
+                            "Color": "White",
+                            "Comment": "",
+                            "Label": "",
+                            "ScriptingName": "image",
+                            "Touched": true
+                        },
+                        "ObjectName": "gfxProcess",
+                        "Outlets": [
+                            {
+                                "Custom": "Texture Out",
+                                "Exposed": "texture out",
+                                "Hidden": false,
+                                "ObjectName": "Outlet",
+                                "id": 0,
+                                "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc"
+                            }
+                        ],
+                        "Pos": [
+                            -987.4655684344884,
+                            -2502.1102351012287
+                        ],
+                        "Size": [
+                            75,
+                            22
+                        ],
+                        "StartOffset": 0,
+                        "id": 207,
+                        "uuid": "e96c5c0b-7e09-49fb-a851-ff6f4811bb00"
                     }
                 ],
                 "QuantizationRate": -1,
@@ -2277,7 +2549,8 @@
                             185,
                             186,
                             204,
-                            205
+                            205,
+                            207
                         ]
                     },
                     {
@@ -2294,7 +2567,7 @@
                 "StartDate": 0,
                 "StartState": 0,
                 "ViewMode": 1,
-                "Zoom": 679696.4234210526,
+                "Zoom": 686927.2364361702,
                 "id": 0
             },
             "EndEvent": {
@@ -2672,104 +2945,6 @@
                         "ObjectName": "Scenario::IntervalModel"
                     },
                     {
-                        "ObjectId": 205,
-                        "ObjectName": "gfxProcess"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Inlet"
-                    }
-                ],
-                "Source": [
-                    {
-                        "ObjectId": 1,
-                        "ObjectName": "Scenario::ScenarioDocumentModel"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Scenario::BaseScenario"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Scenario::IntervalModel"
-                    },
-                    {
-                        "ObjectId": 186,
-                        "ObjectName": "gfxProcess"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Outlet"
-                    }
-                ],
-                "Type": 0,
-                "id": 1
-            },
-            {
-                "ObjectName": "Process::Cable",
-                "Sink": [
-                    {
-                        "ObjectId": 1,
-                        "ObjectName": "Scenario::ScenarioDocumentModel"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Scenario::BaseScenario"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Scenario::IntervalModel"
-                    },
-                    {
-                        "ObjectId": 205,
-                        "ObjectName": "gfxProcess"
-                    },
-                    {
-                        "ObjectId": 1,
-                        "ObjectName": "Inlet"
-                    }
-                ],
-                "Source": [
-                    {
-                        "ObjectId": 1,
-                        "ObjectName": "Scenario::ScenarioDocumentModel"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Scenario::BaseScenario"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Scenario::IntervalModel"
-                    },
-                    {
-                        "ObjectId": 204,
-                        "ObjectName": "gfxProcess"
-                    },
-                    {
-                        "ObjectId": 1,
-                        "ObjectName": "Outlet"
-                    }
-                ],
-                "Type": 0,
-                "id": 2
-            },
-            {
-                "ObjectName": "Process::Cable",
-                "Sink": [
-                    {
-                        "ObjectId": 1,
-                        "ObjectName": "Scenario::ScenarioDocumentModel"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Scenario::BaseScenario"
-                    },
-                    {
-                        "ObjectId": 0,
-                        "ObjectName": "Scenario::IntervalModel"
-                    },
-                    {
                         "ObjectId": 185,
                         "ObjectName": "gfxProcess"
                     },
@@ -2823,6 +2998,104 @@
                         "ObjectName": "gfxProcess"
                     },
                     {
+                        "ObjectId": 0,
+                        "ObjectName": "Inlet"
+                    }
+                ],
+                "Source": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 186,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Outlet"
+                    }
+                ],
+                "Type": 0,
+                "id": 4
+            },
+            {
+                "ObjectName": "Process::Cable",
+                "Sink": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 205,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Inlet"
+                    }
+                ],
+                "Source": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 207,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Outlet"
+                    }
+                ],
+                "Type": 0,
+                "id": 5
+            },
+            {
+                "ObjectName": "Process::Cable",
+                "Sink": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 205,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
                         "ObjectId": 2,
                         "ObjectName": "Inlet"
                     }
@@ -2850,7 +3123,56 @@
                     }
                 ],
                 "Type": 0,
-                "id": 4
+                "id": 6
+            },
+            {
+                "ObjectName": "Process::Cable",
+                "Sink": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 205,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 3,
+                        "ObjectName": "Inlet"
+                    }
+                ],
+                "Source": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 204,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Outlet"
+                    }
+                ],
+                "Type": 0,
+                "id": 7
             }
         ],
         "ObjectName": "Scenario::ScenarioDocumentModel",
