@@ -62,6 +62,16 @@ Window {
             }
         }
 
+        QtObject { id: images
+            property string testPatternEquirectangular: "<PROJECT>:assets/spherical8192.png"
+            property string testPatternDomemaster: "<PROJECT>:assets/8192.png"
+            property var process_object : Score.find("Images");
+            property var path : Score.inlet(process_object, 5);
+            function setPath(newPath) {
+                Score.setValue(path, newPath)
+            }
+        }
+
         property bool basicFeatures: false
         property var modeList:
             if (basicFeatures) {
@@ -219,10 +229,12 @@ Window {
 
     function enableEquirectangularFormat() {
         textureDome.process = "equirectangular_to_domemaster"
+        images.setPath(images.testPatternEquirectangular)
     }
 
     function enableDomemasterFormat() {
         textureDome.process = "Video Mixer"
+        images.setPath(images.testPatternDomemaster)
     }
 
     function ndiAdded(factory, category, name, settings) {
