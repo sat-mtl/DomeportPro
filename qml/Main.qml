@@ -115,6 +115,7 @@ Window {
         property string currentMode: "Test pattern"
         onCurrentModeChanged: {
             console.log("changed mode: " + currentMode)
+            modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
             removeLiveInput()
             if (currentMode === "Test pattern") {
                 displayTestPattern()
@@ -830,6 +831,28 @@ Window {
             if (!selectedFile) return
             var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
             domeportModel.imageFilePath = filePath
+        }
+    }
+
+    DropArea {
+        anchors.fill: parent
+        keys: ["text/uri-list"]
+        property var imageExtensions: [ ".jpg", ".jpeg", ".png", ".gif" ]
+        property var videoExtensions: [ ".mkv", ".mov", ".mp4", ".h264", ".avi", ".hap", ".mpg", ".mpeg", ".imf", ".mxf", ".mts", ".m2ts", ".mj2", ".webm" ]
+        onDropped: (drop) => {
+            if (drop.hasUrls) {
+                var filePath = new URL(drop.urls[0]).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
+                if (imageExtensions.some(extension => filePath.endsWith(extension))) {
+                    console.log("Dropped image file: ", filePath)
+                    domeportModel.imageFilePath = filePath
+                    domeportModel.currentMode = "Image"
+                }
+                if (videoExtensions.some(extension => filePath.endsWith(extension))) {
+                    console.log("Dropped video file: ", filePath)
+                    domeportModel.videoFilePath = filePath
+                    domeportModel.currentMode = "Video playback"
+                }
+            }
         }
     }
 }
