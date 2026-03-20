@@ -1,5 +1,5 @@
 {
-    "Commit": "fadf9c0f526388401bc8d8e40c616215b2ecf798",
+    "Commit": "d003cdebf9d06d251558b6dafa77d2b1bca855db",
     "Document": {
         "BaseScenario": {
             "Constraint": {
@@ -100,7 +100,7 @@
                                 "Custom": "Index",
                                 "Domain": {
                                     "Int": {
-                                        "Max": 1,
+                                        "Max": 0,
                                         "Min": 0
                                     }
                                 },
@@ -223,12 +223,6 @@
                                 "ObjectName": "Inlet",
                                 "Value": {
                                     "Tuple": [
-                                        {
-                                            "string": "<PROJECT>:assets/spherical8192.png"
-                                        },
-                                        {
-                                            "string": "<PROJECT>:assets/8192.png"
-                                        }
                                     ]
                                 },
                                 "id": 5,
@@ -341,7 +335,7 @@
                             "Color": "White",
                             "Comment": "",
                             "Label": "",
-                            "ScriptingName": "test_pattern",
+                            "ScriptingName": "image",
                             "Touched": true
                         },
                         "ObjectName": "gfxProcess",
@@ -356,198 +350,60 @@
                             }
                         ],
                         "Pos": [
-                            -988.1179121844884,
-                            -2794.0908213171306
+                            -987.4655684344884,
+                            -2502.1102351012287
                         ],
                         "Size": [
-                            84.65625,
+                            75,
                             22
                         ],
                         "StartOffset": 0,
-                        "id": 186,
+                        "id": 207,
                         "uuid": "e96c5c0b-7e09-49fb-a851-ff6f4811bb00"
                     },
                     {
                         "Duration": 12400285870,
-                        "Fragment": "/*{\n    \"DESCRIPTION\": \"Generates a Domemaster output by projecting a rotated equirectangular image. Rotations, output FOV, and horizontal flip are controllable.\",\n    \"CREDIT\": \"Edu Meneses + AI Assistant (Gemini)\",\n    \"CATEGORIES\": [\n        \"GENERATOR\",\n        \"3D\",\n        \"DOME\",\n        \"PANORAMIC\"\n    ],\n    \"INPUTS\": [\n        { \"NAME\": \"equirectangularImage\", \"TYPE\": \"image\", \"LABEL\": \"Equirectangular Input\" },\n        {\n\t      \"NAME\" :\"XYZrotate\",\n\t      \"TYPE\" : \"point3D\",\n\t      \"DEFAULT\" : [0.5, 0.5, 0.5],\n\t      \"MAX\" : [1.0, 1.0, 1.0],\n\t      \"MIN\" : [0.0, 0.0, 0.0]\n\t    },\n        {\n            \"NAME\": \"domemaster_output_fov_degrees\",\n            \"LABEL\": \"Domemaster Output FOV (degrees)\",\n            \"TYPE\": \"float\",\n            \"DEFAULT\": 180.0,\n            \"MIN\": 1.0,\n            \"MAX\": 360.0\n        },\n        {\n            \"NAME\": \"flipHorizontal\",\n            \"LABEL\": \"Flip Horizontally (Ext. Surface)\",\n            \"TYPE\": \"bool\",\n            \"DEFAULT\": false\n        }\n    ]\n}*/\n\n#define M_PI 3.14159265359\n\n// Uniforms are implicitly declared from INPUTS\n// (flipHorizontal is now also an implicit uniform)\n\nmat3 makeRotationMatrix(vec3 a) // a = (yaw, pitch, roll)\n{\n    // ... (makeRotationMatrix function remains unchanged) ...\n    float cos_ax = cos(a.x); float sin_ax = sin(a.x);\n    float cos_ay = cos(a.y); float sin_ay = sin(a.y);\n    float cos_az = cos(a.z); float sin_az = sin(a.z);\n\n    mat3 my = mat3(cos(a.x), 0, sin(a.x),  0, 1, 0,  -sin(a.x), 0, cos(a.x)); // Yaw\n    mat3 mx = mat3(1, 0, 0,  0, cos(a.y), -sin(a.y),  0, sin(a.y), cos(a.y)); // Pitch\n    mat3 mz = mat3(cos(a.z), -sin(a.z), 0,  sin(a.z), cos(a.z), 0,  0,0,1);    // Roll\n\n    return my * mx * mz;\n}\n\n\nvoid main()\n{\n    vec2 p_norm_screen = vv_FragNormCoord; // Normalized screen coords [0,1]\n    vec2 p_centered = (p_norm_screen - 0.5) * 2.0; // Centered screen coords [-1,1]\n\n    // ADDED: Apply horizontal flip if toggled\n    if (flipHorizontal) {\n        p_centered.x = -p_centered.x;\n    }\n\n    float screen_aspect = RENDERSIZE.x / RENDERSIZE.y;\n    if (screen_aspect > 1.0) { // Landscape or square\n        p_centered.x *= screen_aspect;\n    } else { // Portrait\n        p_centered.y /= screen_aspect;\n    }\n\n    float dist_from_center = length(p_centered);\n\n    if (dist_from_center > 1.0) {\n        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);\n        return;\n    }\n\n    float fisheye_half_fov_rad = (domemaster_output_fov_degrees / 2.0) * (M_PI / 180.0);\n    float ray_polar_angle_view = dist_from_center * fisheye_half_fov_rad;\n    float ray_azimuth_angle_view = atan(p_centered.y, p_centered.x);\n\n    vec3 ray_dir_view;\n    ray_dir_view.x = sin(ray_polar_angle_view) * cos(ray_azimuth_angle_view);\n    ray_dir_view.y = sin(ray_polar_angle_view) * sin(ray_azimuth_angle_view);\n    ray_dir_view.z = cos(ray_polar_angle_view);\n\n    float roll_angle  = (XYZrotate.z - 0.5) * 2.0 * M_PI;\n    float yaw_angle   = XYZrotate.x * 2.0 * M_PI;\n    float pitch_angle = XYZrotate.y * 2.0 * M_PI;\n\n    vec3 rotation_euler_angles = vec3(yaw_angle, pitch_angle, roll_angle);\n    mat3 camera_to_world_rotation_matrix = makeRotationMatrix(rotation_euler_angles);\n\n    vec3 ray_dir_world = camera_to_world_rotation_matrix * ray_dir_view;\n    vec3 norm_ray_dir_world = normalize(ray_dir_world);\n\n    float longitude = atan(norm_ray_dir_world.x, norm_ray_dir_world.z);\n    float latitude  = asin(norm_ray_dir_world.y);\n\n    float u = longitude / (2.0 * M_PI) + 0.5;\n    float v = 0.5 - latitude / M_PI;\n\n    vec2 equirect_uv = vec2(u, v);\n    vec4 sampled_color = texture(equirectangularImage, equirect_uv);\n    gl_FragColor = sampled_color;\n}",
+                        "FilePath": "",
                         "Height": 300,
+                        "IgnoreTempo": false,
                         "Inlets": [
-                            {
-                                "AddressMode": 1,
-                                "Custom": "equirectangularImage",
-                                "Exposed": "equirectangularimage",
-                                "Filter": 2,
-                                "Format": 0,
-                                "Hidden": false,
-                                "ObjectName": "Inlet",
-                                "id": 0,
-                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
-                            },
-                            {
-                                "Custom": "XYZrotate",
-                                "Domain": {
-                                    "Vec3f": {
-                                        "Max": [
-                                            1,
-                                            1,
-                                            1
-                                        ],
-                                        "Min": [
-                                            0,
-                                            0,
-                                            0
-                                        ],
-                                        "Values": [
-                                            [
-                                            ],
-                                            [
-                                            ],
-                                            [
-                                            ]
-                                        ]
-                                    }
-                                },
-                                "Exposed": "xyzrotate",
-                                "Hidden": true,
-                                "Init": {
-                                    "Vec3f": [
-                                        0.5,
-                                        0.5,
-                                        0.5
-                                    ]
-                                },
-                                "ObjectName": "Inlet",
-                                "Value": {
-                                    "Vec3f": [
-                                        0.5,
-                                        0.75,
-                                        0.5
-                                    ]
-                                },
-                                "id": 1,
-                                "uuid": "377e8205-b442-4d54-8832-3761def522b2"
-                            },
-                            {
-                                "Custom": "domemaster_output_fov_degrees",
-                                "Domain": {
-                                    "Float": {
-                                        "Max": 360,
-                                        "Min": 1
-                                    }
-                                },
-                                "Exposed": "domemaster_output_fov_degrees",
-                                "Hidden": true,
-                                "Init": {
-                                    "Float": 180
-                                },
-                                "ObjectName": "Inlet",
-                                "Value": {
-                                    "Float": 210
-                                },
-                                "id": 2,
-                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
-                            },
-                            {
-                                "Custom": "flipHorizontal",
-                                "Domain": {
-                                    "Bool": null
-                                },
-                                "Exposed": "fliphorizontal",
-                                "Hidden": true,
-                                "Init": {
-                                    "Bool": false
-                                },
-                                "ObjectName": "Inlet",
-                                "Value": {
-                                    "Bool": true
-                                },
-                                "id": 3,
-                                "uuid": "fb27e4cb-ea7f-41e2-ad92-2354498c1b6b"
-                            }
                         ],
                         "LoopDuration": 12400285870,
-                        "Loops": false,
+                        "Loops": true,
                         "Metadata": {
                             "Color": "White",
                             "Comment": "",
                             "Label": "",
-                            "ScriptingName": "equirectangular_to_domemaster",
+                            "ScriptingName": "Video",
                             "Touched": true
                         },
-                        "ObjectName": "gfxProcess",
+                        "ObjectName": "VideoProcess",
                         "Outlets": [
                             {
-                                "Custom": "Texture Out",
-                                "Exposed": "texture out",
+                                "Custom": "Video Out",
+                                "Exposed": "video out",
                                 "Hidden": false,
                                 "ObjectName": "Outlet",
-                                "id": 1,
-                                "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc"
-                            }
-                        ],
-                        "Pos": [
-                            -149.11791218448843,
-                            -2458.0908213171306
-                        ],
-                        "Size": [
-                            210.09375,
-                            22
-                        ],
-                        "StartOffset": 0,
-                        "Vertex": "",
-                        "id": 185,
-                        "uuid": "74ca45ff-92c9-44a0-8f1a-754dea05ee1b"
-                    },
-                    {
-                        "Duration": 12400285870,
-                        "Fragment": "/*{\n  \"CREDIT\": \"ossia score\",\n  \"ISFVSN\": \"2\",\n  \"DESCRIPTION\": \"Copy the input texture without changes\",\n  \"CATEGORIES\": [\n    \"Utility\"\n  ],\n  \"INPUTS\": [ {\n      \"NAME\": \"inputImage\",\n      \"TYPE\": \"image\"\n    }\n  ]\n}*/\n\nvoid main() { gl_FragColor = IMG_THIS_PIXEL(inputImage); }",
-                        "Height": 300,
-                        "Inlets": [
-                            {
-                                "Address": "WS1 (Domeport_NDI_In):/",
-                                "AddressMode": 1,
-                                "Custom": "inputImage",
-                                "Exposed": "inputimage",
-                                "Filter": 2,
-                                "Format": 0,
-                                "Hidden": false,
-                                "ObjectName": "Inlet",
                                 "id": 0,
-                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
-                            }
-                        ],
-                        "LoopDuration": 12400285870,
-                        "Loops": false,
-                        "Metadata": {
-                            "Color": "White",
-                            "Comment": "",
-                            "Label": "",
-                            "ScriptingName": "live_source",
-                            "Touched": true
-                        },
-                        "ObjectName": "gfxProcess",
-                        "Outlets": [
-                            {
-                                "Custom": "Texture Out",
-                                "Exposed": "texture out",
-                                "Hidden": false,
-                                "ObjectName": "Outlet",
-                                "id": 1,
                                 "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc"
                             }
                         ],
+                        "OutputFormat": 0,
+                        "Playback": 0,
                         "Pos": [
-                            -872.112910800832,
-                            -2114.612817831671
+                            -931.3979121844884,
+                            -2213.5913179700365
                         ],
+                        "Scale": 3,
                         "Size": [
-                            75.625,
-                            22
+                            200,
+                            54
                         ],
                         "StartOffset": 0,
-                        "Vertex": "",
-                        "id": 204,
-                        "uuid": "74ca45ff-92c9-44a0-8f1a-754dea05ee1b"
+                        "Tempo": 120,
+                        "Tonemap": 0,
+                        "id": 206,
+                        "uuid": "32dc5341-7748-4c31-a226-82e6bd685744"
                     },
                     {
                         "Duration": 12400285870,
@@ -2217,47 +2073,185 @@
                     },
                     {
                         "Duration": 12400285870,
-                        "FilePath": "",
+                        "Fragment": "/*{\n  \"CREDIT\": \"ossia score\",\n  \"ISFVSN\": \"2\",\n  \"DESCRIPTION\": \"Copy the input texture without changes\",\n  \"CATEGORIES\": [\n    \"Utility\"\n  ],\n  \"INPUTS\": [ {\n      \"NAME\": \"inputImage\",\n      \"TYPE\": \"image\"\n    }\n  ]\n}*/\n\nvoid main() { gl_FragColor = IMG_THIS_PIXEL(inputImage); }",
                         "Height": 300,
-                        "IgnoreTempo": false,
                         "Inlets": [
+                            {
+                                "Address": "WS1 (Domeport_NDI_In):/",
+                                "AddressMode": 1,
+                                "Custom": "inputImage",
+                                "Exposed": "inputimage",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 0,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            }
                         ],
                         "LoopDuration": 12400285870,
-                        "Loops": true,
+                        "Loops": false,
                         "Metadata": {
                             "Color": "White",
                             "Comment": "",
                             "Label": "",
-                            "ScriptingName": "Video",
+                            "ScriptingName": "live_source",
                             "Touched": true
                         },
-                        "ObjectName": "VideoProcess",
+                        "ObjectName": "gfxProcess",
                         "Outlets": [
                             {
-                                "Custom": "Video Out",
-                                "Exposed": "video out",
+                                "Custom": "Texture Out",
+                                "Exposed": "texture out",
                                 "Hidden": false,
                                 "ObjectName": "Outlet",
-                                "id": 0,
+                                "id": 1,
                                 "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc"
                             }
                         ],
-                        "OutputFormat": 0,
-                        "Playback": 0,
                         "Pos": [
-                            -931.3979121844884,
-                            -2213.5913179700365
+                            -872.112910800832,
+                            -2114.612817831671
                         ],
-                        "Scale": 3,
                         "Size": [
-                            200,
-                            54
+                            75.625,
+                            22
                         ],
                         "StartOffset": 0,
-                        "Tempo": 120,
-                        "Tonemap": 0,
-                        "id": 206,
-                        "uuid": "32dc5341-7748-4c31-a226-82e6bd685744"
+                        "Vertex": "",
+                        "id": 204,
+                        "uuid": "74ca45ff-92c9-44a0-8f1a-754dea05ee1b"
+                    },
+                    {
+                        "Duration": 12400285870,
+                        "Fragment": "/*{\n    \"DESCRIPTION\": \"Generates a Domemaster output by projecting a rotated equirectangular image. Rotations, output FOV, and horizontal flip are controllable.\",\n    \"CREDIT\": \"Edu Meneses + AI Assistant (Gemini)\",\n    \"CATEGORIES\": [\n        \"GENERATOR\",\n        \"3D\",\n        \"DOME\",\n        \"PANORAMIC\"\n    ],\n    \"INPUTS\": [\n        { \"NAME\": \"equirectangularImage\", \"TYPE\": \"image\", \"LABEL\": \"Equirectangular Input\" },\n        {\n\t      \"NAME\" :\"XYZrotate\",\n\t      \"TYPE\" : \"point3D\",\n\t      \"DEFAULT\" : [0.5, 0.5, 0.5],\n\t      \"MAX\" : [1.0, 1.0, 1.0],\n\t      \"MIN\" : [0.0, 0.0, 0.0]\n\t    },\n        {\n            \"NAME\": \"domemaster_output_fov_degrees\",\n            \"LABEL\": \"Domemaster Output FOV (degrees)\",\n            \"TYPE\": \"float\",\n            \"DEFAULT\": 180.0,\n            \"MIN\": 1.0,\n            \"MAX\": 360.0\n        },\n        {\n            \"NAME\": \"flipHorizontal\",\n            \"LABEL\": \"Flip Horizontally (Ext. Surface)\",\n            \"TYPE\": \"bool\",\n            \"DEFAULT\": false\n        }\n    ]\n}*/\n\n#define M_PI 3.14159265359\n\n// Uniforms are implicitly declared from INPUTS\n// (flipHorizontal is now also an implicit uniform)\n\nmat3 makeRotationMatrix(vec3 a) // a = (yaw, pitch, roll)\n{\n    // ... (makeRotationMatrix function remains unchanged) ...\n    float cos_ax = cos(a.x); float sin_ax = sin(a.x);\n    float cos_ay = cos(a.y); float sin_ay = sin(a.y);\n    float cos_az = cos(a.z); float sin_az = sin(a.z);\n\n    mat3 my = mat3(cos(a.x), 0, sin(a.x),  0, 1, 0,  -sin(a.x), 0, cos(a.x)); // Yaw\n    mat3 mx = mat3(1, 0, 0,  0, cos(a.y), -sin(a.y),  0, sin(a.y), cos(a.y)); // Pitch\n    mat3 mz = mat3(cos(a.z), -sin(a.z), 0,  sin(a.z), cos(a.z), 0,  0,0,1);    // Roll\n\n    return my * mx * mz;\n}\n\n\nvoid main()\n{\n    vec2 p_norm_screen = vv_FragNormCoord; // Normalized screen coords [0,1]\n    vec2 p_centered = (p_norm_screen - 0.5) * 2.0; // Centered screen coords [-1,1]\n\n    // ADDED: Apply horizontal flip if toggled\n    if (flipHorizontal) {\n        p_centered.x = -p_centered.x;\n    }\n\n    float screen_aspect = RENDERSIZE.x / RENDERSIZE.y;\n    if (screen_aspect > 1.0) { // Landscape or square\n        p_centered.x *= screen_aspect;\n    } else { // Portrait\n        p_centered.y /= screen_aspect;\n    }\n\n    float dist_from_center = length(p_centered);\n\n    if (dist_from_center > 1.0) {\n        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);\n        return;\n    }\n\n    float fisheye_half_fov_rad = (domemaster_output_fov_degrees / 2.0) * (M_PI / 180.0);\n    float ray_polar_angle_view = dist_from_center * fisheye_half_fov_rad;\n    float ray_azimuth_angle_view = atan(p_centered.y, p_centered.x);\n\n    vec3 ray_dir_view;\n    ray_dir_view.x = sin(ray_polar_angle_view) * cos(ray_azimuth_angle_view);\n    ray_dir_view.y = sin(ray_polar_angle_view) * sin(ray_azimuth_angle_view);\n    ray_dir_view.z = cos(ray_polar_angle_view);\n\n    float roll_angle  = (XYZrotate.z - 0.5) * 2.0 * M_PI;\n    float yaw_angle   = XYZrotate.x * 2.0 * M_PI;\n    float pitch_angle = XYZrotate.y * 2.0 * M_PI;\n\n    vec3 rotation_euler_angles = vec3(yaw_angle, pitch_angle, roll_angle);\n    mat3 camera_to_world_rotation_matrix = makeRotationMatrix(rotation_euler_angles);\n\n    vec3 ray_dir_world = camera_to_world_rotation_matrix * ray_dir_view;\n    vec3 norm_ray_dir_world = normalize(ray_dir_world);\n\n    float longitude = atan(norm_ray_dir_world.x, norm_ray_dir_world.z);\n    float latitude  = asin(norm_ray_dir_world.y);\n\n    float u = longitude / (2.0 * M_PI) + 0.5;\n    float v = 0.5 - latitude / M_PI;\n\n    vec2 equirect_uv = vec2(u, v);\n    vec4 sampled_color = texture(equirectangularImage, equirect_uv);\n    gl_FragColor = sampled_color;\n}",
+                        "Height": 300,
+                        "Inlets": [
+                            {
+                                "AddressMode": 1,
+                                "Custom": "equirectangularImage",
+                                "Exposed": "equirectangularimage",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 0,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "Custom": "XYZrotate",
+                                "Domain": {
+                                    "Vec3f": {
+                                        "Max": [
+                                            1,
+                                            1,
+                                            1
+                                        ],
+                                        "Min": [
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "Values": [
+                                            [
+                                            ],
+                                            [
+                                            ],
+                                            [
+                                            ]
+                                        ]
+                                    }
+                                },
+                                "Exposed": "xyzrotate",
+                                "Hidden": true,
+                                "Init": {
+                                    "Vec3f": [
+                                        0.5,
+                                        0.5,
+                                        0.5
+                                    ]
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Vec3f": [
+                                        0.5,
+                                        0.75,
+                                        0.5
+                                    ]
+                                },
+                                "id": 1,
+                                "uuid": "377e8205-b442-4d54-8832-3761def522b2"
+                            },
+                            {
+                                "Custom": "domemaster_output_fov_degrees",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 360,
+                                        "Min": 1
+                                    }
+                                },
+                                "Exposed": "domemaster_output_fov_degrees",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 180
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 210
+                                },
+                                "id": 2,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "flipHorizontal",
+                                "Domain": {
+                                    "Bool": null
+                                },
+                                "Exposed": "fliphorizontal",
+                                "Hidden": true,
+                                "Init": {
+                                    "Bool": false
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Bool": true
+                                },
+                                "id": 3,
+                                "uuid": "fb27e4cb-ea7f-41e2-ad92-2354498c1b6b"
+                            }
+                        ],
+                        "LoopDuration": 12400285870,
+                        "Loops": false,
+                        "Metadata": {
+                            "Color": "White",
+                            "Comment": "",
+                            "Label": "",
+                            "ScriptingName": "equirectangular_to_domemaster",
+                            "Touched": true
+                        },
+                        "ObjectName": "gfxProcess",
+                        "Outlets": [
+                            {
+                                "Custom": "Texture Out",
+                                "Exposed": "texture out",
+                                "Hidden": false,
+                                "ObjectName": "Outlet",
+                                "id": 1,
+                                "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc"
+                            }
+                        ],
+                        "Pos": [
+                            -149.11791218448843,
+                            -2458.0908213171306
+                        ],
+                        "Size": [
+                            210.09375,
+                            22
+                        ],
+                        "StartOffset": 0,
+                        "Vertex": "",
+                        "id": 185,
+                        "uuid": "74ca45ff-92c9-44a0-8f1a-754dea05ee1b"
                     },
                     {
                         "Duration": 12400285870,
@@ -2390,6 +2384,12 @@
                                 "ObjectName": "Inlet",
                                 "Value": {
                                     "Tuple": [
+                                        {
+                                            "String": "<PROJECT>:assets/spherical8192.png"
+                                        },
+                                        {
+                                            "String": "<PROJECT>:assets/8192.png"
+                                        }
                                     ]
                                 },
                                 "id": 5,
@@ -2502,7 +2502,7 @@
                             "Color": "White",
                             "Comment": "",
                             "Label": "",
-                            "ScriptingName": "image",
+                            "ScriptingName": "test_pattern",
                             "Touched": true
                         },
                         "ObjectName": "gfxProcess",
@@ -2517,15 +2517,15 @@
                             }
                         ],
                         "Pos": [
-                            -987.4655684344884,
-                            -2502.1102351012287
+                            -988.1179121844884,
+                            -2794.0908213171306
                         ],
                         "Size": [
-                            75,
+                            84.65625,
                             22
                         ],
                         "StartOffset": 0,
-                        "id": 207,
+                        "id": 186,
                         "uuid": "e96c5c0b-7e09-49fb-a851-ff6f4811bb00"
                     }
                 ],
