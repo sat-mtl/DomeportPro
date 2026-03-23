@@ -62,8 +62,15 @@ Window {
             }
         }
 
+        property bool basicFeatures: false
         property var modeList:
-            if (Qt.platform.os === "windows") {
+            if (basicFeatures) {
+                [
+                "Test pattern",
+                "Video playback",
+                ]
+            }
+            else if (Qt.platform.os === "windows") {
                 [
                 "Test pattern",
                 "Video playback",
@@ -424,6 +431,12 @@ Window {
     }
 
     function initialize() {
+        const domeportProBasic = Util.environmentVariable("DOMEPORTPRO_BASIC")
+        if (domeportProBasic) {
+            domeportModel.basicFeatures = true
+            console.log("Basic features enabled")
+        }
+
         Score.transport().play.connect(onPlay)
         Score.transport().stop.connect(onStop)
         Score.transport().pause.connect(onPause)
