@@ -20,6 +20,28 @@ Window {
     Item {
         id: domeportModel
 
+        QtObject { id: rotateZoom
+            property var process_object : Score.find("rotate_zoom");
+            property var zoom : Score.inlet(process_object, 4);
+        }
+
+        QtObject { id: formatMixer
+            property var process_object : Score.find("Video Mixer.1")
+            property var alpha1 : Score.inlet(process_object, 8);
+            property var alpha2 : Score.inlet(process_object, 9);
+
+            function enableEquirectangular() {
+                Score.setValue(alpha1, 1.0)
+                Score.setValue(alpha2, 0.0)
+            }
+
+            function enableDomemaster() {
+                Score.setValue(alpha1, 0.0)
+                Score.setValue(alpha2, 1.0)
+            }
+
+        }
+
         QtObject { id: equirectangularToDomemaster
             property var process_object : Score.find("equirectangular_to_domemaster");
             property var domemaster_master_output_fov_degrees : Score.inlet(process_object, 2);
@@ -194,6 +216,13 @@ Window {
             }
         }
 
+        property double zoomMin: 0
+        property double zoomMax: 200
+        property double zoom: 100
+        onZoomChanged: {
+            Score.setValue(rotateZoom.zoom, zoom / 100)
+        }
+
         property double cameraFovMin: 1.0
         property double cameraFovMax: 179.0
         property double cameraFov: 90.0
@@ -223,10 +252,10 @@ Window {
             console.log("changed format: " + currentFormat)
             if (currentFormat === "Equirectangular") {
                 test_pattern.setIndex(0)
-                enableEquirectangularFormat()
+                formatMixer.enableEquirectangular()
             } else if (currentFormat === "Domemaster") {
                 test_pattern.setIndex(1)
-                enableDomemasterFormat()
+                formatMixer.enableDomemaster()
             }
         }
 
@@ -250,14 +279,6 @@ Window {
     function load180DegreesModel() {
         dome.source = "sato180.mesh"
         Score.setValue(equirectangularToDomemaster.domemaster_master_output_fov_degrees, 180.0)
-    }
-
-    function enableEquirectangularFormat() {
-        textureDome.process = "equirectangular_to_domemaster"
-    }
-
-    function enableDomemasterFormat() {
-        textureDome.process = "Video Mixer"
     }
 
     function ndiAdded(factory, category, name, settings) {
@@ -583,7 +604,7 @@ Window {
         id: textureDome
         width: 4096
         height: 4096
-        process: "equirectangular_to_domemaster"
+        process: "rotate_zoom"
         port: 0
         visible: false
     }
@@ -702,6 +723,24 @@ Window {
                     if (index >=0) {
                         currentIndex = index
                     }
+                }
+            }
+
+            Label {
+                id: zoomLabel
+                text: "Zoom"
+                horizontalAlignment: Text.AlignHCenter
+                color: "#FFFFFF"
+            }
+
+            SpinBox {
+                id: zoomSpinBox
+                Layout.preferredWidth: 50
+                from: domeportModel.zoomMin
+                to: domeportModel.zoomMax
+                value: domeportModel.zoom
+                onValueModified: {
+                    domeportModel.zoom = value
                 }
             }
 

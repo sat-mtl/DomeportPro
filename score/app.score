@@ -39,8 +39,8 @@
                 "MinDuration": 12400285870,
                 "MinNull": false,
                 "NodalOffset": [
-                    228,
-                    31
+                    -266,
+                    -4
                 ],
                 "NodalSlotHeight": 900,
                 "ObjectName": "Scenario::IntervalModel",
@@ -92,6 +92,1672 @@
                     "uuid": "a1d97535-18ac-444a-8417-0cbc1692d897"
                 },
                 "Processes": [
+                    {
+                        "Duration": 12400285870,
+                        "Fragment": "/*{\n    \"CATEGORIES\": [\n        \"General\"\n    ],\n    \"CREDIT\": \"Jamie Owen, Jean-Michaël Celerier\",\n    \"DESCRIPTION\": \"8-channel video mixer\",\n    \"INPUTS\": [\n        { \"NAME\": \"t1\", \"LABEL\" : \"Texture 1\", \"TYPE\": \"image\" },\n        { \"NAME\": \"t2\", \"LABEL\" : \"Texture 2\", \"TYPE\": \"image\" },\n        { \"NAME\": \"t3\", \"LABEL\" : \"Texture 3\", \"TYPE\": \"image\" },\n        { \"NAME\": \"t4\", \"LABEL\" : \"Texture 4\", \"TYPE\": \"image\" },\n        { \"NAME\": \"t5\", \"LABEL\" : \"Texture 5\", \"TYPE\": \"image\" },\n        { \"NAME\": \"t6\", \"LABEL\" : \"Texture 6\", \"TYPE\": \"image\" },\n        { \"NAME\": \"t7\", \"LABEL\" : \"Texture 7\", \"TYPE\": \"image\" },\n        { \"NAME\": \"t8\", \"LABEL\" : \"Texture 8\", \"TYPE\": \"image\" },\n        { \"NAME\": \"alpha1\", \"LABEL\" : \"Alpha 1\", \"DEFAULT\": 1, \"MAX\": 1, \"MIN\": 0, \"TYPE\": \"float\" },\n        { \"NAME\": \"alpha2\", \"LABEL\" : \"Alpha 2\", \"DEFAULT\": 0, \"MAX\": 1, \"MIN\": 0, \"TYPE\": \"float\" },\n        { \"NAME\": \"alpha3\", \"LABEL\" : \"Alpha 3\", \"DEFAULT\": 0, \"MAX\": 1, \"MIN\": 0, \"TYPE\": \"float\" },\n        { \"NAME\": \"alpha4\", \"LABEL\" : \"Alpha 4\", \"DEFAULT\": 0, \"MAX\": 1, \"MIN\": 0, \"TYPE\": \"float\" },\n        { \"NAME\": \"alpha5\", \"LABEL\" : \"Alpha 5\", \"DEFAULT\": 0, \"MAX\": 1, \"MIN\": 0, \"TYPE\": \"float\" },\n        { \"NAME\": \"alpha6\", \"LABEL\" : \"Alpha 6\", \"DEFAULT\": 0, \"MAX\": 1, \"MIN\": 0, \"TYPE\": \"float\" },\n        { \"NAME\": \"alpha7\", \"LABEL\" : \"Alpha 7\", \"DEFAULT\": 0, \"MAX\": 1, \"MIN\": 0, \"TYPE\": \"float\" },\n        { \"NAME\": \"alpha8\", \"LABEL\" : \"Alpha 8\", \"DEFAULT\": 0, \"MAX\": 1, \"MIN\": 0, \"TYPE\": \"float\" },\n        { \"VALUES\" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],\n           \"LABELS\" : [ \"Add\", \"Average\", \"Color Burn\", \"Color Dodge\", \"Darken\", \"Difference\", \n                        \"Exclusion\", \"Glow\", \"Hard Light\", \"Hard Mix\", \"Lighten\", \"Linear Burn\", \n                        \"Linear Dodge\", \"Linear Light\", \"Multiply\", \"Negation\", \"Normal\", \"Overlay\", \n                        \"Phoenix\", \"Pin Light\", \"Reflect\", \"Screen\", \"Soft Light\", \"Subtract\", \"Vivid Light\"],\n           \"IDENTITY\" : 1,\n           \"DEFAULT\" : 1,\n           \"LABEL\" : \"Mode 1\",\n           \"TYPE\" : \"long\",\n           \"NAME\" : \"mode1\"\n        },\n        { \"VALUES\" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],\n           \"LABELS\" : [ \"Add\", \"Average\", \"Color Burn\", \"Color Dodge\", \"Darken\", \"Difference\", \n                        \"Exclusion\", \"Glow\", \"Hard Light\", \"Hard Mix\", \"Lighten\", \"Linear Burn\", \n                        \"Linear Dodge\", \"Linear Light\", \"Multiply\", \"Negation\", \"Normal\", \"Overlay\", \n                        \"Phoenix\", \"Pin Light\", \"Reflect\", \"Screen\", \"Soft Light\", \"Subtract\", \"Vivid Light\"],\n           \"IDENTITY\" : 1,\n           \"DEFAULT\" : 1,\n           \"LABEL\" : \"Mode 2\",\n           \"TYPE\" : \"long\",\n           \"NAME\" : \"mode2\"\n        },\n        { \"VALUES\" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],\n           \"LABELS\" : [ \"Add\", \"Average\", \"Color Burn\", \"Color Dodge\", \"Darken\", \"Difference\", \n                        \"Exclusion\", \"Glow\", \"Hard Light\", \"Hard Mix\", \"Lighten\", \"Linear Burn\", \n                        \"Linear Dodge\", \"Linear Light\", \"Multiply\", \"Negation\", \"Normal\", \"Overlay\", \n                        \"Phoenix\", \"Pin Light\", \"Reflect\", \"Screen\", \"Soft Light\", \"Subtract\", \"Vivid Light\"],\n           \"IDENTITY\" : 1,\n           \"DEFAULT\" : 1,\n           \"LABEL\" : \"Mode 3\",\n           \"TYPE\" : \"long\",\n           \"NAME\" : \"mode3\"\n        },\n        { \"VALUES\" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],\n           \"LABELS\" : [ \"Add\", \"Average\", \"Color Burn\", \"Color Dodge\", \"Darken\", \"Difference\", \n                        \"Exclusion\", \"Glow\", \"Hard Light\", \"Hard Mix\", \"Lighten\", \"Linear Burn\", \n                        \"Linear Dodge\", \"Linear Light\", \"Multiply\", \"Negation\", \"Normal\", \"Overlay\", \n                        \"Phoenix\", \"Pin Light\", \"Reflect\", \"Screen\", \"Soft Light\", \"Subtract\", \"Vivid Light\"],\n           \"IDENTITY\" : 1,\n           \"DEFAULT\" : 1,\n           \"LABEL\" : \"Mode 4\",\n           \"TYPE\" : \"long\",\n           \"NAME\" : \"mode4\"\n        },\n        { \"VALUES\" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],\n           \"LABELS\" : [ \"Add\", \"Average\", \"Color Burn\", \"Color Dodge\", \"Darken\", \"Difference\", \n                        \"Exclusion\", \"Glow\", \"Hard Light\", \"Hard Mix\", \"Lighten\", \"Linear Burn\", \n                        \"Linear Dodge\", \"Linear Light\", \"Multiply\", \"Negation\", \"Normal\", \"Overlay\", \n                        \"Phoenix\", \"Pin Light\", \"Reflect\", \"Screen\", \"Soft Light\", \"Subtract\", \"Vivid Light\"],\n           \"IDENTITY\" : 1,\n           \"DEFAULT\" : 1,\n           \"LABEL\" : \"Mode 5\",\n           \"TYPE\" : \"long\",\n           \"NAME\" : \"mode5\"\n        },\n        { \"VALUES\" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],\n           \"LABELS\" : [ \"Add\", \"Average\", \"Color Burn\", \"Color Dodge\", \"Darken\", \"Difference\", \n                        \"Exclusion\", \"Glow\", \"Hard Light\", \"Hard Mix\", \"Lighten\", \"Linear Burn\", \n                        \"Linear Dodge\", \"Linear Light\", \"Multiply\", \"Negation\", \"Normal\", \"Overlay\", \n                        \"Phoenix\", \"Pin Light\", \"Reflect\", \"Screen\", \"Soft Light\", \"Subtract\", \"Vivid Light\"],\n           \"IDENTITY\" : 1,\n           \"DEFAULT\" : 1,\n           \"LABEL\" : \"Mode 6\",\n           \"TYPE\" : \"long\",\n           \"NAME\" : \"mode6\"\n        },\n        { \"VALUES\" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 ],\n           \"LABELS\" : [ \"Add\", \"Average\", \"Color Burn\", \"Color Dodge\", \"Darken\", \"Difference\", \n                        \"Exclusion\", \"Glow\", \"Hard Light\", \"Hard Mix\", \"Lighten\", \"Linear Burn\", \n                        \"Linear Dodge\", \"Linear Light\", \"Multiply\", \"Negation\", \"Normal\", \"Overlay\", \n                        \"Phoenix\", \"Pin Light\", \"Reflect\", \"Screen\", \"Soft Light\", \"Subtract\", \"Vivid Light\"],\n           \"IDENTITY\" : 1,\n           \"DEFAULT\" : 1,\n           \"LABEL\" : \"Mode 7\",\n           \"TYPE\" : \"long\",\n           \"NAME\" : \"mode7\"\n        }\n    ],\n    \"ISFVSN\": \"2\"\n}\n*/\n\n/* Blend mode implementations courtesy of Jamie Owen:\n\n   https://github.com/jamieowen/glsl-blend\n\nThe MIT License (MIT) Copyright (c) 2015 Jamie Owen\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n*/\nvec3 blendPhoenix(vec3 base, vec3 blend) {\n  return min(base, blend) - max(base, blend) + vec3(1.0);\n}\n\nvec3 blendPhoenix(vec3 base, vec3 blend, float opacity) {\n  return (blendPhoenix(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendOverlay(float base, float blend) {\n  return base < 0.5 ? (2.0 * base * blend)\n                    : (1.0 - 2.0 * (1.0 - base) * (1.0 - blend));\n}\n\nvec3 blendOverlay(vec3 base, vec3 blend) {\n  return vec3(blendOverlay(base.r, blend.r), blendOverlay(base.g, blend.g),\n              blendOverlay(base.b, blend.b));\n}\n\nvec3 blendOverlay(vec3 base, vec3 blend, float opacity) {\n  return (blendOverlay(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nvec3 blendNormal(vec3 base, vec3 blend) { return blend; }\n\nvec3 blendNormal(vec3 base, vec3 blend, float opacity) {\n  return (blendNormal(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nvec3 blendNegation(vec3 base, vec3 blend) {\n  return vec3(1.0) - abs(vec3(1.0) - base - blend);\n}\n\nvec3 blendNegation(vec3 base, vec3 blend, float opacity) {\n  return (blendNegation(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nvec3 blendMultiply(vec3 base, vec3 blend) { return base * blend; }\n\nvec3 blendMultiply(vec3 base, vec3 blend, float opacity) {\n  return (blendMultiply(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendReflect(float base, float blend) {\n  return (blend == 1.0) ? blend : min(base * base / (1.0 - blend), 1.0);\n}\n\nvec3 blendReflect(vec3 base, vec3 blend) {\n  return vec3(blendReflect(base.r, blend.r), blendReflect(base.g, blend.g),\n              blendReflect(base.b, blend.b));\n}\n\nvec3 blendReflect(vec3 base, vec3 blend, float opacity) {\n  return (blendReflect(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nvec3 blendAverage(vec3 base, vec3 blend) { return (base + blend) / 2.0; }\n\nvec3 blendAverage(vec3 base, vec3 blend, float opacity) {\n  return (blendAverage(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendLinearBurn(float base, float blend) {\n  // Note : Same implementation as BlendSubtractf\n  return max(base + blend - 1.0, 0.0);\n}\n\nvec3 blendLinearBurn(vec3 base, vec3 blend) {\n  // Note : Same implementation as BlendSubtract\n  return max(base + blend - vec3(1.0), vec3(0.0));\n}\n\nvec3 blendLinearBurn(vec3 base, vec3 blend, float opacity) {\n  return (blendLinearBurn(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendLighten(float base, float blend) { return max(blend, base); }\n\nvec3 blendLighten(vec3 base, vec3 blend) {\n  return vec3(blendLighten(base.r, blend.r), blendLighten(base.g, blend.g),\n              blendLighten(base.b, blend.b));\n}\n\nvec3 blendLighten(vec3 base, vec3 blend, float opacity) {\n  return (blendLighten(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendScreen(float base, float blend) {\n  return 1.0 - ((1.0 - base) * (1.0 - blend));\n}\n\nvec3 blendScreen(vec3 base, vec3 blend) {\n  return vec3(blendScreen(base.r, blend.r), blendScreen(base.g, blend.g),\n              blendScreen(base.b, blend.b));\n}\n\nvec3 blendScreen(vec3 base, vec3 blend, float opacity) {\n  return (blendScreen(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendSoftLight(float base, float blend) {\n  return (blend < 0.5)\n             ? (2.0 * base * blend + base * base * (1.0 - 2.0 * blend))\n             : (sqrt(base) * (2.0 * blend - 1.0) + 2.0 * base * (1.0 - blend));\n}\n\nvec3 blendSoftLight(vec3 base, vec3 blend) {\n  return vec3(blendSoftLight(base.r, blend.r), blendSoftLight(base.g, blend.g),\n              blendSoftLight(base.b, blend.b));\n}\n\nvec3 blendSoftLight(vec3 base, vec3 blend, float opacity) {\n  return (blendSoftLight(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendSubtract(float base, float blend) {\n  return max(base + blend - 1.0, 0.0);\n}\n\nvec3 blendSubtract(vec3 base, vec3 blend) {\n  return max(base + blend - vec3(1.0), vec3(0.0));\n}\n\nvec3 blendSubtract(vec3 base, vec3 blend, float opacity) {\n  return (blendSubtract(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nvec3 blendExclusion(vec3 base, vec3 blend) {\n  return base + blend - 2.0 * base * blend;\n}\n\nvec3 blendExclusion(vec3 base, vec3 blend, float opacity) {\n  return (blendExclusion(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nvec3 blendDifference(vec3 base, vec3 blend) { return abs(base - blend); }\n\nvec3 blendDifference(vec3 base, vec3 blend, float opacity) {\n  return (blendDifference(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendDarken(float base, float blend) { return min(blend, base); }\n\nvec3 blendDarken(vec3 base, vec3 blend) {\n  return vec3(blendDarken(base.r, blend.r), blendDarken(base.g, blend.g),\n              blendDarken(base.b, blend.b));\n}\n\nvec3 blendDarken(vec3 base, vec3 blend, float opacity) {\n  return (blendDarken(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendColorDodge(float base, float blend) {\n  return (blend == 1.0) ? blend : min(base / (1.0 - blend), 1.0);\n}\n\nvec3 blendColorDodge(vec3 base, vec3 blend) {\n  return vec3(blendColorDodge(base.r, blend.r),\n              blendColorDodge(base.g, blend.g),\n              blendColorDodge(base.b, blend.b));\n}\n\nvec3 blendColorDodge(vec3 base, vec3 blend, float opacity) {\n  return (blendColorDodge(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendColorBurn(float base, float blend) {\n  return (blend == 0.0) ? blend : max((1.0 - ((1.0 - base) / blend)), 0.0);\n}\n\nvec3 blendColorBurn(vec3 base, vec3 blend) {\n  return vec3(blendColorBurn(base.r, blend.r), blendColorBurn(base.g, blend.g),\n              blendColorBurn(base.b, blend.b));\n}\n\nvec3 blendColorBurn(vec3 base, vec3 blend, float opacity) {\n  return (blendColorBurn(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendAdd(float base, float blend) { return min(base + blend, 1.0); }\n\nvec3 blendAdd(vec3 base, vec3 blend) { return min(base + blend, vec3(1.0)); }\n\nvec3 blendAdd(vec3 base, vec3 blend, float opacity) {\n  return (blendAdd(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendLinearDodge(float base, float blend) {\n  // Note : Same implementation as BlendAddf\n  return min(base + blend, 1.0);\n}\n\nvec3 blendLinearDodge(vec3 base, vec3 blend) {\n  // Note : Same implementation as BlendAdd\n  return min(base + blend, vec3(1.0));\n}\n\nvec3 blendLinearDodge(vec3 base, vec3 blend, float opacity) {\n  return (blendLinearDodge(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nvec3 blendHardLight(vec3 base, vec3 blend) { return blendOverlay(blend, base); }\n\nvec3 blendHardLight(vec3 base, vec3 blend, float opacity) {\n  return (blendHardLight(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nvec3 blendGlow(vec3 base, vec3 blend) { return blendReflect(blend, base); }\n\nvec3 blendGlow(vec3 base, vec3 blend, float opacity) {\n  return (blendGlow(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendVividLight(float base, float blend) {\n  return (blend < 0.5) ? blendColorBurn(base, (2.0 * blend))\n                       : blendColorDodge(base, (2.0 * (blend - 0.5)));\n}\n\nvec3 blendVividLight(vec3 base, vec3 blend) {\n  return vec3(blendVividLight(base.r, blend.r),\n              blendVividLight(base.g, blend.g),\n              blendVividLight(base.b, blend.b));\n}\n\nvec3 blendVividLight(vec3 base, vec3 blend, float opacity) {\n  return (blendVividLight(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendHardMix(float base, float blend) {\n  return (blendVividLight(base, blend) < 0.5) ? 0.0 : 1.0;\n}\n\nvec3 blendHardMix(vec3 base, vec3 blend) {\n  return vec3(blendHardMix(base.r, blend.r), blendHardMix(base.g, blend.g),\n              blendHardMix(base.b, blend.b));\n}\n\nvec3 blendHardMix(vec3 base, vec3 blend, float opacity) {\n  return (blendHardMix(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendLinearLight(float base, float blend) {\n  return blend < 0.5 ? blendLinearBurn(base, (2.0 * blend))\n                     : blendLinearDodge(base, (2.0 * (blend - 0.5)));\n}\n\nvec3 blendLinearLight(vec3 base, vec3 blend) {\n  return vec3(blendLinearLight(base.r, blend.r),\n              blendLinearLight(base.g, blend.g),\n              blendLinearLight(base.b, blend.b));\n}\n\nvec3 blendLinearLight(vec3 base, vec3 blend, float opacity) {\n  return (blendLinearLight(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nfloat blendPinLight(float base, float blend) {\n  return (blend < 0.5) ? blendDarken(base, (2.0 * blend))\n                       : blendLighten(base, (2.0 * (blend - 0.5)));\n}\n\nvec3 blendPinLight(vec3 base, vec3 blend) {\n  return vec3(blendPinLight(base.r, blend.r), blendPinLight(base.g, blend.g),\n              blendPinLight(base.b, blend.b));\n}\n\nvec3 blendPinLight(vec3 base, vec3 blend, float opacity) {\n  return (blendPinLight(base, blend) * opacity + base * (1.0 - opacity));\n}\n\nvec3 blendMode(int mode, vec3 base, vec3 blend) {\n  if (mode == 1) {\n    return blendAdd(base, blend);\n  } else if (mode == 2) {\n    return blendAverage(base, blend);\n  } else if (mode == 3) {\n    return blendColorBurn(base, blend);\n  } else if (mode == 4) {\n    return blendColorDodge(base, blend);\n  } else if (mode == 5) {\n    return blendDarken(base, blend);\n  } else if (mode == 6) {\n    return blendDifference(base, blend);\n  } else if (mode == 7) {\n    return blendExclusion(base, blend);\n  } else if (mode == 8) {\n    return blendGlow(base, blend);\n  } else if (mode == 9) {\n    return blendHardLight(base, blend);\n  } else if (mode == 10) {\n    return blendHardMix(base, blend);\n  } else if (mode == 11) {\n    return blendLighten(base, blend);\n  } else if (mode == 12) {\n    return blendLinearBurn(base, blend);\n  } else if (mode == 13) {\n    return blendLinearDodge(base, blend);\n  } else if (mode == 14) {\n    return blendLinearLight(base, blend);\n  } else if (mode == 15) {\n    return blendMultiply(base, blend);\n  } else if (mode == 16) {\n    return blendNegation(base, blend);\n  } else if (mode == 17) {\n    return blendNormal(base, blend);\n  } else if (mode == 18) {\n    return blendOverlay(base, blend);\n  } else if (mode == 19) {\n    return blendPhoenix(base, blend);\n  } else if (mode == 20) {\n    return blendPinLight(base, blend);\n  } else if (mode == 21) {\n    return blendReflect(base, blend);\n  } else if (mode == 22) {\n    return blendScreen(base, blend);\n  } else if (mode == 23) {\n    return blendSoftLight(base, blend);\n  } else if (mode == 24) {\n    return blendSubtract(base, blend);\n  } else if (mode == 25) {\n    return blendVividLight(base, blend);\n  } else {\n    return vec3(0.,0.,0.);\n  }\n}\n\nvec3 blendMode(int mode, vec3 base, vec3 blend, float opacity) {\n  if (mode == 1) {\n    return blendAdd(base, blend, opacity);\n  } else if (mode == 2) {\n    return blendAverage(base, blend, opacity);\n  } else if (mode == 3) {\n    return blendColorBurn(base, blend, opacity);\n  } else if (mode == 4) {\n    return blendColorDodge(base, blend, opacity);\n  } else if (mode == 5) {\n    return blendDarken(base, blend, opacity);\n  } else if (mode == 6) {\n    return blendDifference(base, blend, opacity);\n  } else if (mode == 7) {\n    return blendExclusion(base, blend, opacity);\n  } else if (mode == 8) {\n    return blendGlow(base, blend, opacity);\n  } else if (mode == 9) {\n    return blendHardLight(base, blend, opacity);\n  } else if (mode == 10) {\n    return blendHardMix(base, blend, opacity);\n  } else if (mode == 11) {\n    return blendLighten(base, blend, opacity);\n  } else if (mode == 12) {\n    return blendLinearBurn(base, blend, opacity);\n  } else if (mode == 13) {\n    return blendLinearDodge(base, blend, opacity);\n  } else if (mode == 14) {\n    return blendLinearLight(base, blend, opacity);\n  } else if (mode == 15) {\n    return blendMultiply(base, blend, opacity);\n  } else if (mode == 16) {\n    return blendNegation(base, blend, opacity);\n  } else if (mode == 17) {\n    return blendNormal(base, blend, opacity);\n  } else if (mode == 18) {\n    return blendOverlay(base, blend, opacity);\n  } else if (mode == 19) {\n    return blendPhoenix(base, blend, opacity);\n  } else if (mode == 20) {\n    return blendPinLight(base, blend, opacity);\n  } else if (mode == 21) {\n    return blendReflect(base, blend, opacity);\n  } else if (mode == 22) {\n    return blendScreen(base, blend, opacity);\n  } else if (mode == 23) {\n    return blendSoftLight(base, blend, opacity);\n  } else if (mode == 24) {\n    return blendSubtract(base, blend, opacity);\n  } else if (mode == 25) {\n    return blendVividLight(base, blend, opacity);\n  } else {\n    return vec3(0.,0.,0.);\n  }\n}\n\nvoid main()\t{\n  gl_FragColor.rgb = \n    blendMode(mode1, alpha1 * IMG_THIS_NORM_PIXEL(t1).rgb * IMG_THIS_NORM_PIXEL(t1).a,\n    blendMode(mode2, alpha2 * IMG_THIS_NORM_PIXEL(t2).rgb * IMG_THIS_NORM_PIXEL(t2).a,\n    blendMode(mode3, alpha3 * IMG_THIS_NORM_PIXEL(t3).rgb * IMG_THIS_NORM_PIXEL(t3).a,\n    blendMode(mode4, alpha4 * IMG_THIS_NORM_PIXEL(t4).rgb * IMG_THIS_NORM_PIXEL(t4).a,\n    blendMode(mode5, alpha5 * IMG_THIS_NORM_PIXEL(t5).rgb * IMG_THIS_NORM_PIXEL(t5).a,\n    blendMode(mode6, alpha6 * IMG_THIS_NORM_PIXEL(t6).rgb * IMG_THIS_NORM_PIXEL(t6).a,\n    blendMode(mode7, alpha7 * IMG_THIS_NORM_PIXEL(t7).rgb * IMG_THIS_NORM_PIXEL(t7).a,\n                     alpha8 * IMG_THIS_NORM_PIXEL(t8).rgb * IMG_THIS_NORM_PIXEL(t8).a)))))));\n\n  gl_FragColor.a = 1.0; \n}",
+                        "Height": 300,
+                        "Inlets": [
+                            {
+                                "AddressMode": 1,
+                                "Custom": "t1",
+                                "Exposed": "t1",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 0,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "AddressMode": 1,
+                                "Custom": "t2",
+                                "Exposed": "t2",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 1,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "AddressMode": 1,
+                                "Custom": "t3",
+                                "Exposed": "t3",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 2,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "AddressMode": 1,
+                                "Custom": "t4",
+                                "Exposed": "t4",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 3,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "AddressMode": 1,
+                                "Custom": "t5",
+                                "Exposed": "t5",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 4,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "AddressMode": 1,
+                                "Custom": "t6",
+                                "Exposed": "t6",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 5,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "AddressMode": 1,
+                                "Custom": "t7",
+                                "Exposed": "t7",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 6,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "AddressMode": 1,
+                                "Custom": "t8",
+                                "Exposed": "t8",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 7,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "Custom": "alpha1",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 1,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "alpha1",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 1
+                                },
+                                "id": 8,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "alpha2",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 1,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "alpha2",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 0
+                                },
+                                "id": 9,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "alpha3",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 1,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "alpha3",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 0
+                                },
+                                "id": 10,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "alpha4",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 1,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "alpha4",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 0
+                                },
+                                "id": 11,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "alpha5",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 1,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "alpha5",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 0
+                                },
+                                "id": 12,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "alpha6",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 1,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "alpha6",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 0
+                                },
+                                "id": 13,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "alpha7",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 1,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "alpha7",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 0
+                                },
+                                "id": 14,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "alpha8",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 1,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "alpha8",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 0
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 0
+                                },
+                                "id": 15,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "mode1",
+                                "Domain": {
+                                    "Int": {
+                                        "Values": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5,
+                                            6,
+                                            7,
+                                            8,
+                                            9,
+                                            10,
+                                            11,
+                                            12,
+                                            13,
+                                            14,
+                                            15,
+                                            16,
+                                            17,
+                                            18,
+                                            19,
+                                            20,
+                                            21,
+                                            22,
+                                            23,
+                                            24,
+                                            25
+                                        ]
+                                    }
+                                },
+                                "Exposed": "mode1",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 1
+                                },
+                                "Values": [
+                                    [
+                                        "Add",
+                                        {
+                                            "Int": 1
+                                        }
+                                    ],
+                                    [
+                                        "Average",
+                                        {
+                                            "Int": 2
+                                        }
+                                    ],
+                                    [
+                                        "Color Burn",
+                                        {
+                                            "Int": 3
+                                        }
+                                    ],
+                                    [
+                                        "Color Dodge",
+                                        {
+                                            "Int": 4
+                                        }
+                                    ],
+                                    [
+                                        "Darken",
+                                        {
+                                            "Int": 5
+                                        }
+                                    ],
+                                    [
+                                        "Difference",
+                                        {
+                                            "Int": 6
+                                        }
+                                    ],
+                                    [
+                                        "Exclusion",
+                                        {
+                                            "Int": 7
+                                        }
+                                    ],
+                                    [
+                                        "Glow",
+                                        {
+                                            "Int": 8
+                                        }
+                                    ],
+                                    [
+                                        "Hard Light",
+                                        {
+                                            "Int": 9
+                                        }
+                                    ],
+                                    [
+                                        "Hard Mix",
+                                        {
+                                            "Int": 10
+                                        }
+                                    ],
+                                    [
+                                        "Lighten",
+                                        {
+                                            "Int": 11
+                                        }
+                                    ],
+                                    [
+                                        "Linear Burn",
+                                        {
+                                            "Int": 12
+                                        }
+                                    ],
+                                    [
+                                        "Linear Dodge",
+                                        {
+                                            "Int": 13
+                                        }
+                                    ],
+                                    [
+                                        "Linear Light",
+                                        {
+                                            "Int": 14
+                                        }
+                                    ],
+                                    [
+                                        "Multiply",
+                                        {
+                                            "Int": 15
+                                        }
+                                    ],
+                                    [
+                                        "Negation",
+                                        {
+                                            "Int": 16
+                                        }
+                                    ],
+                                    [
+                                        "Normal",
+                                        {
+                                            "Int": 17
+                                        }
+                                    ],
+                                    [
+                                        "Overlay",
+                                        {
+                                            "Int": 18
+                                        }
+                                    ],
+                                    [
+                                        "Phoenix",
+                                        {
+                                            "Int": 19
+                                        }
+                                    ],
+                                    [
+                                        "Pin Light",
+                                        {
+                                            "Int": 20
+                                        }
+                                    ],
+                                    [
+                                        "Reflect",
+                                        {
+                                            "Int": 21
+                                        }
+                                    ],
+                                    [
+                                        "Screen",
+                                        {
+                                            "Int": 22
+                                        }
+                                    ],
+                                    [
+                                        "Soft Light",
+                                        {
+                                            "Int": 23
+                                        }
+                                    ],
+                                    [
+                                        "Subtract",
+                                        {
+                                            "Int": 24
+                                        }
+                                    ],
+                                    [
+                                        "Vivid Light",
+                                        {
+                                            "Int": 25
+                                        }
+                                    ]
+                                ],
+                                "id": 16,
+                                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016"
+                            },
+                            {
+                                "Custom": "mode2",
+                                "Domain": {
+                                    "Int": {
+                                        "Values": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5,
+                                            6,
+                                            7,
+                                            8,
+                                            9,
+                                            10,
+                                            11,
+                                            12,
+                                            13,
+                                            14,
+                                            15,
+                                            16,
+                                            17,
+                                            18,
+                                            19,
+                                            20,
+                                            21,
+                                            22,
+                                            23,
+                                            24,
+                                            25
+                                        ]
+                                    }
+                                },
+                                "Exposed": "mode2",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 1
+                                },
+                                "Values": [
+                                    [
+                                        "Add",
+                                        {
+                                            "Int": 1
+                                        }
+                                    ],
+                                    [
+                                        "Average",
+                                        {
+                                            "Int": 2
+                                        }
+                                    ],
+                                    [
+                                        "Color Burn",
+                                        {
+                                            "Int": 3
+                                        }
+                                    ],
+                                    [
+                                        "Color Dodge",
+                                        {
+                                            "Int": 4
+                                        }
+                                    ],
+                                    [
+                                        "Darken",
+                                        {
+                                            "Int": 5
+                                        }
+                                    ],
+                                    [
+                                        "Difference",
+                                        {
+                                            "Int": 6
+                                        }
+                                    ],
+                                    [
+                                        "Exclusion",
+                                        {
+                                            "Int": 7
+                                        }
+                                    ],
+                                    [
+                                        "Glow",
+                                        {
+                                            "Int": 8
+                                        }
+                                    ],
+                                    [
+                                        "Hard Light",
+                                        {
+                                            "Int": 9
+                                        }
+                                    ],
+                                    [
+                                        "Hard Mix",
+                                        {
+                                            "Int": 10
+                                        }
+                                    ],
+                                    [
+                                        "Lighten",
+                                        {
+                                            "Int": 11
+                                        }
+                                    ],
+                                    [
+                                        "Linear Burn",
+                                        {
+                                            "Int": 12
+                                        }
+                                    ],
+                                    [
+                                        "Linear Dodge",
+                                        {
+                                            "Int": 13
+                                        }
+                                    ],
+                                    [
+                                        "Linear Light",
+                                        {
+                                            "Int": 14
+                                        }
+                                    ],
+                                    [
+                                        "Multiply",
+                                        {
+                                            "Int": 15
+                                        }
+                                    ],
+                                    [
+                                        "Negation",
+                                        {
+                                            "Int": 16
+                                        }
+                                    ],
+                                    [
+                                        "Normal",
+                                        {
+                                            "Int": 17
+                                        }
+                                    ],
+                                    [
+                                        "Overlay",
+                                        {
+                                            "Int": 18
+                                        }
+                                    ],
+                                    [
+                                        "Phoenix",
+                                        {
+                                            "Int": 19
+                                        }
+                                    ],
+                                    [
+                                        "Pin Light",
+                                        {
+                                            "Int": 20
+                                        }
+                                    ],
+                                    [
+                                        "Reflect",
+                                        {
+                                            "Int": 21
+                                        }
+                                    ],
+                                    [
+                                        "Screen",
+                                        {
+                                            "Int": 22
+                                        }
+                                    ],
+                                    [
+                                        "Soft Light",
+                                        {
+                                            "Int": 23
+                                        }
+                                    ],
+                                    [
+                                        "Subtract",
+                                        {
+                                            "Int": 24
+                                        }
+                                    ],
+                                    [
+                                        "Vivid Light",
+                                        {
+                                            "Int": 25
+                                        }
+                                    ]
+                                ],
+                                "id": 17,
+                                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016"
+                            },
+                            {
+                                "Custom": "mode3",
+                                "Domain": {
+                                    "Int": {
+                                        "Values": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5,
+                                            6,
+                                            7,
+                                            8,
+                                            9,
+                                            10,
+                                            11,
+                                            12,
+                                            13,
+                                            14,
+                                            15,
+                                            16,
+                                            17,
+                                            18,
+                                            19,
+                                            20,
+                                            21,
+                                            22,
+                                            23,
+                                            24,
+                                            25
+                                        ]
+                                    }
+                                },
+                                "Exposed": "mode3",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 1
+                                },
+                                "Values": [
+                                    [
+                                        "Add",
+                                        {
+                                            "Int": 1
+                                        }
+                                    ],
+                                    [
+                                        "Average",
+                                        {
+                                            "Int": 2
+                                        }
+                                    ],
+                                    [
+                                        "Color Burn",
+                                        {
+                                            "Int": 3
+                                        }
+                                    ],
+                                    [
+                                        "Color Dodge",
+                                        {
+                                            "Int": 4
+                                        }
+                                    ],
+                                    [
+                                        "Darken",
+                                        {
+                                            "Int": 5
+                                        }
+                                    ],
+                                    [
+                                        "Difference",
+                                        {
+                                            "Int": 6
+                                        }
+                                    ],
+                                    [
+                                        "Exclusion",
+                                        {
+                                            "Int": 7
+                                        }
+                                    ],
+                                    [
+                                        "Glow",
+                                        {
+                                            "Int": 8
+                                        }
+                                    ],
+                                    [
+                                        "Hard Light",
+                                        {
+                                            "Int": 9
+                                        }
+                                    ],
+                                    [
+                                        "Hard Mix",
+                                        {
+                                            "Int": 10
+                                        }
+                                    ],
+                                    [
+                                        "Lighten",
+                                        {
+                                            "Int": 11
+                                        }
+                                    ],
+                                    [
+                                        "Linear Burn",
+                                        {
+                                            "Int": 12
+                                        }
+                                    ],
+                                    [
+                                        "Linear Dodge",
+                                        {
+                                            "Int": 13
+                                        }
+                                    ],
+                                    [
+                                        "Linear Light",
+                                        {
+                                            "Int": 14
+                                        }
+                                    ],
+                                    [
+                                        "Multiply",
+                                        {
+                                            "Int": 15
+                                        }
+                                    ],
+                                    [
+                                        "Negation",
+                                        {
+                                            "Int": 16
+                                        }
+                                    ],
+                                    [
+                                        "Normal",
+                                        {
+                                            "Int": 17
+                                        }
+                                    ],
+                                    [
+                                        "Overlay",
+                                        {
+                                            "Int": 18
+                                        }
+                                    ],
+                                    [
+                                        "Phoenix",
+                                        {
+                                            "Int": 19
+                                        }
+                                    ],
+                                    [
+                                        "Pin Light",
+                                        {
+                                            "Int": 20
+                                        }
+                                    ],
+                                    [
+                                        "Reflect",
+                                        {
+                                            "Int": 21
+                                        }
+                                    ],
+                                    [
+                                        "Screen",
+                                        {
+                                            "Int": 22
+                                        }
+                                    ],
+                                    [
+                                        "Soft Light",
+                                        {
+                                            "Int": 23
+                                        }
+                                    ],
+                                    [
+                                        "Subtract",
+                                        {
+                                            "Int": 24
+                                        }
+                                    ],
+                                    [
+                                        "Vivid Light",
+                                        {
+                                            "Int": 25
+                                        }
+                                    ]
+                                ],
+                                "id": 18,
+                                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016"
+                            },
+                            {
+                                "Custom": "mode4",
+                                "Domain": {
+                                    "Int": {
+                                        "Values": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5,
+                                            6,
+                                            7,
+                                            8,
+                                            9,
+                                            10,
+                                            11,
+                                            12,
+                                            13,
+                                            14,
+                                            15,
+                                            16,
+                                            17,
+                                            18,
+                                            19,
+                                            20,
+                                            21,
+                                            22,
+                                            23,
+                                            24,
+                                            25
+                                        ]
+                                    }
+                                },
+                                "Exposed": "mode4",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 1
+                                },
+                                "Values": [
+                                    [
+                                        "Add",
+                                        {
+                                            "Int": 1
+                                        }
+                                    ],
+                                    [
+                                        "Average",
+                                        {
+                                            "Int": 2
+                                        }
+                                    ],
+                                    [
+                                        "Color Burn",
+                                        {
+                                            "Int": 3
+                                        }
+                                    ],
+                                    [
+                                        "Color Dodge",
+                                        {
+                                            "Int": 4
+                                        }
+                                    ],
+                                    [
+                                        "Darken",
+                                        {
+                                            "Int": 5
+                                        }
+                                    ],
+                                    [
+                                        "Difference",
+                                        {
+                                            "Int": 6
+                                        }
+                                    ],
+                                    [
+                                        "Exclusion",
+                                        {
+                                            "Int": 7
+                                        }
+                                    ],
+                                    [
+                                        "Glow",
+                                        {
+                                            "Int": 8
+                                        }
+                                    ],
+                                    [
+                                        "Hard Light",
+                                        {
+                                            "Int": 9
+                                        }
+                                    ],
+                                    [
+                                        "Hard Mix",
+                                        {
+                                            "Int": 10
+                                        }
+                                    ],
+                                    [
+                                        "Lighten",
+                                        {
+                                            "Int": 11
+                                        }
+                                    ],
+                                    [
+                                        "Linear Burn",
+                                        {
+                                            "Int": 12
+                                        }
+                                    ],
+                                    [
+                                        "Linear Dodge",
+                                        {
+                                            "Int": 13
+                                        }
+                                    ],
+                                    [
+                                        "Linear Light",
+                                        {
+                                            "Int": 14
+                                        }
+                                    ],
+                                    [
+                                        "Multiply",
+                                        {
+                                            "Int": 15
+                                        }
+                                    ],
+                                    [
+                                        "Negation",
+                                        {
+                                            "Int": 16
+                                        }
+                                    ],
+                                    [
+                                        "Normal",
+                                        {
+                                            "Int": 17
+                                        }
+                                    ],
+                                    [
+                                        "Overlay",
+                                        {
+                                            "Int": 18
+                                        }
+                                    ],
+                                    [
+                                        "Phoenix",
+                                        {
+                                            "Int": 19
+                                        }
+                                    ],
+                                    [
+                                        "Pin Light",
+                                        {
+                                            "Int": 20
+                                        }
+                                    ],
+                                    [
+                                        "Reflect",
+                                        {
+                                            "Int": 21
+                                        }
+                                    ],
+                                    [
+                                        "Screen",
+                                        {
+                                            "Int": 22
+                                        }
+                                    ],
+                                    [
+                                        "Soft Light",
+                                        {
+                                            "Int": 23
+                                        }
+                                    ],
+                                    [
+                                        "Subtract",
+                                        {
+                                            "Int": 24
+                                        }
+                                    ],
+                                    [
+                                        "Vivid Light",
+                                        {
+                                            "Int": 25
+                                        }
+                                    ]
+                                ],
+                                "id": 19,
+                                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016"
+                            },
+                            {
+                                "Custom": "mode5",
+                                "Domain": {
+                                    "Int": {
+                                        "Values": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5,
+                                            6,
+                                            7,
+                                            8,
+                                            9,
+                                            10,
+                                            11,
+                                            12,
+                                            13,
+                                            14,
+                                            15,
+                                            16,
+                                            17,
+                                            18,
+                                            19,
+                                            20,
+                                            21,
+                                            22,
+                                            23,
+                                            24,
+                                            25
+                                        ]
+                                    }
+                                },
+                                "Exposed": "mode5",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 1
+                                },
+                                "Values": [
+                                    [
+                                        "Add",
+                                        {
+                                            "Int": 1
+                                        }
+                                    ],
+                                    [
+                                        "Average",
+                                        {
+                                            "Int": 2
+                                        }
+                                    ],
+                                    [
+                                        "Color Burn",
+                                        {
+                                            "Int": 3
+                                        }
+                                    ],
+                                    [
+                                        "Color Dodge",
+                                        {
+                                            "Int": 4
+                                        }
+                                    ],
+                                    [
+                                        "Darken",
+                                        {
+                                            "Int": 5
+                                        }
+                                    ],
+                                    [
+                                        "Difference",
+                                        {
+                                            "Int": 6
+                                        }
+                                    ],
+                                    [
+                                        "Exclusion",
+                                        {
+                                            "Int": 7
+                                        }
+                                    ],
+                                    [
+                                        "Glow",
+                                        {
+                                            "Int": 8
+                                        }
+                                    ],
+                                    [
+                                        "Hard Light",
+                                        {
+                                            "Int": 9
+                                        }
+                                    ],
+                                    [
+                                        "Hard Mix",
+                                        {
+                                            "Int": 10
+                                        }
+                                    ],
+                                    [
+                                        "Lighten",
+                                        {
+                                            "Int": 11
+                                        }
+                                    ],
+                                    [
+                                        "Linear Burn",
+                                        {
+                                            "Int": 12
+                                        }
+                                    ],
+                                    [
+                                        "Linear Dodge",
+                                        {
+                                            "Int": 13
+                                        }
+                                    ],
+                                    [
+                                        "Linear Light",
+                                        {
+                                            "Int": 14
+                                        }
+                                    ],
+                                    [
+                                        "Multiply",
+                                        {
+                                            "Int": 15
+                                        }
+                                    ],
+                                    [
+                                        "Negation",
+                                        {
+                                            "Int": 16
+                                        }
+                                    ],
+                                    [
+                                        "Normal",
+                                        {
+                                            "Int": 17
+                                        }
+                                    ],
+                                    [
+                                        "Overlay",
+                                        {
+                                            "Int": 18
+                                        }
+                                    ],
+                                    [
+                                        "Phoenix",
+                                        {
+                                            "Int": 19
+                                        }
+                                    ],
+                                    [
+                                        "Pin Light",
+                                        {
+                                            "Int": 20
+                                        }
+                                    ],
+                                    [
+                                        "Reflect",
+                                        {
+                                            "Int": 21
+                                        }
+                                    ],
+                                    [
+                                        "Screen",
+                                        {
+                                            "Int": 22
+                                        }
+                                    ],
+                                    [
+                                        "Soft Light",
+                                        {
+                                            "Int": 23
+                                        }
+                                    ],
+                                    [
+                                        "Subtract",
+                                        {
+                                            "Int": 24
+                                        }
+                                    ],
+                                    [
+                                        "Vivid Light",
+                                        {
+                                            "Int": 25
+                                        }
+                                    ]
+                                ],
+                                "id": 20,
+                                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016"
+                            },
+                            {
+                                "Custom": "mode6",
+                                "Domain": {
+                                    "Int": {
+                                        "Values": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5,
+                                            6,
+                                            7,
+                                            8,
+                                            9,
+                                            10,
+                                            11,
+                                            12,
+                                            13,
+                                            14,
+                                            15,
+                                            16,
+                                            17,
+                                            18,
+                                            19,
+                                            20,
+                                            21,
+                                            22,
+                                            23,
+                                            24,
+                                            25
+                                        ]
+                                    }
+                                },
+                                "Exposed": "mode6",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 1
+                                },
+                                "Values": [
+                                    [
+                                        "Add",
+                                        {
+                                            "Int": 1
+                                        }
+                                    ],
+                                    [
+                                        "Average",
+                                        {
+                                            "Int": 2
+                                        }
+                                    ],
+                                    [
+                                        "Color Burn",
+                                        {
+                                            "Int": 3
+                                        }
+                                    ],
+                                    [
+                                        "Color Dodge",
+                                        {
+                                            "Int": 4
+                                        }
+                                    ],
+                                    [
+                                        "Darken",
+                                        {
+                                            "Int": 5
+                                        }
+                                    ],
+                                    [
+                                        "Difference",
+                                        {
+                                            "Int": 6
+                                        }
+                                    ],
+                                    [
+                                        "Exclusion",
+                                        {
+                                            "Int": 7
+                                        }
+                                    ],
+                                    [
+                                        "Glow",
+                                        {
+                                            "Int": 8
+                                        }
+                                    ],
+                                    [
+                                        "Hard Light",
+                                        {
+                                            "Int": 9
+                                        }
+                                    ],
+                                    [
+                                        "Hard Mix",
+                                        {
+                                            "Int": 10
+                                        }
+                                    ],
+                                    [
+                                        "Lighten",
+                                        {
+                                            "Int": 11
+                                        }
+                                    ],
+                                    [
+                                        "Linear Burn",
+                                        {
+                                            "Int": 12
+                                        }
+                                    ],
+                                    [
+                                        "Linear Dodge",
+                                        {
+                                            "Int": 13
+                                        }
+                                    ],
+                                    [
+                                        "Linear Light",
+                                        {
+                                            "Int": 14
+                                        }
+                                    ],
+                                    [
+                                        "Multiply",
+                                        {
+                                            "Int": 15
+                                        }
+                                    ],
+                                    [
+                                        "Negation",
+                                        {
+                                            "Int": 16
+                                        }
+                                    ],
+                                    [
+                                        "Normal",
+                                        {
+                                            "Int": 17
+                                        }
+                                    ],
+                                    [
+                                        "Overlay",
+                                        {
+                                            "Int": 18
+                                        }
+                                    ],
+                                    [
+                                        "Phoenix",
+                                        {
+                                            "Int": 19
+                                        }
+                                    ],
+                                    [
+                                        "Pin Light",
+                                        {
+                                            "Int": 20
+                                        }
+                                    ],
+                                    [
+                                        "Reflect",
+                                        {
+                                            "Int": 21
+                                        }
+                                    ],
+                                    [
+                                        "Screen",
+                                        {
+                                            "Int": 22
+                                        }
+                                    ],
+                                    [
+                                        "Soft Light",
+                                        {
+                                            "Int": 23
+                                        }
+                                    ],
+                                    [
+                                        "Subtract",
+                                        {
+                                            "Int": 24
+                                        }
+                                    ],
+                                    [
+                                        "Vivid Light",
+                                        {
+                                            "Int": 25
+                                        }
+                                    ]
+                                ],
+                                "id": 21,
+                                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016"
+                            },
+                            {
+                                "Custom": "mode7",
+                                "Domain": {
+                                    "Int": {
+                                        "Values": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5,
+                                            6,
+                                            7,
+                                            8,
+                                            9,
+                                            10,
+                                            11,
+                                            12,
+                                            13,
+                                            14,
+                                            15,
+                                            16,
+                                            17,
+                                            18,
+                                            19,
+                                            20,
+                                            21,
+                                            22,
+                                            23,
+                                            24,
+                                            25
+                                        ]
+                                    }
+                                },
+                                "Exposed": "mode7",
+                                "Hidden": true,
+                                "Init": {
+                                    "Int": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Int": 1
+                                },
+                                "Values": [
+                                    [
+                                        "Add",
+                                        {
+                                            "Int": 1
+                                        }
+                                    ],
+                                    [
+                                        "Average",
+                                        {
+                                            "Int": 2
+                                        }
+                                    ],
+                                    [
+                                        "Color Burn",
+                                        {
+                                            "Int": 3
+                                        }
+                                    ],
+                                    [
+                                        "Color Dodge",
+                                        {
+                                            "Int": 4
+                                        }
+                                    ],
+                                    [
+                                        "Darken",
+                                        {
+                                            "Int": 5
+                                        }
+                                    ],
+                                    [
+                                        "Difference",
+                                        {
+                                            "Int": 6
+                                        }
+                                    ],
+                                    [
+                                        "Exclusion",
+                                        {
+                                            "Int": 7
+                                        }
+                                    ],
+                                    [
+                                        "Glow",
+                                        {
+                                            "Int": 8
+                                        }
+                                    ],
+                                    [
+                                        "Hard Light",
+                                        {
+                                            "Int": 9
+                                        }
+                                    ],
+                                    [
+                                        "Hard Mix",
+                                        {
+                                            "Int": 10
+                                        }
+                                    ],
+                                    [
+                                        "Lighten",
+                                        {
+                                            "Int": 11
+                                        }
+                                    ],
+                                    [
+                                        "Linear Burn",
+                                        {
+                                            "Int": 12
+                                        }
+                                    ],
+                                    [
+                                        "Linear Dodge",
+                                        {
+                                            "Int": 13
+                                        }
+                                    ],
+                                    [
+                                        "Linear Light",
+                                        {
+                                            "Int": 14
+                                        }
+                                    ],
+                                    [
+                                        "Multiply",
+                                        {
+                                            "Int": 15
+                                        }
+                                    ],
+                                    [
+                                        "Negation",
+                                        {
+                                            "Int": 16
+                                        }
+                                    ],
+                                    [
+                                        "Normal",
+                                        {
+                                            "Int": 17
+                                        }
+                                    ],
+                                    [
+                                        "Overlay",
+                                        {
+                                            "Int": 18
+                                        }
+                                    ],
+                                    [
+                                        "Phoenix",
+                                        {
+                                            "Int": 19
+                                        }
+                                    ],
+                                    [
+                                        "Pin Light",
+                                        {
+                                            "Int": 20
+                                        }
+                                    ],
+                                    [
+                                        "Reflect",
+                                        {
+                                            "Int": 21
+                                        }
+                                    ],
+                                    [
+                                        "Screen",
+                                        {
+                                            "Int": 22
+                                        }
+                                    ],
+                                    [
+                                        "Soft Light",
+                                        {
+                                            "Int": 23
+                                        }
+                                    ],
+                                    [
+                                        "Subtract",
+                                        {
+                                            "Int": 24
+                                        }
+                                    ],
+                                    [
+                                        "Vivid Light",
+                                        {
+                                            "Int": 25
+                                        }
+                                    ]
+                                ],
+                                "id": 22,
+                                "uuid": "485680cc-b8b9-4a01-acc7-3e8334bdc016"
+                            }
+                        ],
+                        "LoopDuration": 12400285870,
+                        "Loops": false,
+                        "Metadata": {
+                            "Color": "White",
+                            "Comment": "",
+                            "Label": "",
+                            "ScriptingName": "Video Mixer.1",
+                            "Touched": true
+                        },
+                        "ObjectName": "gfxProcess",
+                        "Outlets": [
+                            {
+                                "Custom": "Texture Out",
+                                "Exposed": "texture out",
+                                "Hidden": false,
+                                "ObjectName": "Outlet",
+                                "id": 1,
+                                "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc"
+                            }
+                        ],
+                        "Pos": [
+                            142.38649640926178,
+                            -2455.5922129157525
+                        ],
+                        "Size": [
+                            96.0625,
+                            22
+                        ],
+                        "StartOffset": 0,
+                        "Vertex": "",
+                        "id": 211,
+                        "uuid": "74ca45ff-92c9-44a0-8f1a-754dea05ee1b"
+                    },
                     {
                         "Duration": 12400285870,
                         "Height": 300,
@@ -2197,7 +3863,7 @@
                                 },
                                 "ObjectName": "Inlet",
                                 "Value": {
-                                    "Float": 210
+                                    "Float": 180
                                 },
                                 "id": 2,
                                 "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
@@ -2241,8 +3907,8 @@
                             }
                         ],
                         "Pos": [
-                            -149.11791218448843,
-                            -2458.0908213171306
+                            -164.11791218448843,
+                            -2456.0908213171306
                         ],
                         "Size": [
                             210.09375,
@@ -2261,7 +3927,7 @@
                                 "Custom": "Index",
                                 "Domain": {
                                     "Int": {
-                                        "Max": 0,
+                                        "Max": 1,
                                         "Min": 0
                                     }
                                 },
@@ -2272,7 +3938,7 @@
                                 },
                                 "ObjectName": "Inlet",
                                 "Value": {
-                                    "Int": 0
+                                    "Float": 0
                                 },
                                 "id": 0,
                                 "uuid": "238399a0-7e81-47e3-896f-08e8856e2973"
@@ -2527,6 +4193,136 @@
                         "StartOffset": 0,
                         "id": 186,
                         "uuid": "e96c5c0b-7e09-49fb-a851-ff6f4811bb00"
+                    },
+                    {
+                        "Duration": 12400285870,
+                        "Fragment": "/*{\n\t\"DESCRIPTION\": \"performs a 3d rotation\",\n\t\"CREDIT\": \"by zoidberg\",\n\t\"ISFVSN\": \"2\",\n\t\"CATEGORIES\": [\n\t\t\"Geometry Adjustment\", \"Utility\"\n\t],\n\t\"INPUTS\": [\n\t\t{\n\t\t\t\"NAME\": \"inputImage\",\n\t\t\t\"TYPE\": \"image\"\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"xrot\",\n\t\t\t\"LABEL\": \"X rotate\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"yrot\",\n\t\t\t\"LABEL\": \"Y rotate\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"zrot\",\n\t\t\t\"LABEL\": \"Z rotate\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"zoom\",\n\t\t\t\"LABEL\": \"Zoom Level\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t}\n\t]\n}*/\n\n\nvoid main()\n{\n\tgl_FragColor = IMG_THIS_PIXEL(inputImage);\n}\n",
+                        "Height": 300,
+                        "Inlets": [
+                            {
+                                "AddressMode": 1,
+                                "Custom": "inputImage",
+                                "Exposed": "inputimage",
+                                "Filter": 2,
+                                "Format": 0,
+                                "Hidden": false,
+                                "ObjectName": "Inlet",
+                                "id": 0,
+                                "uuid": "5ac86198-2d03-4830-9e41-a6d529922d29"
+                            },
+                            {
+                                "Custom": "xrot",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 2,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "xrot",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 1
+                                },
+                                "id": 1,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "yrot",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 2,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "yrot",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 1
+                                },
+                                "id": 2,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "zrot",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 2,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "zrot",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 1
+                                },
+                                "id": 3,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            },
+                            {
+                                "Custom": "zoom",
+                                "Domain": {
+                                    "Float": {
+                                        "Max": 2,
+                                        "Min": 0
+                                    }
+                                },
+                                "Exposed": "zoom",
+                                "Hidden": true,
+                                "Init": {
+                                    "Float": 1
+                                },
+                                "ObjectName": "Inlet",
+                                "Value": {
+                                    "Float": 1
+                                },
+                                "id": 4,
+                                "uuid": "af2b4fc3-aecb-4c15-a5aa-1c573a239925"
+                            }
+                        ],
+                        "LoopDuration": 12400285870,
+                        "Loops": false,
+                        "Metadata": {
+                            "Color": "White",
+                            "Comment": "",
+                            "Label": "",
+                            "ScriptingName": "rotate_zoom",
+                            "Touched": true
+                        },
+                        "ObjectName": "gfxProcess",
+                        "Outlets": [
+                            {
+                                "Custom": "Texture Out",
+                                "Exposed": "texture out",
+                                "Hidden": false,
+                                "ObjectName": "Outlet",
+                                "id": 1,
+                                "uuid": "f1c71046-b754-49a5-8e66-d01374773dfc"
+                            }
+                        ],
+                        "Pos": [
+                            567.0294315655115,
+                            -2468.3225600251276
+                        ],
+                        "Size": [
+                            84.8125,
+                            22
+                        ],
+                        "StartOffset": 0,
+                        "Vertex": "float\t\tPI_CONST = 3.14159265359;\n\n\n//\twith help from http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-3:-3D-transformation-and-projection.html\n//\tand http://en.wikipedia.org/wiki/Rotation_matrix\n\n\nmat4 view_frustum(\n    float angle_of_view,\n    float aspect_ratio,\n    float z_near,\n    float z_far\n) {\n    return mat4(\n        vec4(1.0/tan(angle_of_view),           0.0, 0.0, 0.0),\n        vec4(0.0, aspect_ratio/tan(angle_of_view),  0.0, 0.0),\n        vec4(0.0, 0.0,    (z_far+z_near)/(z_far-z_near), 1.0),\n        vec4(0.0, 0.0, -2.0*z_far*z_near/(z_far-z_near), 0.0)\n    );\n}\n\nmat4 scale(float x, float y, float z)\n{\n    return mat4(\n        vec4(x,   0.0, 0.0, 0.0),\n        vec4(0.0, y,   0.0, 0.0),\n        vec4(0.0, 0.0, z,   0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nmat4 translate(float x, float y, float z)\n{\n    return mat4(\n        vec4(1.0, 0.0, 0.0, 0.0),\n        vec4(0.0, 1.0, 0.0, 0.0),\n        vec4(0.0, 0.0, 1.0, 0.0),\n        vec4(x,   y,   z,   1.0)\n    );\n}\n\nmat4 rotate_x(float theta)\n{\n    return mat4(\n        vec4(1.0, 0.0, 0.0, 0.0),\n        vec4(0.0, cos(theta*PI_CONST), sin(theta*PI_CONST), 0.0),\n        vec4(0.0, -sin(theta*PI_CONST), cos(theta*PI_CONST), 0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nmat4 rotate_y(float theta)\n{\n    return mat4(\n        vec4(cos(theta*PI_CONST), 0.0, sin(theta*PI_CONST), 0.0),\n        vec4(0.0, 1.0, 0.0, 0.0),\n        vec4(-sin(theta*PI_CONST), 0, cos(theta*PI_CONST), 0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nmat4 rotate_z(float theta)\n{\n    return mat4(\n        vec4(cos(theta*PI_CONST), -sin(theta*PI_CONST), 0.0, 0.0),\n        vec4(sin(theta*PI_CONST), cos(theta*PI_CONST), 0.0, 0.0),\n        vec4(0.0, 0.0, 1.0, 0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nvoid main()\n{\n\tisf_vertShaderInit();\n\t\n\tvec4 position = gl_Position;\n\n    gl_Position = view_frustum(radians(45.0), RENDERSIZE.x/RENDERSIZE.y, 0.0, 2.0)\n        * translate(0.0, 0.0, RENDERSIZE.x/RENDERSIZE.y)\n        * rotate_x(-xrot)\n        * rotate_y(yrot)\n        * rotate_z(-zrot)\n        * scale(zoom*RENDERSIZE.x/RENDERSIZE.y, zoom, zoom)\n        * position;\n\n}\n",
+                        "id": 210,
+                        "uuid": "74ca45ff-92c9-44a0-8f1a-754dea05ee1b"
                     }
                 ],
                 "QuantizationRate": -1,
@@ -2550,7 +4346,9 @@
                             186,
                             204,
                             205,
-                            207
+                            207,
+                            210,
+                            211
                         ]
                     },
                     {
@@ -2945,11 +4743,11 @@
                         "ObjectName": "Scenario::IntervalModel"
                     },
                     {
-                        "ObjectId": 185,
+                        "ObjectId": 205,
                         "ObjectName": "gfxProcess"
                     },
                     {
-                        "ObjectId": 0,
+                        "ObjectId": 3,
                         "ObjectName": "Inlet"
                     }
                 ],
@@ -2967,7 +4765,7 @@
                         "ObjectName": "Scenario::IntervalModel"
                     },
                     {
-                        "ObjectId": 205,
+                        "ObjectId": 204,
                         "ObjectName": "gfxProcess"
                     },
                     {
@@ -2976,7 +4774,7 @@
                     }
                 ],
                 "Type": 0,
-                "id": 3
+                "id": 7
             },
             {
                 "ObjectName": "Process::Cable",
@@ -3141,11 +4939,11 @@
                         "ObjectName": "Scenario::IntervalModel"
                     },
                     {
-                        "ObjectId": 205,
+                        "ObjectId": 185,
                         "ObjectName": "gfxProcess"
                     },
                     {
-                        "ObjectId": 3,
+                        "ObjectId": 0,
                         "ObjectName": "Inlet"
                     }
                 ],
@@ -3163,7 +4961,7 @@
                         "ObjectName": "Scenario::IntervalModel"
                     },
                     {
-                        "ObjectId": 204,
+                        "ObjectId": 205,
                         "ObjectName": "gfxProcess"
                     },
                     {
@@ -3172,7 +4970,154 @@
                     }
                 ],
                 "Type": 0,
-                "id": 7
+                "id": 9
+            },
+            {
+                "ObjectName": "Process::Cable",
+                "Sink": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 211,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Inlet"
+                    }
+                ],
+                "Source": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 185,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Outlet"
+                    }
+                ],
+                "Type": 0,
+                "id": 10
+            },
+            {
+                "ObjectName": "Process::Cable",
+                "Sink": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 211,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Inlet"
+                    }
+                ],
+                "Source": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 205,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Outlet"
+                    }
+                ],
+                "Type": 0,
+                "id": 11
+            },
+            {
+                "ObjectName": "Process::Cable",
+                "Sink": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 210,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Inlet"
+                    }
+                ],
+                "Source": [
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Scenario::ScenarioDocumentModel"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::BaseScenario"
+                    },
+                    {
+                        "ObjectId": 0,
+                        "ObjectName": "Scenario::IntervalModel"
+                    },
+                    {
+                        "ObjectId": 211,
+                        "ObjectName": "gfxProcess"
+                    },
+                    {
+                        "ObjectId": 1,
+                        "ObjectName": "Outlet"
+                    }
+                ],
+                "Type": 0,
+                "id": 12
             }
         ],
         "ObjectName": "Scenario::ScenarioDocumentModel",
