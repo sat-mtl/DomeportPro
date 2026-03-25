@@ -608,6 +608,13 @@ Window {
         shiftSpeed: 5.0
         mouseEnabled: true
     }
+
+    GamepadController {
+        id: gamepadControl
+        controlledObject: camera
+        speed: 1.0
+        shiftSpeed: 2.0
+    }
     
     UI.TextureSource {
         id: textureDome
