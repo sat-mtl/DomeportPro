@@ -30,6 +30,7 @@ Window {
             property var alpha1 : Score.inlet(process_object, 8);
             property var alpha2 : Score.inlet(process_object, 9);
             property var alpha3 : Score.inlet(process_object, 10);
+            property var alpha4 : Score.inlet(process_object, 11);
         }
 
         QtObject { id: video
@@ -62,6 +63,22 @@ Window {
             }
         }
 
+        QtObject { id: test_pattern
+            property var process_object : Score.find("test_pattern");
+            property var index : Score.inlet(process_object, 0);
+            function setIndex(newIndex) {
+                Score.setValue(index, newIndex)
+            }
+        }
+
+        QtObject { id: image
+            property var process_object : Score.find("image");
+            property var path : Score.inlet(process_object, 5);
+            function setPath(newPath) {
+                Score.setValue(path, newPath)
+            }
+        }
+
         property bool basicFeatures: false
         property var modeList:
             if (basicFeatures) {
@@ -73,6 +90,7 @@ Window {
             else if (Qt.platform.os === "windows") {
                 [
                 "Test pattern",
+                "Image",
                 "Video playback",
                 "NDI",
                 "Spout",
@@ -80,6 +98,7 @@ Window {
             } else if (Qt.platform.os === "osx") {
                 [
                 "Test pattern",
+                "Image",
                 "Video playback",
                 "NDI",
                 "Syphon",
@@ -87,6 +106,7 @@ Window {
             } else {
                 [
                 "Test pattern",
+                "Image",
                 "Video playback",
                 "NDI",
                 ]
@@ -95,9 +115,12 @@ Window {
         property string currentMode: "Test pattern"
         onCurrentModeChanged: {
             console.log("changed mode: " + currentMode)
+            modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
             removeLiveInput()
             if (currentMode === "Test pattern") {
                 displayTestPattern()
+            } else if (currentMode === "Image") {
+                displayImage()
             } else if (currentMode === "Video playback") {
                 displayVideoPlayback()
             } else if (currentMode === "NDI") {
@@ -118,11 +141,12 @@ Window {
             }
         }
         property bool testPatternMode: currentMode === "Test pattern"
+        property bool imageMode: currentMode === "Image"
+        property bool videoPlaybackMode: currentMode === "Video playback"
         property bool ndiMode: currentMode === "NDI"
         property bool spoutMode: currentMode === "Spout"
         property bool syphonMode: currentMode === "Syphon"
         property bool liveMode: ndiMode || spoutMode || syphonMode
-        property bool videoPlaybackMode: currentMode === "Video playback"
 
         property var sourceList: [ "" ]
         property string sourceName: ""
@@ -175,6 +199,15 @@ Window {
         property double cameraFov: 90.0
         property bool cameraFly: false
 
+        property string imageFilePath: ""
+        onImageFilePathChanged: {
+            console.log("imageFilePath: " + imageFilePath)
+            if (imageFilePath === "") return
+            Score.stop()
+            image.setPath(imageFilePath)
+            Score.play()
+        }
+
         property string videoFilePath: ""
         onVideoFilePathChanged: {
             console.log("videoFilePath: " + videoFilePath)
@@ -189,8 +222,10 @@ Window {
         onCurrentFormatChanged: {
             console.log("changed format: " + currentFormat)
             if (currentFormat === "Equirectangular") {
+                test_pattern.setIndex(0)
                 enableEquirectangularFormat()
             } else if (currentFormat === "Domemaster") {
+                test_pattern.setIndex(1)
                 enableDomemasterFormat()
             }
         }
@@ -303,13 +338,15 @@ Window {
         Score.setValue(videoMixer.alpha1, 1.0)
         Score.setValue(videoMixer.alpha2, 0.0)
         Score.setValue(videoMixer.alpha3, 0.0)
+        Score.setValue(videoMixer.alpha4, 0.0)
         Score.play()
     }
 
-    function displayLiveSource() {
+    function displayImage() {
         Score.setValue(videoMixer.alpha1, 0.0)
         Score.setValue(videoMixer.alpha2, 1.0)
         Score.setValue(videoMixer.alpha3, 0.0)
+        Score.setValue(videoMixer.alpha4, 0.0)
         Score.play()
     }
 
@@ -317,6 +354,15 @@ Window {
         Score.setValue(videoMixer.alpha1, 0.0)
         Score.setValue(videoMixer.alpha2, 0.0)
         Score.setValue(videoMixer.alpha3, 1.0)
+        Score.setValue(videoMixer.alpha4, 0.0)
+        Score.play()
+    }
+
+    function displayLiveSource() {
+        Score.setValue(videoMixer.alpha1, 0.0)
+        Score.setValue(videoMixer.alpha2, 0.0)
+        Score.setValue(videoMixer.alpha3, 0.0)
+        Score.setValue(videoMixer.alpha4, 1.0)
         Score.play()
     }
 
@@ -716,13 +762,22 @@ Window {
         width: parent.width - 2 * 12
         x: 12
         spacing: 12
-        visible: domeportModel.videoPlaybackMode
+        
+
+        Button {
+            id: browseImageButton
+            text: "Browse..."
+            Layout.preferredWidth: 60
+            onClicked: imageFileDialog.open()
+            visible: domeportModel.imageMode
+        }
 
         Button {
             id: browseVideoButton
             text: "Browse..."
             Layout.preferredWidth: 60
             onClicked: videoFileDialog.open()
+            visible: domeportModel.videoPlaybackMode
         }
 
         Text {
@@ -731,6 +786,7 @@ Window {
             elide: Text.ElideLeft
             Layout.preferredWidth: 200
             color: "#FFFFFF"
+            visible: domeportModel.videoPlaybackMode
         }
 
         Slider {
@@ -743,6 +799,7 @@ Window {
             onMoved: {
                 video.playheadRequestMsec = value
             }
+            visible: domeportModel.videoPlaybackMode
         }
 
         Button {
@@ -750,6 +807,7 @@ Window {
             text: "Pause"
             Layout.preferredWidth: 60
             onClicked: togglePause()
+            visible: domeportModel.videoPlaybackMode
         }
 
     }
@@ -762,6 +820,39 @@ Window {
             if (!selectedFile) return
             var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
             domeportModel.videoFilePath = filePath
+        }
+    }
+
+    FileDialog {
+        id: imageFileDialog
+        title: "Select Image File"
+        nameFilters: ["Image Files (*.jpg *.jpeg *.png *.gif)", "All Files (*)"]
+        onAccepted: {
+            if (!selectedFile) return
+            var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
+            domeportModel.imageFilePath = filePath
+        }
+    }
+
+    DropArea {
+        anchors.fill: parent
+        keys: ["text/uri-list"]
+        property var imageExtensions: [ ".jpg", ".jpeg", ".png", ".gif" ]
+        property var videoExtensions: [ ".mkv", ".mov", ".mp4", ".h264", ".avi", ".hap", ".mpg", ".mpeg", ".imf", ".mxf", ".mts", ".m2ts", ".mj2", ".webm" ]
+        onDropped: (drop) => {
+            if (drop.hasUrls) {
+                var filePath = new URL(drop.urls[0]).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
+                if (imageExtensions.some(extension => filePath.endsWith(extension))) {
+                    console.log("Dropped image file: ", filePath)
+                    domeportModel.imageFilePath = filePath
+                    domeportModel.currentMode = "Image"
+                }
+                if (videoExtensions.some(extension => filePath.endsWith(extension))) {
+                    console.log("Dropped video file: ", filePath)
+                    domeportModel.videoFilePath = filePath
+                    domeportModel.currentMode = "Video playback"
+                }
+            }
         }
     }
 }
