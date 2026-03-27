@@ -28,22 +28,12 @@ Item {
                                                  | status.lookUp | status.lookDown
                                                  | status.lookLeft | status.lookRight
 
-    Component.onCompleted: {
-        // // create a default gamepad device
-        // let settings = {
-        //     "Name": "Gamepad2",
-        //     "Gamepad": true
-        // }
-        // Score.createDevice("Gamepad2", "2b9c9f9d-f0fa-41a0-8e7a-0eedd4c48b35", settings)
-    }
-
     property bool shiftButton: false
     UI.AddressSource on shiftButton {
         address: "Gamepad:/button/a"
         receiveUpdates: true
     }
     onShiftButtonChanged: {
-        console.log("shiftButton: ", shiftButton)
         if (shiftButton) shiftPressed()
         if (!shiftButton) shiftReleased()
     }
@@ -54,7 +44,6 @@ Item {
         receiveUpdates: true
     }
     onForwardButtonChanged: {
-        console.log("forwardButton: ", forwardButton)
         if (forwardButton) {
             forwardSpeed = moveSpeed
             forwardPressed()
@@ -68,7 +57,6 @@ Item {
         receiveUpdates: true
     }
     onBackButtonChanged: {
-        console.log("backButton: ", backButton)
         if (backButton) {
             backSpeed = moveSpeed
             backPressed()
@@ -82,7 +70,6 @@ Item {
         receiveUpdates: true
     }
     onLeftButtonChanged: {
-        console.log("leftButton: ", leftButton)
         if (leftButton) {
             leftSpeed = moveSpeed
             leftPressed()
@@ -96,7 +83,6 @@ Item {
         receiveUpdates: true
     }
     onRightButtonChanged: {
-        console.log("rightButton: ", rightButton)
         if (rightButton) {
             rightSpeed = moveSpeed
             rightPressed()
@@ -110,7 +96,6 @@ Item {
         receiveUpdates: true
     }
     onForwardBackwardChanged: {
-        console.log("forwardBackward: ", forwardBackward)
         if (forwardBackward < -deadZone) {
             forwardSpeed = -forwardBackward * moveSpeed
             forwardPressed()
@@ -130,7 +115,6 @@ Item {
         receiveUpdates: true
     }
     onLeftRightChanged: {
-        console.log("leftRight: ", leftRight)
         if (leftRight < -deadZone) {
             leftSpeed = -leftRight * moveSpeed
             leftPressed()
@@ -150,8 +134,6 @@ Item {
         receiveUpdates: true
     }
     onUpChanged: {
-        console.log("up: ", up)
-
         if (up > deadZone) {
             upSpeed = up * moveSpeed
             upPressed()
@@ -165,8 +147,6 @@ Item {
         receiveUpdates: true
     }
     onDownChanged: {
-        console.log("down: ", down)
-
         if (down > deadZone) {
             downSpeed = down * moveSpeed
             downPressed()
@@ -180,8 +160,6 @@ Item {
         receiveUpdates: true
     }
     onLookUpDownChanged: {
-        console.log("lookUpDown: ", lookUpDown)
-
         if (lookUpDown < -deadZone) {
             lookUpSpeed = -lookUpDown * lookSpeed
             lookUpPressed()
@@ -201,8 +179,6 @@ Item {
         receiveUpdates: true
     }
     onLookLeftRightChanged: {
-        console.log("lookLeftRight: ", lookLeftRight)
-
         if (lookLeftRight < -deadZone) {
             lookLeftSpeed = -lookLeftRight * lookSpeed
             lookLeftPressed()
