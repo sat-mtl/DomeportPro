@@ -220,7 +220,13 @@ Window {
         property double zoomMax: 200
         property double zoom: 100
         onZoomChanged: {
-            Score.setValue(rotateZoom.zoom, zoom / 100)
+            if (currentFormat === "Domemaster") {
+                Score.setValue(rotateZoom.zoom, zoom / 100)
+            } else if (currentFormat === "Equirectangular") {
+                let zoomedFov = currentModelFov / (zoom / 100)
+                Score.setValue(rotateZoom.zoom, 1)
+                Score.setValue(equirectangularToDomemaster.domemaster_master_output_fov_degrees, zoomedFov)
+            }
         }
 
         property double cameraFovMin: 1.0
@@ -261,11 +267,14 @@ Window {
 
         property var modelList: ["210 degrees", "180 degrees"]
         property string currentModel: "210 degrees"
+        property real currentModelFov: 210
         onCurrentModelChanged: {
             console.log("changed model: " + currentModel)
             if (currentModel === "210 degrees") {
+                currentModelFov = 210
                 load210DegreesModel()
             } else if (currentModel === "180 degrees") {
+                currentModelFov = 180
                 load180DegreesModel()
             }
         }
