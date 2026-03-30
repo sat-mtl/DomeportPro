@@ -1,3 +1,6 @@
+import QtQuick
+import QtQuick3D
+
 import Score.UI as UI
 
 Item {
