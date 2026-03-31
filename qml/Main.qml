@@ -614,6 +614,7 @@ Window {
         controlledObject: camera
         speed: 1.0
         shiftSpeed: 2.0
+        lookSpeed: 0.8
     }
     
     UI.TextureSource {

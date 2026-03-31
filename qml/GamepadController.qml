@@ -19,11 +19,11 @@ Item {
     property real upSpeed: 5
     property real downSpeed: 5
 
-    property real lookSpeed: speed * 0.4
-    property real lookUpSpeed: 0.4
-    property real lookDownSpeed: 0.4
-    property real lookLeftSpeed: 0.4
-    property real lookRightSpeed: 0.4
+    property real lookSpeed: 0.8
+    property real lookUpSpeed: 0.8
+    property real lookDownSpeed: 0.8
+    property real lookLeftSpeed: 0.8
+    property real lookRightSpeed: 0.8
 
     readonly property bool inputsNeedProcessing: status.moveForward | status.moveBack
                                                  | status.moveLeft | status.moveRight
