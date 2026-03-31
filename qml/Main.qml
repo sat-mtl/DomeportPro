@@ -744,7 +744,7 @@ Window {
 
             SpinBox {
                 id: zoomSpinBox
-                Layout.preferredWidth: 50
+                Layout.preferredWidth: 55
                 from: domeportModel.zoomMin
                 to: domeportModel.zoomMax
                 value: domeportModel.zoom
