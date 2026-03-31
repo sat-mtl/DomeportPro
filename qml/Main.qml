@@ -751,6 +751,7 @@ Window {
                 onValueModified: {
                     domeportModel.zoom = value
                 }
+                editable: true
             }
 
             Label {
@@ -769,6 +770,7 @@ Window {
                 onValueModified: {
                     domeportModel.cameraFov = value
                 }
+                editable: true
             }
 
             Button {
