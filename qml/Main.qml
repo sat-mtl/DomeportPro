@@ -6,6 +6,7 @@ import QtQuick3D
 import QtQuick3D.Helpers
 
 import Score.UI as UI
+import domeportpro
 
 Window {
     id: root
