@@ -6,6 +6,7 @@ import QtQuick3D
 import QtQuick3D.Helpers
 
 import Score.UI as UI
+import domeportpro
 
 Window {
     id: root
@@ -106,6 +107,7 @@ Window {
             if (basicFeatures) {
                 [
                 "Test pattern",
+                "Image",
                 "Video playback",
                 ]
             }
@@ -607,6 +609,14 @@ Window {
         speed: 1.0
         shiftSpeed: 5.0
         mouseEnabled: true
+    }
+
+    GamepadController {
+        id: gamepadControl
+        controlledObject: camera
+        speed: 1.0
+        shiftSpeed: 2.0
+        lookSpeed: 0.8
     }
     
     UI.TextureSource {
