@@ -20,6 +20,10 @@ Select your projection format from the interface:
 - **DomeMaster**: circular fisheye projection for full-dome screens
 - **Equirectangular**: 360° panoramic format for dome or VR previewing
 
+## Dome model selection
+
+- **Model**: set the dome coverage angle (180° for a full hemisphere, 210° for an extended dome)
+
 ## Playback controls
 
 When a video file is loaded:
@@ -29,11 +33,13 @@ When a video file is loaded:
 
 ## Camera controls
 
-Navigate the 3D dome view with the built-in camera:
+Navigate the 3D dome view using keyboard or gamepad :
 
-- **Walk mode**: ground-level navigation: `W` `A` `S` `D` moves along the floor plane and the mouse to look around
-- **Fly mode**: free-fly navigation through the scene: use `W` `A` `S` `D` `R` and `F` to move and the mouse to look around
-- **Aperture**: set the dome coverage angle (180° for a full hemisphere, 210° for an extended dome)
+- **Walk / Fly mode**: keep camera at ground level or allow to fly freely
+- **Move**: `W` `A` `S` `D` keys or left analog stick move camera around
+- **Look**: Click and drag mouse or right left analog stick to look around
+- **Up / Down**: `R` `F` keys or analog triggers move up and down (only in fly mode)
+- **Run**: `Shift` key or `A` button to move faster (`X` on PlayStation-based or `B` on Nintendo-based controllers)
 
 ## Use cases
 

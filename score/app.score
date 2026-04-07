@@ -39,8 +39,8 @@
                 "MinDuration": 12400285870,
                 "MinNull": false,
                 "NodalOffset": [
-                    -266,
-                    -4
+                    -105,
+                    -14
                 ],
                 "NodalSlotHeight": 900,
                 "ObjectName": "Scenario::IntervalModel",
@@ -5133,6 +5133,14 @@
         },
         {
             "Children": [
+                {
+                    "Device": {
+                        "Gamepad": true,
+                        "Id": "00000000-0000-0000-0000-000000000000",
+                        "Name": "Gamepad",
+                        "Protocol": "2b9c9f9d-f0fa-41a0-8e7a-0eedd4c48b35"
+                    }
+                }
             ],
             "RootNode": {
             },
