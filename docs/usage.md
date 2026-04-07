@@ -39,7 +39,7 @@ Navigate the 3D dome view using keyboard or gamepad :
 - **Move**: `W` `A` `S` `D` keys or left analog stick move camera around
 - **Look**: Click and drag mouse or right left analog stick to look around
 - **Up / Down**: `R` `F` keys or analog triggers move up and down (only in fly mode)
-- **Run**: `Shift` key or `A` button to move faster
+- **Run**: `Shift` key or `A` button to move faster (`X` on PlayStation-based or `B` on Nintendo-based controllers)
 
 ## Use cases
 
