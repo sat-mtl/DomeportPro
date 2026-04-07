@@ -107,6 +107,7 @@ Window {
             if (basicFeatures) {
                 [
                 "Test pattern",
+                "Image",
                 "Video playback",
                 ]
             }
