@@ -41,6 +41,8 @@ jobs:
           macos-notarize-team-id: ${{ secrets.MAC_NOTARIZE_TEAM_ID }}
           macos-notarize-apple-id: ${{ secrets.MAC_NOTARIZE_APPLE_ID }}
           macos-notarize-password: ${{ secrets.MAC_NOTARIZE_PASSWORD }}
+          score-repo: ogauthiersat/score
+          score-ref: sound-process-video-file
 
       - name: Package custom ossia score app
         uses: ossia/actions/package-custom-app@master
