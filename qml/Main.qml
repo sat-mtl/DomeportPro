@@ -57,7 +57,15 @@ Window {
         }
 
         QtObject { id: video
-            property var process_object : Score.find("Video");
+            property string path: "";
+            onPathChanged: {
+                Score.remove(audio_process_object)
+                video_process_object.path = path
+                audio_process_object = Score.createProcess(Score.rootInterval(), "Sound file", path)
+            }
+
+            property var video_process_object: Score.find("Video");
+            property var audio_process_object: undefined;
             property double videoDurationMsec: 0.0;
             onVideoDurationMsecChanged: {
                 // resize interval to video duration
@@ -81,7 +89,7 @@ Window {
             }
 
             Component.onCompleted: {
-                process_object.loopDurationChanged.connect(onLoopDurationChanged)
+                video_process_object.loopDurationChanged.connect(onLoopDurationChanged)
                 Score.rootInterval().durations.positionChanged.connect(onPositionChanged)
             }
         }
@@ -250,7 +258,7 @@ Window {
             console.log("videoFilePath: " + videoFilePath)
             if (videoFilePath === "") return
             Score.stop()
-            video.process_object.path = videoFilePath
+            video.path = videoFilePath
             Score.play()
         }
 
