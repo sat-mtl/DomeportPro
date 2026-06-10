@@ -7,6 +7,7 @@ import QtQuick3D.Helpers
 
 import Score.UI as UI
 import domeportpro
+import ca.qc.sat.qmlcomponents
 
 Window {
     id: root
@@ -14,7 +15,7 @@ Window {
     height: 720
     visible: true
     title: "Domeport Pro"
-    color: "#1a1a2e"
+    color: Theme.backgroundColor
 
     property bool running: true
 
@@ -654,73 +655,38 @@ Window {
         x: 12
         spacing: 12
 
-        RowLayout {
-            id: modeControls
-            Layout.alignment: Qt.AlignLeft
+        ColumnLayout {
+            id: inputControls
+            Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 
-            Label {
-                id: modeSelectorLabel
-                text: "Input\nMode"
-                horizontalAlignment: Text.AlignHCenter
-                color: "#FFFFFF"
+            // Test pattern stays a dome-only control (it is not a video-input
+            // backend). It drives the existing currentMode lifecycle.
+            Button {
+                text: "Test pattern"
+                font.bold: domeportModel.testPatternMode
+                onClicked: domeportModel.currentMode = "Test pattern"
             }
 
-            ComboBox {
-                id: modeSelector
-                model: domeportModel.modeList
-                onActivated: domeportModel.currentMode = currentValue
-                Component.onCompleted: {
-                    let index = indexOfValue(domeportModel.currentMode)
-                    if (index >=0) {
-                        currentIndex = index
-                    }
+            // Shared multi-backend picker. Camera is intentionally omitted
+            // (DomeportPro has no camera capture). Selecting a backend drives the
+            // existing currentMode logic (Video file -> Video playback; NDI/Spout/
+            // Syphon -> live), and picking a source feeds the existing sourceName
+            // lifecycle (createNDI/Spout/SyphonInput). DOMEPORTPRO_BASIC collapses
+            // the list to Video file only.
+            InputSourceSelector {
+                id: inputSelector
+                Layout.preferredWidth: 280
+                allowedBackends: domeportModel.basicFeatures
+                                 ? ["Video file"]
+                                 : ["Video file", "NDI", "Spout", "Syphon"]
+                sources: domeportModel.sourceList
+
+                onBackendSelected: name => {
+                    domeportModel.currentMode = (name === "Video file") ? "Video playback" : name
                 }
-            }
-
-        }
-
-        RowLayout {
-            id: sourceControls
-            Layout.alignment: Qt.AlignLeft
-            visible: domeportModel.liveMode
-
-            Label {
-                id: sourceSelectorLabel
-                text: "Available\nSources"
-                horizontalAlignment: Text.AlignHCenter
-                color: "#FFFFFF"
-            }
-
-            ComboBox {
-                id: sourceSelector
-                Layout.preferredWidth: 180
-                model: domeportModel.sourceList
-                onActivated: {
-                    domeportModel.sourceName = currentText
-                    currentIndex = 0
-                }
-                onDownChanged: {
-                    if (down && pressed) {
-                        updateSources()
-                        model = domeportModel.sourceList
-                    }
-                }
-            }
-
-            Label {
-                id: sourceNameLabel
-                text: "Current\nSource"
-                horizontalAlignment: Text.AlignHCenter
-                color: "#FFFFFF"
-            }
-
-            TextField {
-                id: sourceNameTextField
-                text: domeportModel.sourceName
-                onEditingFinished: {
-                    domeportModel.sourceName = text
-                }
-                visible: domeportModel.liveMode
+                onSourceSelected: name => { domeportModel.sourceName = name }
+                onVideoFileSelected: path => { domeportModel.videoFilePath = path }
+                onRefreshRequested: () => updateSources()
             }
         }
 
@@ -731,7 +697,7 @@ Window {
             Label {
                 id: formatLabel
                 text: "Format"
-                color: "#FFFFFF"
+                color: Theme.textColor
             }
 
             ComboBox {
@@ -749,7 +715,7 @@ Window {
             Label {
                 id: modelSelectorLabel
                 text: "Model"
-                color: "#FFFFFF"
+                color: Theme.textColor
             }
 
             ComboBox {
@@ -787,7 +753,7 @@ Window {
                 id: cameraFovLabel
                 text: "Camera\nFoV"
                 horizontalAlignment: Text.AlignHCenter
-                color: "#FFFFFF"
+                color: Theme.textColor
             }
 
             SpinBox {
@@ -864,8 +830,8 @@ Window {
             text: domeportModel.videoFilePath
             elide: Text.ElideLeft
             Layout.preferredWidth: 200
-            color: "#FFFFFF"
             visible: domeportModel.videoPlaybackMode
+            color: Theme.textColor
         }
 
         Slider {
