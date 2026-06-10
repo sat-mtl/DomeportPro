@@ -2,7 +2,7 @@ name: Full build Domeport Pro
 
 on:
   push:
-    branches: [ dev, develop ]
+    branches: [ dev, develop, master, main ]
     tags:
       - 'v*'
   workflow_dispatch:
