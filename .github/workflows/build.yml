@@ -2,7 +2,7 @@ name: Build Domeport Pro
 
 on:
   pull_request:
-    branches: [ dev, develop ]
+    branches: [ dev, develop, master, main ]
   workflow_dispatch:
 
 jobs:
