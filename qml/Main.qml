@@ -561,6 +561,16 @@ Window {
                     position.y = cameraHeight
                 }
             }
+
+            onEulerRotationChanged: {
+                // restrict up/down camera motion from -90 to 90 degrees
+                if (eulerRotation.x > 90) {
+                    eulerRotation.x = 90
+                }
+                if (eulerRotation.x < -90) {
+                    eulerRotation.x = -90
+                }
+            }
         }
 
         Model {
