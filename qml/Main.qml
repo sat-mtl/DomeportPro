@@ -218,7 +218,7 @@ Window {
             }
         }
 
-        property double zoomMin: 0
+        property double zoomMin: 1
         property double zoomMax: 200
         property double zoom: 100
         onZoomChanged: {
@@ -226,8 +226,15 @@ Window {
                 Score.setValue(rotateZoom.zoom, zoom / 100)
             } else if (currentFormat === "Equirectangular") {
                 let zoomedFov = currentModelFov / (zoom / 100)
-                Score.setValue(rotateZoom.zoom, 1)
-                Score.setValue(equirectangularToDomemaster.domemaster_master_output_fov_degrees, zoomedFov)
+                if (zoomedFov < 360) {
+                    Score.setValue(equirectangularToDomemaster.domemaster_master_output_fov_degrees, zoomedFov)
+                    Score.setValue(rotateZoom.zoom, 1)
+                } else {
+                    // treat as domemaster over 360 fov, so texture does not repeat
+                    Score.setValue(equirectangularToDomemaster.domemaster_master_output_fov_degrees, 360)
+                    let zoomFactor = 360 / zoomedFov
+                    Score.setValue(rotateZoom.zoom, zoomFactor)
+                }
             }
         }
 
