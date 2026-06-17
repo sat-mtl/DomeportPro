@@ -231,8 +231,8 @@ Window {
             }
         }
 
-        property double cameraFovMin: 1.0
-        property double cameraFovMax: 179.0
+        property double cameraFovMin: 45.0
+        property double cameraFovMax: 120.0
         property double cameraFov: 90.0
         property bool cameraFly: false
 
