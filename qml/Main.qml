@@ -81,8 +81,10 @@ Window {
             }
 
             Component.onCompleted: {
-                process_object.loopDurationChanged.connect(onLoopDurationChanged)
-                Score.rootInterval().durations.positionChanged.connect(onPositionChanged)
+                if(process_object) {
+                  process_object.loopDurationChanged.connect(onLoopDurationChanged)
+                  Score.rootInterval().durations.positionChanged.connect(onPositionChanged)
+                }
             }
         }
 
