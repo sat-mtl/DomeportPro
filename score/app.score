@@ -1,9 +1,9 @@
 {
-    "Commit": "9d3a0b528022fe109ab6958106f6ee4714228854",
+    "Commit": "701284ae9aa46ad0a87474c4bc6860f05ca8eeb0",
     "Document": {
         "BaseScenario": {
             "Constraint": {
-                "Center": 645368138,
+                "Center": 632330153,
                 "DefaultDuration": 12400285870,
                 "EndState": 1,
                 "FullViewRack": [
@@ -39,9 +39,10 @@
                 "MinDuration": 12400285870,
                 "MinNull": false,
                 "NodalOffset": [
-                    -105,
-                    -14
+                    87,
+                    77
                 ],
+                "NodalScale": 1,
                 "NodalSlotHeight": 900,
                 "ObjectName": "Scenario::IntervalModel",
                 "Outlet": {
@@ -94,7 +95,7 @@
                 "Processes": [
                     {
                         "Duration": 12400285870,
-                        "Fragment": "/*{\n\t\"DESCRIPTION\": \"performs a 3d rotation\",\n\t\"CREDIT\": \"by zoidberg\",\n\t\"ISFVSN\": \"2\",\n\t\"CATEGORIES\": [\n\t\t\"Geometry Adjustment\", \"Utility\"\n\t],\n\t\"INPUTS\": [\n\t\t{\n\t\t\t\"NAME\": \"inputImage\",\n\t\t\t\"TYPE\": \"image\"\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"xrot\",\n\t\t\t\"LABEL\": \"X rotate\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"yrot\",\n\t\t\t\"LABEL\": \"Y rotate\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"zrot\",\n\t\t\t\"LABEL\": \"Z rotate\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"zoom\",\n\t\t\t\"LABEL\": \"Zoom Level\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t}\n\t]\n}*/\n\n\nvoid main()\n{\n\tgl_FragColor = IMG_THIS_PIXEL(inputImage);\n}\n",
+                        "Fragment": "/*{\n\t\"DESCRIPTION\": \"performs a 3d rotation\",\n\t\"CREDIT\": \"by zoidberg\",\n\t\"ISFVSN\": \"2\",\n\t\"CATEGORIES\": [\n\t\t\"Geometry Adjustment\", \"Utility\"\n\t],\n\t\"INPUTS\": [\n\t\t{\n\t\t\t\"NAME\": \"inputImage\",\n\t\t\t\"TYPE\": \"image\"\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"xrot\",\n\t\t\t\"LABEL\": \"X rotate\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"yrot\",\n\t\t\t\"LABEL\": \"Y rotate\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"zrot\",\n\t\t\t\"LABEL\": \"Z rotate\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"zoom\",\n\t\t\t\"LABEL\": \"Zoom Level\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 2.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t}\n\t]\n}*/\n\n\nvoid main()\n{\n#if defined(QSHADER_SPIRV)\n    isf_FragColor = texture(inputImage, vec2(1.0 - isf_FragNormCoord.x, 1.0 - isf_FragNormCoord.y));\n#else\n    isf_FragColor = texture(inputImage, isf_FragNormCoord);\n#endif\n}\n",
                         "Height": 300,
                         "Inlets": [
                             {
@@ -218,7 +219,7 @@
                             22
                         ],
                         "StartOffset": 0,
-                        "Vertex": "float\t\tPI_CONST = 3.14159265359;\n\n\n//\twith help from http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-3:-3D-transformation-and-projection.html\n//\tand http://en.wikipedia.org/wiki/Rotation_matrix\n\n\nmat4 view_frustum(\n    float angle_of_view,\n    float aspect_ratio,\n    float z_near,\n    float z_far\n) {\n    return mat4(\n        vec4(1.0/tan(angle_of_view),           0.0, 0.0, 0.0),\n        vec4(0.0, aspect_ratio/tan(angle_of_view),  0.0, 0.0),\n        vec4(0.0, 0.0,    (z_far+z_near)/(z_far-z_near), 1.0),\n        vec4(0.0, 0.0, -2.0*z_far*z_near/(z_far-z_near), 0.0)\n    );\n}\n\nmat4 scale(float x, float y, float z)\n{\n    return mat4(\n        vec4(x,   0.0, 0.0, 0.0),\n        vec4(0.0, y,   0.0, 0.0),\n        vec4(0.0, 0.0, z,   0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nmat4 translate(float x, float y, float z)\n{\n    return mat4(\n        vec4(1.0, 0.0, 0.0, 0.0),\n        vec4(0.0, 1.0, 0.0, 0.0),\n        vec4(0.0, 0.0, 1.0, 0.0),\n        vec4(x,   y,   z,   1.0)\n    );\n}\n\nmat4 rotate_x(float theta)\n{\n    return mat4(\n        vec4(1.0, 0.0, 0.0, 0.0),\n        vec4(0.0, cos(theta*PI_CONST), sin(theta*PI_CONST), 0.0),\n        vec4(0.0, -sin(theta*PI_CONST), cos(theta*PI_CONST), 0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nmat4 rotate_y(float theta)\n{\n    return mat4(\n        vec4(cos(theta*PI_CONST), 0.0, sin(theta*PI_CONST), 0.0),\n        vec4(0.0, 1.0, 0.0, 0.0),\n        vec4(-sin(theta*PI_CONST), 0, cos(theta*PI_CONST), 0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nmat4 rotate_z(float theta)\n{\n    return mat4(\n        vec4(cos(theta*PI_CONST), -sin(theta*PI_CONST), 0.0, 0.0),\n        vec4(sin(theta*PI_CONST), cos(theta*PI_CONST), 0.0, 0.0),\n        vec4(0.0, 0.0, 1.0, 0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nvoid main()\n{\n\tisf_vertShaderInit();\n\t\n\tvec4 position = gl_Position;\n\n    gl_Position = view_frustum(radians(45.0), RENDERSIZE.x/RENDERSIZE.y, 0.0, 2.0)\n        * translate(0.0, 0.0, RENDERSIZE.x/RENDERSIZE.y)\n        * rotate_x(-xrot)\n        * rotate_y(yrot)\n        * rotate_z(-zrot)\n        * scale(zoom*RENDERSIZE.x/RENDERSIZE.y, zoom, zoom)\n        * position;\n\n}\n",
+                        "Vertex": "float\t\tPI_CONST = 3.14159265359;\n\n\n//\twith help from http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Chapter-3:-3D-transformation-and-projection.html\n//\tand http://en.wikipedia.org/wiki/Rotation_matrix\n\n\nmat4 view_frustum(\n    float angle_of_view,\n    float aspect_ratio,\n    float z_near,\n    float z_far\n) {\n    return mat4(\n        vec4(1.0/tan(angle_of_view),           0.0, 0.0, 0.0),\n        vec4(0.0, aspect_ratio/tan(angle_of_view),  0.0, 0.0),\n        vec4(0.0, 0.0,    (z_far+z_near)/(z_far-z_near), 1.0),\n        vec4(0.0, 0.0, -2.0*z_far*z_near/(z_far-z_near), 0.0)\n    );\n}\n\nmat4 scale(float x, float y, float z)\n{\n    return mat4(\n        vec4(x,   0.0, 0.0, 0.0),\n        vec4(0.0, y,   0.0, 0.0),\n        vec4(0.0, 0.0, z,   0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nmat4 translate(float x, float y, float z)\n{\n    return mat4(\n        vec4(1.0, 0.0, 0.0, 0.0),\n        vec4(0.0, 1.0, 0.0, 0.0),\n        vec4(0.0, 0.0, 1.0, 0.0),\n        vec4(x,   y,   z,   1.0)\n    );\n}\n\nmat4 rotate_x(float theta)\n{\n    return mat4(\n        vec4(1.0, 0.0, 0.0, 0.0),\n        vec4(0.0, cos(theta*PI_CONST), sin(theta*PI_CONST), 0.0),\n        vec4(0.0, -sin(theta*PI_CONST), cos(theta*PI_CONST), 0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nmat4 rotate_y(float theta)\n{\n    return mat4(\n        vec4(cos(theta*PI_CONST), 0.0, sin(theta*PI_CONST), 0.0),\n        vec4(0.0, 1.0, 0.0, 0.0),\n        vec4(-sin(theta*PI_CONST), 0.0, cos(theta*PI_CONST), 0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nmat4 rotate_z(float theta)\n{\n    return mat4(\n        vec4(cos(theta*PI_CONST), -sin(theta*PI_CONST), 0.0, 0.0),\n        vec4(sin(theta*PI_CONST), cos(theta*PI_CONST), 0.0, 0.0),\n        vec4(0.0, 0.0, 1.0, 0.0),\n        vec4(0.0, 0.0, 0.0, 1.0)\n    );\n}\n\nvoid main()\n{\n\tisf_vertShaderInit();\n    isf_FragNormCoord = (position + 1.0) * 0.5;\n    \n\tgl_Position = clipSpaceCorrMatrix\n\t\t* view_frustum(radians(45.0), RENDERSIZE.x/RENDERSIZE.y, 0.1, 200.0)\n\t\t* translate(0.0, 0.0, RENDERSIZE.x/RENDERSIZE.y)\n\t\t* rotate_x(-xrot)\n\t\t* rotate_y(yrot)\n\t\t* rotate_z(-zrot)\n\t\t* scale(zoom*RENDERSIZE.x/RENDERSIZE.y, zoom, zoom)\n\t\t* vec4(position, 0.0, 1.0);\n}\n",
                         "id": 210,
                         "uuid": "74ca45ff-92c9-44a0-8f1a-754dea05ee1b"
                     },
@@ -616,11 +617,11 @@
                             }
                         ],
                         "Pos": [
-                            -164.11791218448843,
-                            -2456.0908213171306
+                            -197.11791218448843,
+                            -2506.0908213171306
                         ],
                         "Size": [
-                            210.09375,
+                            209.09375,
                             22
                         ],
                         "StartOffset": 0,
@@ -2337,7 +2338,7 @@
                             -2453.597716263214
                         ],
                         "Size": [
-                            81.890625,
+                            80.890625,
                             22
                         ],
                         "StartOffset": 0,
@@ -4312,8 +4313,8 @@
                             }
                         ],
                         "Pos": [
-                            142.38649640926178,
-                            -2455.5922129157525
+                            147.38649640926178,
+                            -2469.5922129157525
                         ],
                         "Size": [
                             90.671875,
@@ -4365,7 +4366,7 @@
                 "StartDate": 0,
                 "StartState": 0,
                 "ViewMode": 1,
-                "Zoom": 686927.2364361702,
+                "Zoom": 919144.9394106796,
                 "id": 0
             },
             "EndEvent": {
@@ -4664,6 +4665,45 @@
                             "Following": [
                             ],
                             "Name": "Controls",
+                            "Previous": [
+                            ],
+                            "Priorities": [
+                                1,
+                                2,
+                                0
+                            ],
+                            "Unit": "none",
+                            "User": null
+                        },
+                        {
+                            "Accessors": [
+                            ],
+                            "Children": [
+                                {
+                                    "Accessors": [
+                                    ],
+                                    "Following": [
+                                    ],
+                                    "Name": "size",
+                                    "Previous": [
+                                    ],
+                                    "Priorities": [
+                                        1,
+                                        2,
+                                        0
+                                    ],
+                                    "Unit": "none",
+                                    "User": {
+                                        "Vec2f": [
+                                            512,
+                                            512
+                                        ]
+                                    }
+                                }
+                            ],
+                            "Following": [
+                            ],
+                            "Name": "Window",
                             "Previous": [
                             ],
                             "Priorities": [
@@ -5151,6 +5191,6 @@
             "uuid": "05e72689-e02c-4c9d-a0bf-fe84c32d3d96"
         }
     ],
-    "Tag": "3.8.1",
+    "Tag": "3.8.2",
     "Version": 4
 }
