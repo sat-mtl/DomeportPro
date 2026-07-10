@@ -142,7 +142,6 @@ Window {
         property string currentMode: "Test pattern"
         onCurrentModeChanged: {
             console.log("changed mode: " + currentMode)
-            modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
             removeLiveInput()
             if (currentMode === "Test pattern") {
                 displayTestPattern()
