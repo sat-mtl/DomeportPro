@@ -112,8 +112,8 @@ Window {
             removeLiveInput()
             if (currentMode === "Test pattern") {
                 displayTestPattern()
-            } else if (currentMode === "Image") {
-                displayImage()
+            } else if (currentMode === "Image file") {
+                displayImageFile()
             } else if (currentMode === "Video file") {
                 displayVideoFile()
             } else if (currentMode === "NDI") {
@@ -134,7 +134,7 @@ Window {
             }
         }
         property bool testPatternMode: currentMode === "Test pattern"
-        property bool imageMode: currentMode === "Image"
+        property bool imageMode: currentMode === "Image file"
         property bool videoFileMode: currentMode === "Video file"
         property bool ndiMode: currentMode === "NDI"
         property bool spoutMode: currentMode === "Spout"
@@ -218,6 +218,7 @@ Window {
             if (imageFilePath === "") return
             Score.stop()
             image.setPath(imageFilePath)
+            domeportModel.currentMode = "Image file"
             Score.play()
         }
 
@@ -227,6 +228,7 @@ Window {
             if (videoFilePath === "") return
             Score.stop()
             video.process_object.path = videoFilePath
+            domeportModel.currentMode = "Video file"
             Score.play()
         }
 
@@ -350,7 +352,7 @@ Window {
         Score.play()
     }
 
-    function displayImage() {
+    function displayImageFile() {
         Score.setValue(videoMixer.alpha1, 0.0)
         Score.setValue(videoMixer.alpha2, 1.0)
         Score.setValue(videoMixer.alpha3, 0.0)
@@ -635,21 +637,22 @@ Window {
 
             // Shared multi-backend picker. Camera is intentionally omitted
             // (DomeportPro has no camera capture). Selecting a backend drives the
-            // existing currentMode logic (Video file; NDI/Spout/
+            // existing currentMode logic (Video file; Image file; NDI/Spout/
             // Syphon -> live), and picking a source feeds the existing sourceName
             // lifecycle (createNDI/Spout/SyphonInput). DOMEPORTPRO_BASIC collapses
-            // the list to Video file only.
+            // the list to video and image file only.
             InputSourceSelector {
                 id: inputSelector
                 Layout.preferredWidth: 280
                 allowedBackends: domeportModel.basicFeatures
-                                 ? ["Video file"]
-                                 : ["Video file", "NDI", "Spout", "Syphon"]
+                                 ? ["Video file", "Image file"]
+                                 : ["Video file", "Image file", "NDI", "Spout", "Syphon"]
                 sources: domeportModel.sourceList
 
                 onBackendSelected: name => { domeportModel.currentMode = name }
                 onSourceSelected: name => { domeportModel.sourceName = name }
                 onVideoFileSelected: path => { domeportModel.videoFilePath = path }
+                onImageFileSelected: path => { domeportModel.imageFilePath = path }
                 onRefreshRequested: () => updateSources()
             }
         }
@@ -771,14 +774,6 @@ Window {
         width: parent.width - 2 * 12
         x: 12
         spacing: 12
-        
-        Button {
-            id: browseImageButton
-            text: "Browse..."
-            Layout.preferredWidth: 60
-            onClicked: imageFileDialog.open()
-            visible: domeportModel.imageMode
-        }
 
         Slider {
             id: transportSlider
@@ -803,17 +798,6 @@ Window {
 
     }
 
-    FileDialog {
-        id: imageFileDialog
-        title: "Select Image File"
-        nameFilters: ["Image Files (*.jpg *.jpeg *.png *.gif)", "All Files (*)"]
-        onAccepted: {
-            if (!selectedFile) return
-            var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
-            domeportModel.imageFilePath = filePath
-        }
-    }
-
     DropArea {
         anchors.fill: parent
         keys: ["text/uri-list"]
@@ -824,13 +808,11 @@ Window {
                 var filePath = new URL(drop.urls[0]).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
                 if (imageExtensions.some(extension => filePath.endsWith(extension))) {
                     console.log("Dropped image file: ", filePath)
-                    domeportModel.imageFilePath = filePath
-                    domeportModel.currentMode = "Image"
+                    inputSelector.imageFilePath = filePath
                 }
                 if (videoExtensions.some(extension => filePath.endsWith(extension))) {
                     console.log("Dropped video file: ", filePath)
-                    domeportModel.videoFilePath = filePath
-                    domeportModel.currentMode = "Video file"
+                    inputSelector.videoFilePath = filePath
                 }
             }
         }
