@@ -807,30 +807,12 @@ Window {
         x: 12
         spacing: 12
         
-
         Button {
             id: browseImageButton
             text: "Browse..."
             Layout.preferredWidth: 60
             onClicked: imageFileDialog.open()
             visible: domeportModel.imageMode
-        }
-
-        Button {
-            id: browseVideoButton
-            text: "Browse..."
-            Layout.preferredWidth: 60
-            onClicked: videoFileDialog.open()
-            visible: domeportModel.videoPlaybackMode
-        }
-
-        Text {
-            id: videoFilePathLabel
-            text: domeportModel.videoFilePath
-            elide: Text.ElideLeft
-            Layout.preferredWidth: 200
-            visible: domeportModel.videoPlaybackMode
-            color: Theme.textColor
         }
 
         Slider {
@@ -854,17 +836,6 @@ Window {
             visible: domeportModel.videoPlaybackMode
         }
 
-    }
-
-    FileDialog {
-        id: videoFileDialog
-        title: "Select Video File"
-        nameFilters: ["Video Files (*.mkv *.mov *.mp4 *.h264 *.avi *.hap *.mpg *.mpeg *.imf *.mxf *.mts *.m2ts *.mj2 *.webm)", "All Files (*)"]
-        onAccepted: {
-            if (!selectedFile) return
-            var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
-            domeportModel.videoFilePath = filePath
-        }
     }
 
     FileDialog {
