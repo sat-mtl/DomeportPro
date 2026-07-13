@@ -106,39 +106,6 @@ Window {
         }
 
         property bool basicFeatures: false
-        property var modeList:
-            if (basicFeatures) {
-                [
-                "Test pattern",
-                "Image",
-                "Video playback",
-                ]
-            }
-            else if (Qt.platform.os === "windows") {
-                [
-                "Test pattern",
-                "Image",
-                "Video playback",
-                "NDI",
-                "Spout",
-                ]
-            } else if (Qt.platform.os === "osx") {
-                [
-                "Test pattern",
-                "Image",
-                "Video playback",
-                "NDI",
-                "Syphon",
-                ]
-            } else {
-                [
-                "Test pattern",
-                "Image",
-                "Video playback",
-                "NDI",
-                ]
-            }
-
         property string currentMode: "Test pattern"
         onCurrentModeChanged: {
             console.log("changed mode: " + currentMode)
