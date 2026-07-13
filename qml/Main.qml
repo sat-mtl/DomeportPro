@@ -114,8 +114,8 @@ Window {
                 displayTestPattern()
             } else if (currentMode === "Image") {
                 displayImage()
-            } else if (currentMode === "Video playback") {
-                displayVideoPlayback()
+            } else if (currentMode === "Video file") {
+                displayVideoFile()
             } else if (currentMode === "NDI") {
                 updateSources()
                 sourceName = ndiSourceName
@@ -135,7 +135,7 @@ Window {
         }
         property bool testPatternMode: currentMode === "Test pattern"
         property bool imageMode: currentMode === "Image"
-        property bool videoPlaybackMode: currentMode === "Video playback"
+        property bool videoFileMode: currentMode === "Video file"
         property bool ndiMode: currentMode === "NDI"
         property bool spoutMode: currentMode === "Spout"
         property bool syphonMode: currentMode === "Syphon"
@@ -358,7 +358,7 @@ Window {
         Score.play()
     }
 
-    function displayVideoPlayback() {
+    function displayVideoFile() {
         Score.setValue(videoMixer.alpha1, 0.0)
         Score.setValue(videoMixer.alpha2, 0.0)
         Score.setValue(videoMixer.alpha3, 1.0)
@@ -635,7 +635,7 @@ Window {
 
             // Shared multi-backend picker. Camera is intentionally omitted
             // (DomeportPro has no camera capture). Selecting a backend drives the
-            // existing currentMode logic (Video file -> Video playback; NDI/Spout/
+            // existing currentMode logic (Video file; NDI/Spout/
             // Syphon -> live), and picking a source feeds the existing sourceName
             // lifecycle (createNDI/Spout/SyphonInput). DOMEPORTPRO_BASIC collapses
             // the list to Video file only.
@@ -647,9 +647,7 @@ Window {
                                  : ["Video file", "NDI", "Spout", "Syphon"]
                 sources: domeportModel.sourceList
 
-                onBackendSelected: name => {
-                    domeportModel.currentMode = (name === "Video file") ? "Video playback" : name
-                }
+                onBackendSelected: name => { domeportModel.currentMode = name }
                 onSourceSelected: name => { domeportModel.sourceName = name }
                 onVideoFileSelected: path => { domeportModel.videoFilePath = path }
                 onRefreshRequested: () => updateSources()
@@ -792,7 +790,7 @@ Window {
             onMoved: {
                 video.playheadRequestMsec = value
             }
-            visible: domeportModel.videoPlaybackMode
+            visible: domeportModel.videoFileMode
         }
 
         Button {
@@ -800,7 +798,7 @@ Window {
             text: "Pause"
             Layout.preferredWidth: 60
             onClicked: togglePause()
-            visible: domeportModel.videoPlaybackMode
+            visible: domeportModel.videoFileMode
         }
 
     }
@@ -832,7 +830,7 @@ Window {
                 if (videoExtensions.some(extension => filePath.endsWith(extension))) {
                     console.log("Dropped video file: ", filePath)
                     domeportModel.videoFilePath = filePath
-                    domeportModel.currentMode = "Video playback"
+                    domeportModel.currentMode = "Video file"
                 }
             }
         }
