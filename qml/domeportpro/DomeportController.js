@@ -414,11 +414,13 @@ function handleFileDrop(drop) {
         // after a video would snap back to "Video file").
         if (imageExtensions.some(extension => filePath.endsWith(extension))) {
             console.log("Dropped image file: ", filePath)
+            inputSelector.imageFilePath = ""
             inputSelector.currentBackend = "Image file"
             inputSelector.imageFilePath = filePath
         }
         if (videoExtensions.some(extension => filePath.endsWith(extension))) {
             console.log("Dropped video file: ", filePath)
+            inputSelector.videoFilePath = ""
             inputSelector.currentBackend = "Video file"
             inputSelector.videoFilePath = filePath
         }
