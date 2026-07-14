@@ -407,12 +407,19 @@ function applyModel() {
 function handleFileDrop(drop) {
     if (drop.hasUrls) {
         var filePath = new URL(drop.urls[0]).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
+        // Align the selector's backend with the dropped file type BEFORE setting
+        // the path: the shared InputSourceSelector re-emits backendSelected with
+        // its current backend on every path change, which would otherwise clobber
+        // the mode back to whatever the combo last showed (e.g. an image dropped
+        // after a video would snap back to "Video file").
         if (imageExtensions.some(extension => filePath.endsWith(extension))) {
             console.log("Dropped image file: ", filePath)
+            inputSelector.currentBackend = "Image file"
             inputSelector.imageFilePath = filePath
         }
         if (videoExtensions.some(extension => filePath.endsWith(extension))) {
             console.log("Dropped video file: ", filePath)
+            inputSelector.currentBackend = "Video file"
             inputSelector.videoFilePath = filePath
         }
     }
