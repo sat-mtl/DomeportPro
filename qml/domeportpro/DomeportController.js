@@ -19,12 +19,12 @@ var videoExtensions = [ ".mkv", ".mov", ".mp4", ".h264", ".avi", ".hap", ".mpg",
 
 // ---- Dome model ----
 function load210DegreesModel() {
-    dome.source = "../sato210.mesh"
+    dome.source = "resources/models/sato210.mesh"
     Score.setValue(domeportModel.equirectangularToDomemaster.domemaster_master_output_fov_degrees, 210.0)
 }
 
 function load180DegreesModel() {
-    dome.source = "../sato180.mesh"
+    dome.source = "resources/models/sato180.mesh"
     Score.setValue(domeportModel.equirectangularToDomemaster.domemaster_master_output_fov_degrees, 180.0)
 }
 

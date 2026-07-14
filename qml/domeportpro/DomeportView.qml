@@ -101,14 +101,14 @@ Item {
                     property TextureInput tex: TextureInput {
                         enabled: true
                         texture: Texture {
-                            source: "../GridBlack.jpg"
+                            source: "resources/images/GridBlack.jpg"
                             generateMipmaps: true 
                             mipFilter: Texture.Linear
                         }
                     }
                     shadingMode: CustomMaterial.Unshaded
-                    vertexShader: "../groundshader.vert"
-                    fragmentShader: "../groundshader.frag"
+                    vertexShader: "resources/shaders/groundshader.vert"
+                    fragmentShader: "resources/shaders/groundshader.frag"
                 }
 
             ]
@@ -116,7 +116,7 @@ Item {
 
         Model {
             id: dome
-            source: "../sato210.mesh"
+            source: "resources/models/sato210.mesh"
             position: Qt.vector3d(0, 0, 0)
             scale: Qt.vector3d(100., 100., 100.)
 
@@ -129,8 +129,8 @@ Item {
                         }
                     }
                     shadingMode: CustomMaterial.Unshaded
-                    vertexShader: "../domeshader.vert"
-                    fragmentShader: "../domeshader.frag"
+                    vertexShader: "resources/shaders/domeshader.vert"
+                    fragmentShader: "resources/shaders/domeshader.frag"
                 }
             ]
         }
