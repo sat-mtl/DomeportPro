@@ -7,6 +7,7 @@ import QtQuick3D.Helpers
 
 import Score.UI as UI
 import domeportpro
+import ca.qc.sat.qmlcomponents
 
 Window {
     id: root
@@ -14,7 +15,7 @@ Window {
     height: 720
     visible: true
     title: "Domeport Pro"
-    color: "#1a1a2e"
+    color: Theme.backgroundColor
 
     property bool running: true
 
@@ -105,50 +106,16 @@ Window {
         }
 
         property bool basicFeatures: false
-        property var modeList:
-            if (basicFeatures) {
-                [
-                "Test pattern",
-                "Image",
-                "Video playback",
-                ]
-            }
-            else if (Qt.platform.os === "windows") {
-                [
-                "Test pattern",
-                "Image",
-                "Video playback",
-                "NDI",
-                "Spout",
-                ]
-            } else if (Qt.platform.os === "osx") {
-                [
-                "Test pattern",
-                "Image",
-                "Video playback",
-                "NDI",
-                "Syphon",
-                ]
-            } else {
-                [
-                "Test pattern",
-                "Image",
-                "Video playback",
-                "NDI",
-                ]
-            }
-
         property string currentMode: "Test pattern"
         onCurrentModeChanged: {
             console.log("changed mode: " + currentMode)
-            modeSelector.currentIndex = modeSelector.indexOfValue(domeportModel.currentMode)
             removeLiveInput()
             if (currentMode === "Test pattern") {
                 displayTestPattern()
-            } else if (currentMode === "Image") {
-                displayImage()
-            } else if (currentMode === "Video playback") {
-                displayVideoPlayback()
+            } else if (currentMode === "Image file") {
+                displayImageFile()
+            } else if (currentMode === "Video file") {
+                displayVideoFile()
             } else if (currentMode === "NDI") {
                 updateSources()
                 sourceName = ndiSourceName
@@ -167,8 +134,8 @@ Window {
             }
         }
         property bool testPatternMode: currentMode === "Test pattern"
-        property bool imageMode: currentMode === "Image"
-        property bool videoPlaybackMode: currentMode === "Video playback"
+        property bool imageMode: currentMode === "Image file"
+        property bool videoFileMode: currentMode === "Video file"
         property bool ndiMode: currentMode === "NDI"
         property bool spoutMode: currentMode === "Spout"
         property bool syphonMode: currentMode === "Syphon"
@@ -251,6 +218,7 @@ Window {
             if (imageFilePath === "") return
             Score.stop()
             image.setPath(imageFilePath)
+            domeportModel.currentMode = "Image file"
             Score.play()
         }
 
@@ -260,6 +228,7 @@ Window {
             if (videoFilePath === "") return
             Score.stop()
             video.process_object.path = videoFilePath
+            domeportModel.currentMode = "Video file"
             Score.play()
         }
 
@@ -383,7 +352,7 @@ Window {
         Score.play()
     }
 
-    function displayImage() {
+    function displayImageFile() {
         Score.setValue(videoMixer.alpha1, 0.0)
         Score.setValue(videoMixer.alpha2, 1.0)
         Score.setValue(videoMixer.alpha3, 0.0)
@@ -391,7 +360,7 @@ Window {
         Score.play()
     }
 
-    function displayVideoPlayback() {
+    function displayVideoFile() {
         Score.setValue(videoMixer.alpha1, 0.0)
         Score.setValue(videoMixer.alpha2, 0.0)
         Score.setValue(videoMixer.alpha3, 1.0)
@@ -654,73 +623,37 @@ Window {
         x: 12
         spacing: 12
 
-        RowLayout {
-            id: modeControls
-            Layout.alignment: Qt.AlignLeft
+        ColumnLayout {
+            id: inputControls
+            Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 
-            Label {
-                id: modeSelectorLabel
-                text: "Input\nMode"
-                horizontalAlignment: Text.AlignHCenter
-                color: "#FFFFFF"
+            // Test pattern stays a dome-only control (it is not a video-input
+            // backend). It drives the existing currentMode lifecycle.
+            Button {
+                text: "Test pattern"
+                font.bold: domeportModel.testPatternMode
+                onClicked: domeportModel.currentMode = "Test pattern"
             }
 
-            ComboBox {
-                id: modeSelector
-                model: domeportModel.modeList
-                onActivated: domeportModel.currentMode = currentValue
-                Component.onCompleted: {
-                    let index = indexOfValue(domeportModel.currentMode)
-                    if (index >=0) {
-                        currentIndex = index
-                    }
-                }
-            }
+            // Shared multi-backend picker. Camera is intentionally omitted
+            // (DomeportPro has no camera capture). Selecting a backend drives the
+            // existing currentMode logic (Video file; Image file; NDI/Spout/
+            // Syphon -> live), and picking a source feeds the existing sourceName
+            // lifecycle (createNDI/Spout/SyphonInput). DOMEPORTPRO_BASIC collapses
+            // the list to video and image file only.
+            InputSourceSelector {
+                id: inputSelector
+                Layout.preferredWidth: 280
+                allowedBackends: domeportModel.basicFeatures
+                                 ? ["Video file", "Image file"]
+                                 : ["Video file", "Image file", "NDI", "Spout", "Syphon"]
+                sources: domeportModel.sourceList
 
-        }
-
-        RowLayout {
-            id: sourceControls
-            Layout.alignment: Qt.AlignLeft
-            visible: domeportModel.liveMode
-
-            Label {
-                id: sourceSelectorLabel
-                text: "Available\nSources"
-                horizontalAlignment: Text.AlignHCenter
-                color: "#FFFFFF"
-            }
-
-            ComboBox {
-                id: sourceSelector
-                Layout.preferredWidth: 180
-                model: domeportModel.sourceList
-                onActivated: {
-                    domeportModel.sourceName = currentText
-                    currentIndex = 0
-                }
-                onDownChanged: {
-                    if (down && pressed) {
-                        updateSources()
-                        model = domeportModel.sourceList
-                    }
-                }
-            }
-
-            Label {
-                id: sourceNameLabel
-                text: "Current\nSource"
-                horizontalAlignment: Text.AlignHCenter
-                color: "#FFFFFF"
-            }
-
-            TextField {
-                id: sourceNameTextField
-                text: domeportModel.sourceName
-                onEditingFinished: {
-                    domeportModel.sourceName = text
-                }
-                visible: domeportModel.liveMode
+                onBackendSelected: name => { domeportModel.currentMode = name }
+                onSourceSelected: name => { domeportModel.sourceName = name }
+                onVideoFileSelected: path => { domeportModel.videoFilePath = path }
+                onImageFileSelected: path => { domeportModel.imageFilePath = path }
+                onRefreshRequested: () => updateSources()
             }
         }
 
@@ -731,7 +664,7 @@ Window {
             Label {
                 id: formatLabel
                 text: "Format"
-                color: "#FFFFFF"
+                color: Theme.textColor
             }
 
             ComboBox {
@@ -749,7 +682,7 @@ Window {
             Label {
                 id: modelSelectorLabel
                 text: "Model"
-                color: "#FFFFFF"
+                color: Theme.textColor
             }
 
             ComboBox {
@@ -787,7 +720,7 @@ Window {
                 id: cameraFovLabel
                 text: "Camera\nFoV"
                 horizontalAlignment: Text.AlignHCenter
-                color: "#FFFFFF"
+                color: Theme.textColor
             }
 
             SpinBox {
@@ -841,32 +774,6 @@ Window {
         width: parent.width - 2 * 12
         x: 12
         spacing: 12
-        
-
-        Button {
-            id: browseImageButton
-            text: "Browse..."
-            Layout.preferredWidth: 60
-            onClicked: imageFileDialog.open()
-            visible: domeportModel.imageMode
-        }
-
-        Button {
-            id: browseVideoButton
-            text: "Browse..."
-            Layout.preferredWidth: 60
-            onClicked: videoFileDialog.open()
-            visible: domeportModel.videoPlaybackMode
-        }
-
-        Text {
-            id: videoFilePathLabel
-            text: domeportModel.videoFilePath
-            elide: Text.ElideLeft
-            Layout.preferredWidth: 200
-            color: "#FFFFFF"
-            visible: domeportModel.videoPlaybackMode
-        }
 
         Slider {
             id: transportSlider
@@ -878,7 +785,7 @@ Window {
             onMoved: {
                 video.playheadRequestMsec = value
             }
-            visible: domeportModel.videoPlaybackMode
+            visible: domeportModel.videoFileMode
         }
 
         Button {
@@ -886,31 +793,9 @@ Window {
             text: "Pause"
             Layout.preferredWidth: 60
             onClicked: togglePause()
-            visible: domeportModel.videoPlaybackMode
+            visible: domeportModel.videoFileMode
         }
 
-    }
-
-    FileDialog {
-        id: videoFileDialog
-        title: "Select Video File"
-        nameFilters: ["Video Files (*.mkv *.mov *.mp4 *.h264 *.avi *.hap *.mpg *.mpeg *.imf *.mxf *.mts *.m2ts *.mj2 *.webm)", "All Files (*)"]
-        onAccepted: {
-            if (!selectedFile) return
-            var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
-            domeportModel.videoFilePath = filePath
-        }
-    }
-
-    FileDialog {
-        id: imageFileDialog
-        title: "Select Image File"
-        nameFilters: ["Image Files (*.jpg *.jpeg *.png *.gif)", "All Files (*)"]
-        onAccepted: {
-            if (!selectedFile) return
-            var filePath = new URL(selectedFile).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
-            domeportModel.imageFilePath = filePath
-        }
     }
 
     DropArea {
@@ -923,13 +808,11 @@ Window {
                 var filePath = new URL(drop.urls[0]).pathname.substr(Qt.platform.os === "windows" ? 1 : 0);
                 if (imageExtensions.some(extension => filePath.endsWith(extension))) {
                     console.log("Dropped image file: ", filePath)
-                    domeportModel.imageFilePath = filePath
-                    domeportModel.currentMode = "Image"
+                    inputSelector.imageFilePath = filePath
                 }
                 if (videoExtensions.some(extension => filePath.endsWith(extension))) {
                     console.log("Dropped video file: ", filePath)
-                    domeportModel.videoFilePath = filePath
-                    domeportModel.currentMode = "Video playback"
+                    inputSelector.videoFilePath = filePath
                 }
             }
         }
