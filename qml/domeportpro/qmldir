@@ -1,2 +1,5 @@
 module domeportpro
+DomeportPro 1.0 DomeportPro.qml
+DomeportModel 1.0 DomeportModel.qml
+DomeportView 1.0 DomeportView.qml
 GamepadController 1.0 Components/GamepadController.qml
