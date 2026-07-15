@@ -255,8 +255,6 @@ Item {
                             onRefreshRequested: () => Controller.updateSources()
                         }
 
-                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.separatorColor }
-
                         // Transport: play/pause button and a scrub slider,
                         // shown only in Video file mode.
                         RowLayout {
@@ -264,10 +262,9 @@ Item {
                             Layout.fillWidth: true
                             spacing: Theme.spacing
 
-                            CustomLabel { text: "Transport" }
-
                             CustomButton {
-                                Layout.preferredWidth: 90
+                                Layout.preferredWidth: 60
+                                height: Theme.buttonHeight
                                 text: domeportModel.running ? "Pause" : "Play"
                                 onClicked: Controller.togglePause()
                             }
@@ -282,6 +279,8 @@ Item {
                                 onMoved: domeportModel.video.playheadRequestMsec = value
                             }
                         }
+
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.separatorColor }
 
                         RowLayout {
                             Layout.fillWidth: true
