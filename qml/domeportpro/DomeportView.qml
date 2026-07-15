@@ -10,19 +10,21 @@ import domeportpro
 
 import "DomeportController.js" as Controller
 
-// View — the DomeportPro user interface (3D scene + on-screen controls).
+// View — the DomeportPro user interface (3D scene + a right-hand SidePanel of
+// controls, laid out after the gallery SidePanel example).
 //
 // Presentation only: user interactions set state on `domeportModel` or invoke a
 // `Controller.*` action, and the model's change signals are routed back to the
 // controller through the Connections blocks below. DomeportController.js is
 // imported as a non-library resource, so its functions run in this component's
-// scope and reach the element ids (dome, camera, transportButton, …), the
+// scope and reach the element ids (dome, camera, inputSelector, …), the
 // injected `domeportModel` and the Score/Util context objects directly.
 Item {
     id: view
 
-    // The application state, injected by DomeportPro.qml.
+    // The application state and the host window, injected by DomeportPro.qml.
     property var domeportModel
+    property var appWindow
 
     Component.onCompleted: Controller.initialize()
 
@@ -49,6 +51,7 @@ Item {
         function onPlayheadRequestMsecChanged() { Controller.applyPlayheadRequest() }
     }
 
+    // ---- 3D scene ----
     View3D {
         id: view3d
         anchors.fill: parent
@@ -151,7 +154,7 @@ Item {
         shiftSpeed: 2.0
         lookSpeed: 0.8
     }
-    
+
     UI.TextureSource {
         id: textureDome
         width: 4096
@@ -161,191 +164,259 @@ Item {
         visible: false
     }
 
-    RowLayout {
-        id: topRow
-        anchors.top: parent.top
-        width: parent.width - 2 * 12
-        x: 12
-        spacing: 12
-
-        ColumnLayout {
-            id: inputControls
-            Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-
-            // Test pattern stays a dome-only control (it is not a video-input
-            // backend). It drives the existing currentMode lifecycle.
-            Button {
-                text: "Test pattern"
-                font.bold: domeportModel.testPatternMode
-                onClicked: domeportModel.currentMode = "Test pattern"
-            }
-
-            // Shared multi-backend picker. Camera is intentionally omitted
-            // (DomeportPro has no camera capture). Selecting a backend drives the
-            // existing currentMode logic (Video file; Image file; NDI/Spout/
-            // Syphon -> live), and picking a source feeds the existing sourceName
-            // lifecycle (createNDI/Spout/SyphonInput). DOMEPORTPRO_BASIC collapses
-            // the list to video and image file only.
-            InputSourceSelector {
-                id: inputSelector
-                Layout.preferredWidth: 280
-                allowedBackends: domeportModel.basicFeatures
-                                 ? ["Video file", "Image file"]
-                                 : ["Video file", "Image file", "NDI", "Spout", "Syphon"]
-                sources: domeportModel.sourceList
-
-                onBackendSelected: name => { domeportModel.currentMode = name }
-                onSourceSelected: name => { domeportModel.sourceName = name }
-                onVideoFileSelected: path => { domeportModel.videoFilePath = path }
-                onImageFileSelected: path => { domeportModel.imageFilePath = path }
-                onRefreshRequested: () => Controller.updateSources()
-            }
-        }
-
-        RowLayout {
-            id: configControls
-            Layout.alignment: Qt.AlignRight
-
-            Label {
-                id: formatLabel
-                text: "Format"
-                color: Theme.textColor
-            }
-
-            ComboBox {
-                id: formatSelector
-                model: domeportModel.formatList
-                onActivated: domeportModel.currentFormat = currentValue
-                Component.onCompleted: {
-                    let index = indexOfValue(domeportModel.currentFormat)
-                    if (index >=0) {
-                        currentIndex = index
-                    }
-                }
-            }
-
-            Label {
-                id: modelSelectorLabel
-                text: "Model"
-                color: Theme.textColor
-            }
-
-            ComboBox {
-                id:  modelSelector
-                model: domeportModel.modelList
-                onActivated: domeportModel.currentModel = currentValue
-                Component.onCompleted: {
-                    let index = indexOfValue(domeportModel.currentModel)
-                    if (index >=0) {
-                        currentIndex = index
-                    }
-                }
-            }
-
-            Label {
-                id: zoomLabel
-                text: "Zoom"
-                horizontalAlignment: Text.AlignHCenter
-                color: "#FFFFFF"
-            }
-
-            SpinBox {
-                id: zoomSpinBox
-                Layout.preferredWidth: 55
-                from: domeportModel.zoomMin
-                to: domeportModel.zoomMax
-                value: domeportModel.zoom
-                onValueModified: {
-                    domeportModel.zoom = value
-                }
-                editable: true
-            }
-
-            Label {
-                id: cameraFovLabel
-                text: "Camera\nFoV"
-                horizontalAlignment: Text.AlignHCenter
-                color: Theme.textColor
-            }
-
-            SpinBox {
-                id: cameraFovSpinBox
-                Layout.preferredWidth: 50
-                from: domeportModel.cameraFovMin
-                to: domeportModel.cameraFovMax
-                value: domeportModel.cameraFov
-                onValueModified: {
-                    domeportModel.cameraFov = value
-                }
-                editable: true
-            }
-
-            Button {
-                id: flyButton
-                text: { domeportModel.cameraFly ? "Walk" : "Fly" }
-                Layout.preferredWidth: 50
-                onClicked: Controller.toggleCameraFlyMode()
-            }
-
-            Button {
-                id: transportButton
-                visible: true
-                text: "Stop"
-                Layout.preferredWidth: 50
-                onClicked: Controller.toggleTransport()
-            }
-
-            Button {
-                text: "Debug"
-                Layout.preferredWidth: 50
-                Layout.alignment: Qt.AlignRight
-                onClicked: debugView.visible = !debugView.visible
-                DebugView {
-                    id: debugView
-                    source: view3d
-                    visible: false
-                    anchors.top: parent.bottom
-                    anchors.right: parent.right
-                }
-            }
-
-        }
-
-    }
-
-    RowLayout {
-        id: playbackControls
-        anchors.bottom: parent.bottom
-        width: parent.width - 2 * 12
-        x: 12
-        spacing: 12
-
-        Slider {
-            id: transportSlider
-            Layout.fillWidth: true
-            from: 0.0
-            to: domeportModel.video.videoDurationMsec
-            value: domeportModel.video.playheadMsec
-            stepSize: 0.0
-            onMoved: {
-                domeportModel.video.playheadRequestMsec = value
-            }
-            visible: domeportModel.videoFileMode
-        }
-
-        Button {
-            id: pauseButton
-            text: "Pause"
-            Layout.preferredWidth: 60
-            onClicked: Controller.togglePause()
-            visible: domeportModel.videoFileMode
-        }
-
-    }
-
+    // ---- File drag-and-drop onto the scene ----
     DropArea {
         anchors.fill: parent
         keys: ["text/uri-list"]
         onDropped: (drop) => Controller.handleFileDrop(drop)
+    }
+
+    // ---- Render statistics overlay, pinned to the window's top-left ----
+    DebugView {
+        id: debugView
+        source: view3d
+        visible: debugSwitch.checked
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.margins: Theme.padding
+    }
+
+    // ---- Controls, in a slide-over panel on the right ----
+    SidePanel {
+        anchors.fill: parent
+        panelWidth: 420
+        edge: Qt.RightEdge
+        open: true
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 0
+
+            TabBar {
+                id: panelTabs
+                Layout.fillWidth: true
+
+                CustomTabButton { text: "Source" }
+                CustomTabButton { text: "Options" }
+            }
+
+            StackLayout {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                currentIndex: panelTabs.currentIndex
+
+                // ---- Source tab ----
+                ScrollView {
+                    id: sourceScroll
+                    contentWidth: availableWidth
+                    clip: true
+
+                    ColumnLayout {
+                        width: sourceScroll.availableWidth - 2 * Theme.padding
+                        x: Theme.padding
+                        spacing: Theme.spacing
+
+                        CustomLabel {
+                            text: "Source"
+                            font.bold: true
+                            font.pixelSize: Theme.fontSizeTitle
+                            Layout.topMargin: Theme.padding
+                        }
+
+                        // Test pattern is a dome-only source (not a video-input
+                        // backend). ON selects it; OFF re-applies the input
+                        // selector's current backend. `checked` reflects the
+                        // live mode, so picking a source also unchecks it.
+                        CustomSwitch {
+                            text: "Test pattern"
+                            checked: domeportModel.testPatternMode
+                            onToggled: domeportModel.currentMode = checked
+                                       ? "Test pattern"
+                                       : inputSelector.currentBackend
+                        }
+
+                        // Shared multi-backend picker. Camera is intentionally
+                        // omitted (DomeportPro has no camera capture). Selecting a
+                        // backend drives currentMode; picking a source feeds the
+                        // sourceName lifecycle. DOMEPORTPRO_BASIC collapses the
+                        // list to video and image file only.
+                        InputSourceSelector {
+                            id: inputSelector
+                            Layout.fillWidth: true
+                            allowedBackends: domeportModel.basicFeatures
+                                             ? ["Video file", "Image file"]
+                                             : ["Video file", "Image file", "NDI", "Spout", "Syphon"]
+                            sources: domeportModel.sourceList
+
+                            onBackendSelected: name => { domeportModel.currentMode = name }
+                            onSourceSelected: name => { domeportModel.sourceName = name }
+                            onVideoFileSelected: path => { domeportModel.videoFilePath = path }
+                            onImageFileSelected: path => { domeportModel.imageFilePath = path }
+                            onRefreshRequested: () => Controller.updateSources()
+                        }
+
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.separatorColor }
+
+                        // Transport: play/pause button and a scrub slider,
+                        // shown only in Video file mode.
+                        RowLayout {
+                            visible: domeportModel.videoFileMode
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing
+
+                            CustomLabel { text: "Transport" }
+
+                            CustomButton {
+                                Layout.preferredWidth: 90
+                                text: domeportModel.running ? "Pause" : "Play"
+                                onClicked: Controller.togglePause()
+                            }
+
+                            Slider {
+                                id: transportSlider
+                                Layout.fillWidth: true
+                                from: 0.0
+                                to: domeportModel.video.videoDurationMsec
+                                value: domeportModel.video.playheadMsec
+                                stepSize: 0.0
+                                onMoved: domeportModel.video.playheadRequestMsec = value
+                            }
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing
+
+                            CustomLabel { text: "Format" }
+
+                            CustomComboBox {
+                                id: formatSelector
+                                Layout.fillWidth: true
+                                model: domeportModel.formatList
+                                onActivated: domeportModel.currentFormat = currentValue
+                                Component.onCompleted: {
+                                    let index = indexOfValue(domeportModel.currentFormat)
+                                    if (index >= 0) {
+                                        currentIndex = index
+                                    }
+                                }
+                            }
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing
+
+                            CustomLabel { text: "Zoom" }
+
+                            CustomSpinBox {
+                                id: zoomSpinBox
+                                Layout.fillWidth: true
+                                from: domeportModel.zoomMin
+                                to: domeportModel.zoomMax
+                                value: domeportModel.zoom
+                                onValueModified: domeportModel.zoom = value
+                            }
+                        }
+
+                        Item { Layout.fillHeight: true; Layout.preferredHeight: Theme.padding }
+                    }
+                }
+
+                // ---- Options tab ----
+                ScrollView {
+                    id: optionsScroll
+                    contentWidth: availableWidth
+                    clip: true
+
+                    ColumnLayout {
+                        width: optionsScroll.availableWidth - 2 * Theme.padding
+                        x: Theme.padding
+                        spacing: Theme.spacing
+
+                        CustomLabel {
+                            text: "Options"
+                            font.bold: true
+                            font.pixelSize: Theme.fontSizeTitle
+                            Layout.topMargin: Theme.padding
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing
+
+                            CustomLabel { text: "Model" }
+
+                            CustomComboBox {
+                                id: modelSelector
+                                Layout.fillWidth: true
+                                model: domeportModel.modelList
+                                onActivated: domeportModel.currentModel = currentValue
+                                Component.onCompleted: {
+                                    let index = indexOfValue(domeportModel.currentModel)
+                                    if (index >= 0) {
+                                        currentIndex = index
+                                    }
+                                }
+                            }
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing
+
+                            CustomLabel { text: "Camera FoV" }
+
+                            CustomSpinBox {
+                                id: cameraFovSpinBox
+                                Layout.fillWidth: true
+                                from: domeportModel.cameraFovMin
+                                to: domeportModel.cameraFovMax
+                                value: domeportModel.cameraFov
+                                onValueModified: domeportModel.cameraFov = value
+                            }
+                        }
+
+                        CustomSwitch {
+                            text: "Fly mode"
+                            checked: domeportModel.cameraFly
+                            onToggled: Controller.setCameraFly(checked)
+                        }
+
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.separatorColor }
+
+                        CustomSwitch {
+                            id: debugSwitch
+                            text: "Debug"
+                        }
+
+                        CustomSwitch {
+                            text: "Dark mode"
+                            checked: Theme.dark
+                            onToggled: Theme.dark = checked
+                        }
+
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.separatorColor }
+
+                        CustomButton {
+                            Layout.fillWidth: true
+                            text: "About"
+                            onClicked: aboutDialog.open()
+                        }
+
+                        Item { Layout.fillHeight: true; Layout.preferredHeight: Theme.padding }
+                    }
+                }
+            }
+        }
+    }
+
+    // ---- About modal ----
+    AboutDialog {
+        id: aboutDialog
+        appName: "Domeport Pro"
+        appDetails: "Domemaster / equirectangular content visualizer for domes and planetariums in a 3D environment."
+        logoPath: Qt.resolvedUrl("resources/images/DomeportPro.png")
+        parentWindow: view.appWindow
     }
 }
