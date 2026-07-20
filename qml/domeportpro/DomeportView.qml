@@ -186,7 +186,7 @@ Item {
         anchors.fill: parent
         panelWidth: 420
         edge: Qt.RightEdge
-        open: true
+        open: false
 
         ColumnLayout {
             anchors.fill: parent
