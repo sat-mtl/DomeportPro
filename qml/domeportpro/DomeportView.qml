@@ -171,21 +171,21 @@ Item {
         onDropped: (drop) => Controller.handleFileDrop(drop)
     }
 
-    // ---- Render statistics overlay, pinned to the window's top-left ----
+    // ---- Render statistics overlay, pinned to the window's top-right ----
     DebugView {
         id: debugView
         source: view3d
         visible: debugSwitch.checked
         anchors.top: parent.top
-        anchors.left: parent.left
+        anchors.right: parent.right
         anchors.margins: Theme.padding
     }
 
-    // ---- Controls, in a slide-over panel on the right ----
+    // ---- Controls, in a slide-over panel on the left ----
     SidePanel {
         anchors.fill: parent
         panelWidth: 420
-        edge: Qt.RightEdge
+        edge: Qt.LeftEdge
         open: false
 
         ColumnLayout {
