@@ -1,3 +1,4 @@
+import QtQuick.Controls.Universal
 import domeportpro
 
 // DomeportPro entry point — instantiates the application component.
