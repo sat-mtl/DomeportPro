@@ -94,7 +94,10 @@ function enumerateSyphon() {
 
 function updateSources() {
     if (domeportModel.currentMode === "NDI") {
-        domeportModel.sourceList = domeportModel.ndiNamesList
+        // since NDI sources are added and removed to the same list by callback
+        // we need to force copy of ndiNamesList to trigger InputSourceSelector
+        // comboBox model update
+        domeportModel.sourceList = Array.from(domeportModel.ndiNamesList)
     } else if (domeportModel.currentMode === "Spout") {
         enumerateSpout()
         domeportModel.sourceList = domeportModel.spoutNamesList
