@@ -5,13 +5,12 @@
 // view's scope and resolves, without any parameter passing:
 //   - `domeportModel`         the DomeportModel instance (view property)
 //   - `dome`, `camera`,       the view element ids
-//     `transportButton`,
-//     `pauseButton`,
 //     `inputSelector`
 //   - `Score`, `Util`         the ossia/score context objects
 //   - `Qt`                    the QML global
 //
-// Asset URLs (meshes/shaders) live one directory up (qml/), hence the "../".
+// Asset URLs (meshes/shaders/textures) are relative to this module directory
+// (e.g. "resources/models/…").
 
 // ---- Drag & drop file classification ----
 var imageExtensions = [ ".jpg", ".jpeg", ".png", ".gif" ]
@@ -95,7 +94,10 @@ function enumerateSyphon() {
 
 function updateSources() {
     if (domeportModel.currentMode === "NDI") {
-        domeportModel.sourceList = domeportModel.ndiNamesList
+        // since NDI sources are added and removed to the same list by callback
+        // we need to force copy of ndiNamesList to trigger InputSourceSelector
+        // comboBox model update
+        domeportModel.sourceList = Array.from(domeportModel.ndiNamesList)
     } else if (domeportModel.currentMode === "Spout") {
         enumerateSpout()
         domeportModel.sourceList = domeportModel.spoutNamesList
@@ -215,26 +217,13 @@ function setTestPatternIndex(newIndex) {
 }
 
 // ---- Camera ----
-function toggleCameraFlyMode() {
-    if (domeportModel.cameraFly) {
-        domeportModel.cameraFly = false
+function setCameraFly(enabled) {
+    domeportModel.cameraFly = enabled
+    if (!enabled)
         camera.position.y = camera.cameraHeight
-    } else {
-        domeportModel.cameraFly = true
-    }
 }
 
 // ---- Transport ----
-function toggleTransport() {
-    if (domeportModel.running) {
-        console.log("stopping...")
-        Score.stop()
-    } else {
-        console.log("starting...")
-        Score.play()
-    }
-}
-
 function togglePause() {
     if (domeportModel.running) {
         console.log("pausing...")
@@ -247,21 +236,16 @@ function togglePause() {
 
 function onPlay() {
     console.log("onPlay")
-    transportButton.text = "Stop"
-    pauseButton.text = "Pause"
     domeportModel.running = true
 }
 
 function onStop() {
     console.log("onStopped")
-    transportButton.text = "Play"
     domeportModel.running = false
 }
 
 function onPause() {
     console.log("onPause")
-    transportButton.text = "Play"
-    pauseButton.text = "Unpause"
     domeportModel.running = false
 }
 

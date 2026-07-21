@@ -1,14 +1,16 @@
 import QtQuick
+import QtQuick.Controls
 
 import ca.qc.sat.qmlcomponents
 import domeportpro
 
 // Application root — composes the DomeportPro model and view.
 //
-// This is the single component instantiated by qml/Main.qml. It owns the
-// window chrome and wires the model instance into the view; all state lives in
-// DomeportModel and all behaviour in DomeportController.js (driven by the view).
-Window {
+// This is the single component instantiated by qml/Main.qml. An
+// ApplicationWindow provides the overlay used by the SidePanel scrim, popups
+// and the About dialog. All state lives in DomeportModel and all behaviour in
+// DomeportController.js (driven by the view).
+ApplicationWindow {
     id: root
     width: 1280
     height: 720
@@ -23,5 +25,6 @@ Window {
     DomeportView {
         anchors.fill: parent
         domeportModel: domeportModel
+        appWindow: root
     }
 }
