@@ -38,7 +38,8 @@ Item {
     }
 
     property QtObject video: QtObject {
-        property var process_object: Score.find("Video")
+        property var video_process_object: Score.find("Video")
+        property var audio_process_object: undefined
         property double videoDurationMsec: 0.0
         property double playheadRequestMsec: 0.0
         property double playheadMsec: 0.0
