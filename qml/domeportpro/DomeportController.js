@@ -145,6 +145,13 @@ function removeLiveInput() {
     try { Score.removeDevice("live_input"); } catch(_) {}
 }
 
+function propagateAudio(propagate) {
+    if (domeportModel.video.audio_process_object) {
+        let audioOut = Score.port(domeportModel.video.audio_process_object, "Audio Out")
+        audioOut.propagate = propagate
+    }
+}
+
 function createNDIInput(name) {
     console.log("Create NDI input: " + name)
     Score.stop()
@@ -272,11 +279,13 @@ function applyPlayheadRequest() {
 function applyMode() {
     console.log("changed mode: " + domeportModel.currentMode)
     removeLiveInput()
+    propagateAudio(false)
     if (domeportModel.currentMode === "Test pattern") {
         displayTestPattern()
     } else if (domeportModel.currentMode === "Image file") {
         displayImageFile()
     } else if (domeportModel.currentMode === "Video file") {
+        propagateAudio(true)
         displayVideoFile()
     } else if (domeportModel.currentMode === "NDI") {
         updateSources()
@@ -360,7 +369,11 @@ function applyVideoFilePath() {
     console.log("videoFilePath: " + domeportModel.videoFilePath)
     if (domeportModel.videoFilePath === "") return
     Score.stop()
-    domeportModel.video.process_object.path = domeportModel.videoFilePath
+    Score.remove(domeportModel.video.audio_process_object)
+    domeportModel.video.video_process_object.path = domeportModel.videoFilePath
+    domeportModel.video.audio_process_object = 
+        Score.createProcess(Score.rootInterval(), "Sound file", domeportModel.videoFilePath)
+    domeportModel.video.audio_process_object.loops = true
     domeportModel.currentMode = "Video file"
     Score.play()
 }
@@ -420,8 +433,8 @@ function initialize() {
     }
 
     // wire the Video process' loop duration and the transport playhead
-    if (domeportModel.video.process_object) {
-        domeportModel.video.process_object.loopDurationChanged.connect(onVideoLoopDurationChanged)
+    if (domeportModel.video.video_process_object) {
+        domeportModel.video.video_process_object.loopDurationChanged.connect(onVideoLoopDurationChanged)
         Score.rootInterval().durations.positionChanged.connect(onVideoPositionChanged)
     }
 
