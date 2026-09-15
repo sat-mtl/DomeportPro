@@ -159,6 +159,10 @@ Item {
         id: textureDome
         width: 4096
         height: 4096
+        // QQuickRhiItem sizes its colour buffer in logical pixels, so a DPR>1
+        // display would otherwise scale this up (8192x8192 at DPR 2).
+        fixedColorBufferWidth: 4096
+        fixedColorBufferHeight: 4096
         process: "rotate_zoom"
         port: 0
         visible: false
