@@ -1,2 +1,1 @@
-export DOMEPORTPRO_BASIC=1
 export QSG_RHI_BACKEND=vulkan
