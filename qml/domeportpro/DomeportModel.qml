@@ -99,17 +99,26 @@ Item {
     // 6:1, 3:4 or 4:3 depending on the layout. Derived rather than typed in,
     // because getting it wrong is silent.
     readonly property int outputBase: 2048
-    readonly property real outputAspect: {
+
+    // Derived as exact integers from a cell/face size rather than by scaling a
+    // float aspect: 2048/6 rounds to 341, which is not a square cube face and
+    // which the sink then publishes as 340 anyway, so the UI and the stream
+    // disagree and every face is skewed. A cubemap is sized from a 512-pixel
+    // face so all three layouts tile exactly.
+    readonly property int cubeFace: 512
+    readonly property var outputSize: {
         if (conversionFormat === "Equirectangular")
-            return 2.0
-        if (conversionFormat === "Cubemap")
-            return cubemapLayout === 0 ? 6.0 : (cubemapLayout === 1 ? 0.75 : 4.0 / 3.0)
-        return 1.0
+            return { w: outputBase, h: outputBase / 2 }          // 2048 x 1024
+        if (conversionFormat === "Cubemap") {
+            if (cubemapLayout === 0) return { w: 6 * cubeFace, h: 1 * cubeFace }   // strip  3072 x 512
+            if (cubemapLayout === 1) return { w: 3 * cubeFace, h: 4 * cubeFace }   // vcross 1536 x 2048
+            return { w: 4 * cubeFace, h: 3 * cubeFace }                            // hcross 2048 x 1536
+        }
+        return { w: outputBase, h: outputBase }                  // domemaster 2048 x 2048
     }
-    readonly property int outputWidth: outputAspect >= 1.0
-                                       ? outputBase : Math.round(outputBase * outputAspect)
-    readonly property int outputHeight: outputAspect >= 1.0
-                                        ? Math.round(outputBase / outputAspect) : outputBase
+    readonly property int outputWidth: outputSize.w
+    readonly property int outputHeight: outputSize.h
+    readonly property real outputAspect: outputWidth / outputHeight
     property bool outputActive: false
     property string outputStatus: ""
 

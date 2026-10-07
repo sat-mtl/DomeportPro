@@ -491,14 +491,29 @@ Item {
                         // and the converted frame that leaves the application.
                         CustomLabel { text: "Preview"; font.bold: true }
 
-                        VideoPreview {
+                        // Not the shared VideoPreview: it sets Layout.fillWidth
+                        // with Layout.minimumHeight 200 and anchors the texture
+                        // to the frame, so fillWidth overrides preferredWidth
+                        // and `aspectRatio` cannot take effect — a 6:1 cubemap
+                        // strip comes out squashed to 200px tall whatever it is
+                        // told. Equirectangular only looked right by accident,
+                        // because the panel is about 2:1 at that height.
+                        // Size the frame from the projection instead.
+                        Rectangle {
                             Layout.fillWidth: true
-                            process: "conv_out"
-                            port: 0
-                            showTexture: true
-                            // Same source of truth as the sink's frame size.
-                            aspectRatio: domeportModel.outputAspect
-                            frameHeight: 150
+                            Layout.preferredHeight: Math.max(
+                                56, Math.min(280, width / Math.max(0.01, domeportModel.outputAspect)))
+                            color: "transparent"
+                            radius: Theme.borderRadius
+                            border.color: Theme.borderColor
+                            border.width: 1
+
+                            UI.TextureSource {
+                                anchors.fill: parent
+                                anchors.margins: 1
+                                process: "conv_out"
+                                port: 0
+                            }
                         }
 
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.separatorColor }
