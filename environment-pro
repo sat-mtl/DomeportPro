@@ -1,1 +1,2 @@
 export SCORE_VIDEO_DECODING_METHOD=Auto
+export QSG_RHI_BACKEND=vulkan
