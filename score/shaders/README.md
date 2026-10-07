@@ -44,7 +44,11 @@ So the defect is Vulkan-only, and it is invisible on the three other backends â€
 which is exactly how it survived until the dome was finally measured under
 Vulkan. `environment.linux` / `environment-pro.linux` pin
 `QSG_RHI_BACKEND=vulkan`, so Vulkan is the default path for Linux users;
-Windows falls back to Qt's own default (D3D11) and macOS pins metal.
+macOS pins metal. Windows pins nothing and gets score's own default, which is
+**OpenGL** â€” not D3D11: the per-platform block in `Gfx/Settings/Model.cpp` is
+commented out ("logic to restore when it works well with all backends"), so
+`SETTINGS_PARAMETER_IMPL(GraphicsApi)` returns `GraphicsApis{}.OpenGL` on every
+platform. Measured on Windows: `score.gfx: RHI device: backend=OpenGL`.
 
 ### `rotate_zoom`: the rule applies, but it did not always
 
