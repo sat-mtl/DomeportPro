@@ -91,9 +91,25 @@ Item {
     property var outputBackendList: ["None"]
     property string outputBackend: "None"
     property string outputName: "Domeport Pro"
-    property int outputWidth: 2048
-    property int outputHeight: 2048
     property int outputRate: 30
+
+    // The sink publishes a fixed WxH and the converted frame is scaled into it,
+    // so the buffer has to carry the projection's own aspect or the result is
+    // squashed: a domemaster is 1:1, an equirectangular 2:1, and a cubemap atlas
+    // 6:1, 3:4 or 4:3 depending on the layout. Derived rather than typed in,
+    // because getting it wrong is silent.
+    readonly property int outputBase: 2048
+    readonly property real outputAspect: {
+        if (conversionFormat === "Equirectangular")
+            return 2.0
+        if (conversionFormat === "Cubemap")
+            return cubemapLayout === 0 ? 6.0 : (cubemapLayout === 1 ? 0.75 : 4.0 / 3.0)
+        return 1.0
+    }
+    readonly property int outputWidth: outputAspect >= 1.0
+                                       ? outputBase : Math.round(outputBase * outputAspect)
+    readonly property int outputHeight: outputAspect >= 1.0
+                                        ? Math.round(outputBase / outputAspect) : outputBase
     property bool outputActive: false
     property string outputStatus: ""
 

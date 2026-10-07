@@ -401,10 +401,17 @@ function applyConversionFormat() {
     Score.setValue(domeportModel.convOut.alpha1, f === "Domemaster" ? 1.0 : 0.0)
     Score.setValue(domeportModel.convOut.alpha2, f === "Equirectangular" ? 1.0 : 0.0)
     Score.setValue(domeportModel.convOut.alpha3, f === "Cubemap" ? 1.0 : 0.0)
+    // The sink's frame size is derived from the format, and a device carries the
+    // size it was created with, so a live output has to be rebuilt.
+    if (domeportModel.outputActive)
+        applyConversionOutput()
 }
 
 function applyCubemapLayout() {
     Score.setValue(domeportModel.convEquiToCube.layoutType, domeportModel.cubemapLayout)
+    // Layout changes the atlas aspect, hence the sink's size.
+    if (domeportModel.outputActive && domeportModel.conversionFormat === "Cubemap")
+        applyConversionOutput()
 }
 
 // The inverse projection only inverts the forward one when it is told the same
