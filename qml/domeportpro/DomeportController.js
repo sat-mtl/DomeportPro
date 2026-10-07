@@ -8,6 +8,9 @@
 //     `inputSelector`
 //   - `Score`, `Util`         the ossia/score context objects
 //   - `Qt`                    the QML global
+//   - `OutputBackends`        DomeportView.qml's import of OutputBackends.js;
+//                             a non-library resource shares the component's
+//                             imports, so it needs no .import of its own
 //
 // Asset URLs (meshes/shaders/textures) are relative to this module directory
 // (e.g. "resources/models/…").
@@ -389,6 +392,88 @@ function applyFormat() {
     }
 }
 
+// ---- Format conversion (pro) ----
+// conv_out is a clone of Video Mixer.1, so a format is selected the same way
+// the dome's own format switch does it: one alpha to 1, the rest to 0.
+function applyConversionFormat() {
+    const f = domeportModel.conversionFormat
+    console.log("changed conversion format: " + f)
+    Score.setValue(domeportModel.convOut.alpha1, f === "Domemaster" ? 1.0 : 0.0)
+    Score.setValue(domeportModel.convOut.alpha2, f === "Equirectangular" ? 1.0 : 0.0)
+    Score.setValue(domeportModel.convOut.alpha3, f === "Cubemap" ? 1.0 : 0.0)
+}
+
+function applyCubemapLayout() {
+    Score.setValue(domeportModel.convEquiToCube.layoutType, domeportModel.cubemapLayout)
+}
+
+// The inverse projection only inverts the forward one when it is told the same
+// FOV, so it follows the dome model rather than keeping its own setting.
+function applyConversionFov() {
+    Score.setValue(domeportModel.convDomeToEqui.domemaster_input_fov_degrees,
+                   domeportModel.currentModelFov)
+}
+
+// ---- Conversion output device (pro) ----
+function stopConversionOutput() {
+    try { Score.removeDevice("conv_output") } catch(_) {}
+    domeportModel.outputActive = false
+}
+
+function startConversionOutput() {
+    const d = OutputBackends.descriptor(domeportModel.outputBackend)
+    if (!d) {
+        domeportModel.outputStatus = ""
+        return
+    }
+
+    const name = domeportModel.outputName.length > 0 ? domeportModel.outputName
+                                                     : d.defaultName
+    const settings = OutputBackends.makeSettings(
+        name, domeportModel.outputWidth, domeportModel.outputHeight,
+        domeportModel.outputRate)
+
+    Score.stop()
+    Score.createDevice("conv_output", d.uuid, settings)
+
+    // createDevice does not report failure -- look for the result. The usual
+    // cause is a missing runtime (NDI is dlopen'd, never linked, and is not
+    // bundled: its licence forbids shipping it with a GPLv3 app), and without
+    // this check the tab would claim to be streaming into nothing.
+    if (!Score.device("conv_output")) {
+        domeportModel.outputActive = false
+        domeportModel.outputStatus =
+            "Could not create the " + domeportModel.outputBackend + " output."
+            + (domeportModel.outputBackend === "NDI"
+               ? " Is the NDI runtime installed?" : "")
+        console.error("conversion output: device creation failed for "
+                      + domeportModel.outputBackend)
+        Score.play()
+        return
+    }
+
+    // An outlet writes to its address only while it is not cabled; conv_out's
+    // outlet feeds nothing in the document, so this is what publishes the
+    // converted frame.
+    const outlet = Score.outlet(domeportModel.convOut.process_object, 0)
+    Score.setAddress(outlet, "conv_output:/")
+
+    domeportModel.outputActive = true
+    domeportModel.outputStatus = domeportModel.outputBackend + " output \"" + name + "\" is live."
+    console.log("conversion output started: " + domeportModel.outputBackend + " / " + name)
+    Score.play()
+}
+
+function applyConversionOutput() {
+    stopConversionOutput()
+    if (domeportModel.outputBackend === "None") {
+        domeportModel.outputStatus = ""
+        Score.play()
+        return
+    }
+    startConversionOutput()
+}
+
 function applyModel() {
     console.log("changed model: " + domeportModel.currentModel)
     if (domeportModel.currentModel === "210 degrees") {
@@ -398,6 +483,7 @@ function applyModel() {
         domeportModel.currentModelFov = 180
         load180DegreesModel()
     }
+    applyConversionFov()
 }
 
 // ---- Drag & drop ----
@@ -442,5 +528,13 @@ function initialize() {
     Score.transport().stop.connect(onStop)
     Score.transport().pause.connect(onPause)
     registerNDIListener()
+
+    // Only offer the sinks that can exist here: Spout is Windows-only and
+    // Syphon macOS-only, in score and in the protocols themselves.
+    domeportModel.outputBackendList = OutputBackends.available(Qt.platform.os)
+    applyConversionFormat()
+    applyCubemapLayout()
+    applyConversionFov()
+
     Score.play()
 }

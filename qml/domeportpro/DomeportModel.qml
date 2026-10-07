@@ -55,6 +55,48 @@ Item {
         property var path: Score.inlet(process_object, 5)
     }
 
+    // ---- Format conversion (pro) ----
+    // Video Mixer.1 already normalises every source to a domemaster, so the
+    // conversion chain only handles the output side. conv_out is a clone of
+    // Video Mixer.1: picking a format is the same alpha select the existing
+    // format switch uses. t1 = domemaster passthrough, t2 = equirectangular,
+    // t3 = cubemap atlas.
+    property QtObject convOut: QtObject {
+        property var process_object: Score.find("conv_out")
+        property var alpha1: Score.inlet(process_object, 8)
+        property var alpha2: Score.inlet(process_object, 9)
+        property var alpha3: Score.inlet(process_object, 10)
+    }
+
+    property QtObject convDomeToEqui: QtObject {
+        property var process_object: Score.find("conv_dome_to_equi")
+        property var domemaster_input_fov_degrees: Score.inlet(process_object, 2)
+    }
+
+    property QtObject convEquiToCube: QtObject {
+        property var process_object: Score.find("conv_equi_to_cube")
+        property var layoutType: Score.inlet(process_object, 1)
+    }
+
+    property var conversionFormatList: ["Domemaster", "Equirectangular", "Cubemap"]
+    property string conversionFormat: "Domemaster"
+
+    property var cubemapLayoutList: ["Horizontal Strip (6x1)", "Vertical Cross (3x4)", "Horizontal Cross (4x3)"]
+    property int cubemapLayout: 0
+
+    // ---- Conversion output (pro) ----
+    // Filled at startup from OutputBackends.available(Qt.platform.os): Spout
+    // exists only on Windows and Syphon only on macOS, so the list is shorter
+    // than three everywhere.
+    property var outputBackendList: ["None"]
+    property string outputBackend: "None"
+    property string outputName: "Domeport Pro"
+    property int outputWidth: 2048
+    property int outputHeight: 2048
+    property int outputRate: 30
+    property bool outputActive: false
+    property string outputStatus: ""
+
     // ---- Feature flags ----
     property bool basicFeatures: false
 

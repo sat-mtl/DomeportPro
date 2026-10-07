@@ -9,6 +9,9 @@ import ca.qc.sat.qmlcomponents
 import domeportpro
 
 import "DomeportController.js" as Controller
+// Imported here rather than inside the controller: a non-library JS resource
+// shares this component's imports, so Controller sees OutputBackends too.
+import "OutputBackends.js" as OutputBackends
 
 // View — the DomeportPro user interface (3D scene + a right-hand SidePanel of
 // controls, laid out after the gallery SidePanel example).
@@ -42,6 +45,9 @@ Item {
         function onVideoFilePathChanged() { Controller.applyVideoFilePath() }
         function onCurrentFormatChanged() { Controller.applyFormat() }
         function onCurrentModelChanged() { Controller.applyModel() }
+        function onConversionFormatChanged() { Controller.applyConversionFormat() }
+        function onCubemapLayoutChanged() { Controller.applyCubemapLayout() }
+        function onOutputBackendChanged() { Controller.applyConversionOutput() }
     }
 
     Connections {
@@ -200,6 +206,16 @@ Item {
 
                 CustomTabButton { text: "Source" }
                 CustomTabButton { text: "Options" }
+                // Pro-only, and deliberately LAST: a hidden button still owns
+                // an index in a Container, so hiding any earlier tab would
+                // desynchronise TabBar.currentIndex from the StackLayout. As
+                // the final entry it simply becomes unreachable, and indices
+                // 0 and 1 keep pointing at the same pages.
+                CustomTabButton {
+                    text: "Conversion"
+                    visible: !domeportModel.basicFeatures
+                    width: visible ? implicitWidth : 0
+                }
             }
 
             StackLayout {
@@ -403,6 +419,154 @@ Item {
                             Layout.fillWidth: true
                             text: "About"
                             onClicked: aboutDialog.open()
+                        }
+
+                        Item { Layout.fillHeight: true; Layout.preferredHeight: Theme.padding }
+                    }
+                }
+
+                // ---- Conversion tab (pro) ----
+                ScrollView {
+                    id: conversionScroll
+                    contentWidth: availableWidth
+                    clip: true
+
+                    ColumnLayout {
+                        width: conversionScroll.availableWidth - 2 * Theme.padding
+                        x: Theme.padding
+                        spacing: Theme.spacing
+
+                        CustomLabel {
+                            text: "Format conversion"
+                            font.bold: true
+                            font.pixelSize: Theme.fontSizeTitle
+                            Layout.topMargin: Theme.padding
+                        }
+
+                        CustomLabel {
+                            Layout.fillWidth: true
+                            wrapMode: Text.WordWrap
+                            text: "Converts the current source to another projection, "
+                                  + "independently of the 3D view. The source is normalised "
+                                  + "to a domemaster first, so the Source tab's own format "
+                                  + "setting still applies."
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing
+
+                            CustomLabel { text: "Output format" }
+
+                            CustomComboBox {
+                                id: conversionFormatSelector
+                                Layout.fillWidth: true
+                                model: domeportModel.conversionFormatList
+                                onActivated: domeportModel.conversionFormat = currentValue
+                                Component.onCompleted: {
+                                    let i = indexOfValue(domeportModel.conversionFormat)
+                                    if (i >= 0)
+                                        currentIndex = i
+                                }
+                            }
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing
+                            visible: domeportModel.conversionFormat === "Cubemap"
+
+                            CustomLabel { text: "Atlas layout" }
+
+                            CustomComboBox {
+                                id: cubemapLayoutSelector
+                                Layout.fillWidth: true
+                                model: domeportModel.cubemapLayoutList
+                                currentIndex: domeportModel.cubemapLayout
+                                onActivated: domeportModel.cubemapLayout = currentIndex
+                            }
+                        }
+
+                        // Before/after: the dome texture the 3D view samples,
+                        // and the converted frame that leaves the application.
+                        CustomLabel { text: "Preview"; font.bold: true }
+
+                        VideoPreview {
+                            Layout.fillWidth: true
+                            process: "conv_out"
+                            port: 0
+                            showTexture: true
+                            aspectRatio: domeportModel.conversionFormat === "Equirectangular"
+                                         ? 2.0
+                                         : (domeportModel.conversionFormat === "Cubemap"
+                                            ? (domeportModel.cubemapLayout === 0 ? 6.0
+                                               : (domeportModel.cubemapLayout === 1 ? 0.75 : 4.0 / 3.0))
+                                            : 1.0)
+                            frameHeight: 150
+                        }
+
+                        Rectangle { Layout.fillWidth: true; height: 1; color: Theme.separatorColor }
+
+                        CustomLabel { text: "Send to"; font.bold: true }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing
+
+                            CustomLabel { text: "Output" }
+
+                            CustomComboBox {
+                                id: outputBackendSelector
+                                Layout.fillWidth: true
+                                model: domeportModel.outputBackendList
+                                onActivated: domeportModel.outputBackend = currentValue
+                            }
+                        }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing
+                            visible: domeportModel.outputBackend !== "None"
+
+                            CustomLabel {
+                                text: {
+                                    const d = OutputBackends.descriptor(domeportModel.outputBackend)
+                                    return d ? d.nameLabel : "Name"
+                                }
+                            }
+
+                            CustomTextField {
+                                id: outputNameField
+                                Layout.fillWidth: true
+                                text: domeportModel.outputName
+                                // Applied on commit, not per keystroke: every
+                                // change tears the sink down and recreates it.
+                                onEditingFinished: {
+                                    domeportModel.outputName = text
+                                    Controller.applyConversionOutput()
+                                }
+                            }
+                        }
+
+                        CustomLabel {
+                            Layout.fillWidth: true
+                            wrapMode: Text.WordWrap
+                            visible: domeportModel.outputStatus.length > 0
+                            text: domeportModel.outputStatus
+                            color: domeportModel.outputActive ? Theme.textColor : Theme.errorColor
+                        }
+
+                        // Always shown: no platform can offer both Spout and
+                        // Syphon, so this list is short everywhere and the
+                        // reason is worth stating rather than looking like a
+                        // missing feature.
+                        CustomLabel {
+                            Layout.fillWidth: true
+                            wrapMode: Text.WordWrap
+                            color: Theme.textColorSecondary
+                            text: "Spout is Windows-only and Syphon is macOS-only — the "
+                                  + "protocols do not exist on other systems, so only the "
+                                  + "outputs available here are listed."
                         }
 
                         Item { Layout.fillHeight: true; Layout.preferredHeight: Theme.padding }
