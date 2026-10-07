@@ -26,12 +26,16 @@
 //     format converter that silently rotates individual faces is a footgun; it
 //     also keeps this process to two ports.
 //
-//  2. The equirectangular V convention is flipped to match
-//     equirectangular_to_domemaster, which is what the rest of this document
-//     uses: v = 0.5 - lat/PI, north pole at v = 0. The library version samples
-//     v = lat/PI + 0.5, the opposite. Chaining the two as they ship would have
-//     produced a vertically mirrored cubemap -- and nothing upstream would have
-//     said so, because each shader is self-consistent.
+//  2. The equirectangular V mapping is the library's original, v = lat/PI + 0.5,
+//     and it must stay that way. An earlier revision "harmonised" it to
+//     v = 0.5 - lat/PI on the reasoning that equirectangular_to_domemaster uses
+//     that form. That was wrong, and wrong in an instructive way: the form in
+//     that shader is an *output position* built from isf_FragNormCoord, whose
+//     origin is bottom-left, while the line below is an *input sampling*
+//     coordinate handed to IMG_NORM_PIXEL. The two are different spaces, and
+//     equating them inverted every cubemap vertically -- measured, not argued:
+//     with the flip in place the +Y zenith cell was black and the imagery sat in
+//     the -Y nadir cell, which a 210-degree cap cannot even reach.
 
 const float PI = 3.141592653589793;
 const float TWO_PI = 2.0 * PI;
@@ -108,7 +112,7 @@ void main()
 
     vec2 equirectUV;
     equirectUV.x = lon / TWO_PI + 0.5;
-    equirectUV.y = 0.5 - lat / PI;   // see note 2 above
+    equirectUV.y = lat / PI + 0.5;   // see note 2 above
 
     // IMG_NORM_PIXEL, never a bare texture(): the SPIRV texcoord fixup lives
     // only inside these macros, so a raw sample is upside down under Vulkan.

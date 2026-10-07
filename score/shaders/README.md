@@ -10,10 +10,17 @@ here as well. **These files are not loaded at runtime:** a shader only takes
 effect once its text is copied into the matching `"Fragment"` in `app.score`, and
 when a shader here changes that copy has to be redone.
 
-Currently wired into `app.score`: `equirectangular_to_domemaster` (inline, with
-the `IMG_NORM_PIXEL` fix applied). `domemaster_to_equirectangular.fs` is
-validated but **not yet wired in** — it is the building block for the planned
-format-conversion tab.
+Wired into `app.score` today:
+
+| process | shader |
+|---|---|
+| `equirectangular_to_domemaster` | the forward projection, with the `IMG_NORM_PIXEL` fix |
+| `conv_dome_to_equi` | `domemaster_to_equirectangular.fs` |
+| `conv_equi_to_cube` | `equirectangular_to_cubemap.fs` |
+| `rotate_zoom` | the dome tap — see the exemption below |
+
+`cubesides_to_domemaster.fs` is carried here fixed but is **not** wired into any
+process; it is kept so the upstream defect is recorded against a corrected copy.
 
 ## Never call `texture()` directly
 
@@ -34,10 +41,31 @@ and nowhere else:
 | Metal (MSL) | identity | identity | yes |
 
 So the defect is Vulkan-only, and it is invisible on the three other backends —
-which is exactly how it survived: it reached production and was worked around in
-`rotate_zoom` rather than fixed, until the dome was finally measured under
-Vulkan. Since `environment`/`environment-pro` pin `QSG_RHI_BACKEND=vulkan` on
-Linux and Windows, Vulkan is the default path for most users.
+which is exactly how it survived until the dome was finally measured under
+Vulkan. `environment.linux` / `environment-pro.linux` pin
+`QSG_RHI_BACKEND=vulkan`, so Vulkan is the default path for Linux users;
+Windows falls back to Qt's own default (D3D11) and macOS pins metal.
+
+### The one exemption: `rotate_zoom`
+
+**`rotate_zoom` in `app.score` deliberately uses a bare `texture()`, and must
+keep it.** It is the only place in this document where the rule above is wrong,
+and applying the rule there breaks Vulkan.
+
+`rotate_zoom` is the tap that Qt Quick 3D samples as a `Texture.sourceItem`, and
+that path is not backend-neutral. The same `UI.TextureSource` feeding a 2D
+`VideoPreview` matches between OpenGL and Vulkan to RMSE **0.000194**; the
+Quick3D `sourceItem` path does not, because `PreviewNode::createRenderer` hands
+both OpenGL and Vulkan the no-op `PreviewRenderer`. The bare sampler is what
+absorbs that asymmetry — substituting `IMG_NORM_PIXEL` leaves OpenGL identical
+(RMSE 0) and mirrors Vulkan in azimuth (RMSE **0.212**, horizon labels running
+`330 320 310 …` descending).
+
+That is an engine-level asymmetry, recorded in the release LEDGER and still
+unfixed upstream. The document-level fix in this branch is correct and
+shippable, but it sits on top of that asymmetry rather than removing it. The
+shader itself carries the same warning inline, which is where a maintainer would
+actually be editing.
 
 ## Audit of the upstream fulldome set
 

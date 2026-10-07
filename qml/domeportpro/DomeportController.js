@@ -357,6 +357,9 @@ function applyZoom() {
             Score.setValue(domeportModel.rotateZoom.zoom, zoomFactor)
         }
     }
+    // Zoom re-aims the forward projection, so the conversion's inverse has to
+    // follow it or the two stop being inverses of each other.
+    applyConversionFov()
 }
 
 function applyImageFilePath() {
@@ -390,6 +393,9 @@ function applyFormat() {
         setTestPatternIndex(1)
         enableDomemaster()
     }
+    // The effective FOV depends on which branch is live, so the inverse has to
+    // be re-told after a format change too.
+    applyConversionFov()
 }
 
 // ---- Format conversion (pro) ----
@@ -416,15 +422,49 @@ function applyCubemapLayout() {
 
 // The inverse projection only inverts the forward one when it is told the same
 // FOV, so it follows the dome model rather than keeping its own setting.
+// The FOV the domemaster leaving Video Mixer.1 actually has, which is not the
+// dome model's whenever zoom is in play: in Equirectangular mode applyZoom
+// re-aims equirectangular_to_domemaster at modelFov / (zoom/100), clamped at
+// 360. In Domemaster mode the conversion shader is bypassed (t2 passthrough)
+// and zoom goes to rotate_zoom instead, so the master keeps the model's FOV.
+function effectiveDomemasterFov() {
+    if (domeportModel.currentFormat !== "Equirectangular")
+        return domeportModel.currentModelFov
+    const z = domeportModel.zoom / 100
+    if (z <= 0)
+        return domeportModel.currentModelFov
+    return Math.min(360, domeportModel.currentModelFov / z)
+}
+
+// The inverse only inverts the forward projection when both are told the same
+// angle, so this has to track the effective FOV, not the dome model. Pinning it
+// to modelFov made any zoom != 100 shear the conversion output.
 function applyConversionFov() {
     Score.setValue(domeportModel.convDomeToEqui.domemaster_input_fov_degrees,
-                   domeportModel.currentModelFov)
+                   effectiveDomemasterFov())
 }
 
 // ---- Conversion output device (pro) ----
+// Returns true when no conv_output device is left in the document.
+//
+// score refuses to remove a device while the score is executing and only says
+// so through qWarning (EditContext.device.cpp:229-236, "Call Score.stop()
+// first."), so a removal attempted mid-playback silently does nothing: the sink
+// keeps streaming, the name stays taken, and the next createDevice is refused
+// in turn. Stop first, then verify -- a device that is still there after this
+// has to be reported, not assumed gone.
 function stopConversionOutput() {
+    Score.stop()
     try { Score.removeDevice("conv_output") } catch(_) {}
+
+    if (Score.device("conv_output")) {
+        domeportModel.outputActive = true
+        domeportModel.outputStatus = "Could not stop the output: the device is still running."
+        console.error("conversion output: removeDevice left conv_output in place")
+        return false
+    }
     domeportModel.outputActive = false
+    return true
 }
 
 function startConversionOutput() {
@@ -472,7 +512,12 @@ function startConversionOutput() {
 }
 
 function applyConversionOutput() {
-    stopConversionOutput()
+    // A failed teardown leaves the name taken, so creating would be refused and
+    // the UI would describe a sink that is not the one actually streaming.
+    if (!stopConversionOutput()) {
+        Score.play()
+        return
+    }
     if (domeportModel.outputBackend === "None") {
         domeportModel.outputStatus = ""
         Score.play()
