@@ -1,12 +1,19 @@
 # Projection shaders
 
-Source of truth for the ISF conversion shaders. `score/app.score` carries each
-one **inlined** in a process's `"Fragment"` string — that is how score stores an
-ISF Shader process, and the document is self-contained on purpose (no `"Root"`
-key, so nothing is loaded from disk at runtime). When a shader here changes, the
-matching `"Fragment"` in `app.score` has to be updated too; these files exist so
-that the shader is reviewable as a shader rather than as a `\n`-escaped JSON
-string.
+Source of truth for the ISF projection shaders.
+
+score stores an ISF Shader process with its source **inlined** in the process's
+`"Fragment"` string, and `score/app.score` is self-contained on purpose (no
+`"Root"` key, so nothing is loaded from disk at runtime). That makes the shaders
+unreviewable in the document — they are `\n`-escaped JSON strings — so they live
+here as well. **These files are not loaded at runtime:** a shader only takes
+effect once its text is copied into the matching `"Fragment"` in `app.score`, and
+when a shader here changes that copy has to be redone.
+
+Currently wired into `app.score`: `equirectangular_to_domemaster` (inline, with
+the `IMG_NORM_PIXEL` fix applied). `domemaster_to_equirectangular.fs` is
+validated but **not yet wired in** — it is the building block for the planned
+format-conversion tab.
 
 ## Never call `texture()` directly
 
