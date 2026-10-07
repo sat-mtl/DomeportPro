@@ -496,12 +496,8 @@ Item {
                             process: "conv_out"
                             port: 0
                             showTexture: true
-                            aspectRatio: domeportModel.conversionFormat === "Equirectangular"
-                                         ? 2.0
-                                         : (domeportModel.conversionFormat === "Cubemap"
-                                            ? (domeportModel.cubemapLayout === 0 ? 6.0
-                                               : (domeportModel.cubemapLayout === 1 ? 0.75 : 4.0 / 3.0))
-                                            : 1.0)
+                            // Same source of truth as the sink's frame size.
+                            aspectRatio: domeportModel.outputAspect
                             frameHeight: 150
                         }
 
