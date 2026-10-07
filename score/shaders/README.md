@@ -77,13 +77,23 @@ equirectangular a hub that completes the matrix:
 domemaster <-> equirectangular <-> cubemap (atlas)
 ```
 
-Verified by round trip: with `equirect -> domemaster -> equirect -> domemaster`
-spliced into the document in place of the single forward pass, the rendered dome
-is geometrically identical to the direct conversion — horizon labels `100..260`
-ascending, upright, above the tick line, elevation ladder `20,10,-10` downward,
-colour patches in the same positions. RMSE 0.021 against the direct render,
-which is the blur of two extra resamples, not a geometric difference (a
-geometric error on this scene measures ~0.3).
+Verified by round trip, on both backends: with
+`equirect -> domemaster -> equirect -> domemaster` spliced into the document in
+place of the single forward pass, the rendered dome is geometrically identical to
+the direct conversion — horizon labels `100..260` ascending, upright, above the
+tick line, elevation ladder `20,10,-10` downward, colour patches in the same
+positions.
+
+| backend | RMSE vs the direct conversion |
+|---|---|
+| OpenGL | 0.0212 |
+| Vulkan | 0.0212 |
+
+That is the blur of two extra resamples, not a geometric difference — a
+geometric error on this scene measures ~0.3 — and the two backends agreeing to
+four decimals is the point: the shader reads its input through `IMG_NORM_PIXEL`,
+so it has no per-backend behaviour to get wrong. Metal and D3D take the same
+`#else` arm of that macro as OpenGL, so they are covered by the OpenGL column.
 
 Directions outside the dome's FOV cap have no source pixel and are left
 transparent rather than clamped, so a 180° master does not smear its rim across
