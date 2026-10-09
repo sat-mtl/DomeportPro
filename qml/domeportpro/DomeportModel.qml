@@ -123,7 +123,7 @@ Item {
     property string outputStatus: ""
 
     // ---- Feature flags ----
-    property bool basicFeatures: false
+    property bool advancedIo: false
 
     // ---- Input mode ----
     property string currentMode: "Test pattern"

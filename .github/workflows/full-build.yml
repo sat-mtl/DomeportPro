@@ -93,7 +93,7 @@ jobs:
       - name: Upload packages (basic)
         uses: actions/upload-artifact@v4
         with:
-          name: domeportpro-basic-${{ matrix.artifact-name }}
+          name: domeportpro-${{ matrix.artifact-name }}
           path: packages-basic/${{ matrix.artifact-file || '' }}
           retention-days: 30
 
@@ -128,7 +128,7 @@ jobs:
       - name: Upload packages (pro)
         uses: actions/upload-artifact@v4
         with:
-          name: domeportpro-${{ matrix.artifact-name }}
+          name: domeportpro-pro-${{ matrix.artifact-name }}
           path: packages-pro/${{ matrix.artifact-file || '' }}
           retention-days: 30
 
