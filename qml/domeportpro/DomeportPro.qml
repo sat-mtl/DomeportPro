@@ -15,7 +15,7 @@ ApplicationWindow {
     width: 1280
     height: 720
     visible: true
-    title: "Domeport Pro"
+    title: domeportModel.editionName
     color: Theme.backgroundColor
 
     DomeportModel {
