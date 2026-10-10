@@ -475,7 +475,7 @@ function startConversionOutput() {
     }
 
     const name = domeportModel.outputName.length > 0 ? domeportModel.outputName
-                                                     : d.defaultName
+                                                     : domeportModel.editionName
     const settings = OutputBackends.makeSettings(
         name, domeportModel.outputWidth, domeportModel.outputHeight,
         domeportModel.outputRate)
@@ -564,11 +564,9 @@ function handleFileDrop(drop) {
 
 // ---- Lifecycle ----
 function initialize() {
-    const domeportProBasic = Util.environmentVariable("DOMEPORTPRO_BASIC")
-    if (domeportProBasic) {
-        domeportModel.basicFeatures = true
-        console.log("Basic features enabled")
-    }
+    domeportModel.advancedIo = !!Util.environmentVariable("SAT_ADVANCED_IO")
+    console.log(domeportModel.advancedIo ? "Advanced I/O enabled"
+                                         : "Basic features only")
 
     // wire the Video process' loop duration and the transport playhead
     if (domeportModel.video.video_process_object) {

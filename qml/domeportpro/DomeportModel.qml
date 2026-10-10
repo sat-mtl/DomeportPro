@@ -90,7 +90,7 @@ Item {
     // than three everywhere.
     property var outputBackendList: ["None"]
     property string outputBackend: "None"
-    property string outputName: "Domeport Pro"
+    property string outputName: editionName
     property int outputRate: 30
 
     // The sink publishes a fixed WxH and the converted frame is scaled into it,
@@ -123,7 +123,9 @@ Item {
     property string outputStatus: ""
 
     // ---- Feature flags ----
-    property bool basicFeatures: false
+    property bool advancedIo: false
+
+    readonly property string editionName: advancedIo ? "Domeport Pro" : "Domeport"
 
     // ---- Input mode ----
     property string currentMode: "Test pattern"

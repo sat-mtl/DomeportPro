@@ -213,7 +213,7 @@ Item {
                 // 0 and 1 keep pointing at the same pages.
                 CustomTabButton {
                     text: "Conversion"
-                    visible: !domeportModel.basicFeatures
+                    visible: domeportModel.advancedIo
                     width: visible ? implicitWidth : 0
                 }
             }
@@ -256,14 +256,14 @@ Item {
                         // Shared multi-backend picker. Camera is intentionally
                         // omitted (DomeportPro has no camera capture). Selecting a
                         // backend drives currentMode; picking a source feeds the
-                        // sourceName lifecycle. DOMEPORTPRO_BASIC collapses the
-                        // list to video and image file only.
+                        // sourceName lifecycle. Without SAT_ADVANCED_IO the
+                        // list is video and image file only.
                         InputSourceSelector {
                             id: inputSelector
                             Layout.fillWidth: true
-                            allowedBackends: domeportModel.basicFeatures
-                                             ? ["Video file", "Image file"]
-                                             : ["Video file", "Image file", "NDI", "Spout", "Syphon"]
+                            allowedBackends: domeportModel.advancedIo
+                                             ? ["Video file", "Image file", "NDI", "Spout", "Syphon"]
+                                             : ["Video file", "Image file"]
                             sources: domeportModel.sourceList
 
                             onBackendSelected: name => { domeportModel.currentMode = name }
@@ -590,7 +590,7 @@ Item {
     // ---- About modal ----
     AboutDialog {
         id: aboutDialog
-        appName: "Domeport Pro"
+        appName: domeportModel.editionName
         appDetails: "Domemaster / equirectangular content visualizer for domes and planetariums in a 3D environment."
         logoPath: Qt.resolvedUrl("resources/images/DomeportPro.png")
         parentWindow: view.appWindow
