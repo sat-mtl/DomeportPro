@@ -590,7 +590,7 @@ Item {
     // ---- About modal ----
     AboutDialog {
         id: aboutDialog
-        appName: "Domeport Pro"
+        appName: domeportModel.editionName
         appDetails: "Domemaster / equirectangular content visualizer for domes and planetariums in a 3D environment."
         logoPath: Qt.resolvedUrl("resources/images/DomeportPro.png")
         parentWindow: view.appWindow

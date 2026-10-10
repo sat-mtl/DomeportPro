@@ -22,20 +22,17 @@ const DESCRIPTORS = {
     "NDI": {
         uuid: "07651c13-83de-48b8-a450-abe2891051e8",
         platforms: ["*"],
-        nameLabel: "Stream name",
-        defaultName: "Domeport Pro"
+        nameLabel: "Stream name"
     },
     "Spout": {
         uuid: "ddf45db7-9eaf-453c-8fc0-86ccdf21677c",
         platforms: ["windows"],
-        nameLabel: "Sender name",
-        defaultName: "Domeport Pro"
+        nameLabel: "Sender name"
     },
     "Syphon": {
         uuid: "087d032d-9a42-4bc9-b3df-ad9ba9e86c07",
         platforms: ["osx"],
-        nameLabel: "Server name",
-        defaultName: "Domeport Pro"
+        nameLabel: "Server name"
     }
 }
 

@@ -475,7 +475,7 @@ function startConversionOutput() {
     }
 
     const name = domeportModel.outputName.length > 0 ? domeportModel.outputName
-                                                     : d.defaultName
+                                                     : domeportModel.editionName
     const settings = OutputBackends.makeSettings(
         name, domeportModel.outputWidth, domeportModel.outputHeight,
         domeportModel.outputRate)
