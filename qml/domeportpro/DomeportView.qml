@@ -577,7 +577,11 @@ Item {
         id: aboutDialog
         appName: domeportModel.editionName
         appDetails: "Domemaster / equirectangular content visualizer for domes and planetariums in a 3D environment."
-        logoPath: Qt.resolvedUrl("resources/images/DomeportPro.png")
+        // The mark is its alpha channel — every opaque pixel is black — so the
+        // white file is that same mask inked the other way, named after the ink
+        // like Theme's own pair rather than after the scheme.
+        logoPath: Qt.resolvedUrl(Theme.dark ? "resources/images/DomeportPro-white.png"
+                                            : "resources/images/DomeportPro.png")
         partnerLogos: [ { source: Theme.satLogoSource, website: "https://www.sat.qc.ca" } ]
         parentWindow: view.appWindow
     }
