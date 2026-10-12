@@ -197,6 +197,7 @@ Item {
         open: false
 
         ColumnLayout {
+            id: panelColumn
             anchors.fill: parent
             spacing: 0
 
@@ -204,8 +205,19 @@ Item {
                 id: panelTabs
                 Layout.fillWidth: true
 
-                CustomTabButton { text: "Source" }
-                CustomTabButton { text: "Options" }
+                // TabBar shares its width out only among buttons that have none
+                // of their own, so the pro tab's `width` left it at bare text
+                // width. All three are sized here instead, from the panel
+                // column: an explicitly sized button feeds implicitContentWidth,
+                // so reading the TabBar's own availableWidth loops. `count`
+                // stays 3 while the pro tab is hidden, gap included.
+                readonly property int shownTabs: domeportModel.advancedIo ? 3 : 2
+                readonly property real tabWidth:
+                    (panelColumn.width - leftPadding - rightPadding
+                     - (count - 1) * spacing) / shownTabs
+
+                CustomTabButton { text: "Source"; width: panelTabs.tabWidth }
+                CustomTabButton { text: "Options"; width: panelTabs.tabWidth }
                 // Pro-only, and deliberately LAST: a hidden button still owns
                 // an index in a Container, so hiding any earlier tab would
                 // desynchronise TabBar.currentIndex from the StackLayout. As
@@ -214,7 +226,7 @@ Item {
                 CustomTabButton {
                     text: "Conversion"
                     visible: domeportModel.advancedIo
-                    width: visible ? implicitWidth : 0
+                    width: visible ? panelTabs.tabWidth : 0
                 }
             }
 
@@ -265,6 +277,7 @@ Item {
                                              ? ["Video file", "Image file", "NDI", "Spout", "Syphon"]
                                              : ["Video file", "Image file"]
                             sources: domeportModel.sourceList
+                            statusText: domeportModel.sourceStatus
 
                             onBackendSelected: name => { domeportModel.currentMode = name }
                             onSourceSelected: name => { domeportModel.sourceName = name }
@@ -407,12 +420,6 @@ Item {
                             text: "Debug"
                         }
 
-                        CustomSwitch {
-                            text: "Dark mode"
-                            checked: Theme.dark
-                            onToggled: Theme.dark = checked
-                        }
-
                         Rectangle { Layout.fillWidth: true; height: 1; color: Theme.separatorColor }
 
                         CustomButton {
@@ -443,20 +450,11 @@ Item {
                             Layout.topMargin: Theme.padding
                         }
 
-                        CustomLabel {
-                            Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
-                            text: "Converts the current source to another projection, "
-                                  + "independently of the 3D view. The source is normalised "
-                                  + "to a domemaster first, so the Source tab's own format "
-                                  + "setting still applies."
-                        }
-
                         RowLayout {
                             Layout.fillWidth: true
                             spacing: Theme.spacing
 
-                            CustomLabel { text: "Output format" }
+                            CustomLabel { text: "Convert to" }
 
                             CustomComboBox {
                                 id: conversionFormatSelector
@@ -567,19 +565,6 @@ Item {
                             color: domeportModel.outputActive ? Theme.textColor : Theme.errorColor
                         }
 
-                        // Always shown: no platform can offer both Spout and
-                        // Syphon, so this list is short everywhere and the
-                        // reason is worth stating rather than looking like a
-                        // missing feature.
-                        CustomLabel {
-                            Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
-                            color: Theme.textColorSecondary
-                            text: "Spout is Windows-only and Syphon is macOS-only — the "
-                                  + "protocols do not exist on other systems, so only the "
-                                  + "outputs available here are listed."
-                        }
-
                         Item { Layout.fillHeight: true; Layout.preferredHeight: Theme.padding }
                     }
                 }
@@ -593,6 +578,7 @@ Item {
         appName: domeportModel.editionName
         appDetails: "Domemaster / equirectangular content visualizer for domes and planetariums in a 3D environment."
         logoPath: Qt.resolvedUrl("resources/images/DomeportPro.png")
+        partnerLogos: [ { source: Theme.satLogoSource, website: "https://www.sat.qc.ca" } ]
         parentWindow: view.appWindow
     }
 }
