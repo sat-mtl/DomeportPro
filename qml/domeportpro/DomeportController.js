@@ -58,11 +58,47 @@ function registerNDIListener() {
     }
 }
 
+// ---- Spout self-feedback guard ----
+// Receiving the sender this application publishes wedges the Quick3D view with
+// no way back, so the name is kept out of the discovered list and refused
+// wherever a selection still reaches it: a renamed sender, a restored session.
+function ownSpoutSenderName() {
+    if (domeportModel.outputBackend !== "Spout")
+        return ""
+    return domeportModel.outputName.length > 0 ? domeportModel.outputName
+                                               : domeportModel.editionName
+}
+
+function isOwnSpoutSender(name) {
+    const own = ownSpoutSenderName()
+    if (own === "" || !name.startsWith(own))
+        return false
+    // Spout appends _1, _2 … when the requested name is already taken
+    // (SpoutSenderNames::SetSenderName), so the name actually published is not
+    // always the configured one.
+    const suffix = name.slice(own.length)
+    return suffix === "" || /^_\d+$/.test(suffix)
+}
+
+function refuseOwnSpoutSender(name) {
+    if (!isOwnSpoutSender(name))
+        return false
+    domeportModel.sourceStatus =
+        "\"" + name + "\" is this application's own Spout output and cannot be received."
+    domeportModel.spoutSourceName = ""
+    console.warn("Spout input refused (self-feedback): " + name)
+    return true
+}
+
 // ---- Spout discovery ----
 function spoutAdded(factory, category, name, settings) {
+    if (isOwnSpoutSender(name)) {
+        console.log("Spout ignored, own sender: " + name)
+        return
+    }
     console.log("Spout added: " + name)
     const index = domeportModel.spoutNamesList.indexOf(name)
-    if (index !== 1) {
+    if (index === -1) {
         domeportModel.spoutNamesList.push(name)
     }
 }
@@ -175,6 +211,9 @@ function createNDIInput(name) {
 }
 
 function createSpoutInput(name) {
+    if (refuseOwnSpoutSender(name))
+        return
+    domeportModel.sourceStatus = ""
     console.log("Create Spout input: " + name)
     Score.stop()
 
@@ -281,6 +320,7 @@ function applyPlayheadRequest() {
 // ---- Model change reactions (wired via Connections in DomeportView.qml) ----
 function applyMode() {
     console.log("changed mode: " + domeportModel.currentMode)
+    domeportModel.sourceStatus = ""
     removeLiveInput()
     propagateAudio(false)
     if (domeportModel.currentMode === "Test pattern") {
@@ -328,6 +368,10 @@ function applyNdiSourceName() {
 
 function applySpoutSourceName() {
     if (domeportModel.spoutSourceName !== "") {
+        // Refused before the teardown, so a rejected pick leaves the input that
+        // is already running alone.
+        if (refuseOwnSpoutSender(domeportModel.spoutSourceName))
+            return
         console.log("updated Spout Source Name: " + domeportModel.spoutSourceName)
         removeLiveInput()
         createSpoutInput(domeportModel.spoutSourceName)
@@ -476,6 +520,20 @@ function startConversionOutput() {
 
     const name = domeportModel.outputName.length > 0 ? domeportModel.outputName
                                                      : domeportModel.editionName
+
+    // The same loop seen from the sink side: publishing under the name the
+    // Spout input is receiving feeds the view its own frames.
+    if (domeportModel.outputBackend === "Spout"
+        && domeportModel.currentMode === "Spout"
+        && name === domeportModel.spoutSourceName) {
+        domeportModel.outputActive = false
+        domeportModel.outputStatus =
+            "\"" + name + "\" is the Spout source being received — pick another name."
+        console.warn("conversion output refused (self-feedback): " + name)
+        Score.play()
+        return
+    }
+
     const settings = OutputBackends.makeSettings(
         name, domeportModel.outputWidth, domeportModel.outputHeight,
         domeportModel.outputRate)
@@ -524,6 +582,10 @@ function applyConversionOutput() {
         return
     }
     startConversionOutput()
+    // Re-enumerate so a name this app has just taken leaves the input list
+    // rather than sitting there until the next manual refresh.
+    if (domeportModel.currentMode === "Spout")
+        updateSources()
 }
 
 function applyModel() {

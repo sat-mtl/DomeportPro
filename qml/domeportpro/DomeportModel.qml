@@ -140,6 +140,7 @@ Item {
     // ---- Sources ----
     property var sourceList: [ "" ]
     property string sourceName: ""
+    property string sourceStatus: ""
 
     property var ndiNamesList: [ "NDI sources..." ]
     property var spoutNamesList: [ "Spout sources..." ]
