@@ -56,16 +56,25 @@ Item {
     }
 
     // ---- Format conversion (pro) ----
-    // Video Mixer.1 already normalises every source to a domemaster, so the
-    // conversion chain only handles the output side. conv_out is a clone of
-    // Video Mixer.1: picking a format is the same alpha select the existing
-    // format switch uses. t1 = domemaster passthrough, t2 = equirectangular,
-    // t3 = cubemap atlas.
+    // conv_out is a clone of Video Mixer.1: picking a format is the same alpha
+    // select the existing format switch uses. t1 = domemaster (Video Mixer.1),
+    // t2 = equirectangular (conv_equi_src), t3 = cubemap atlas.
     property QtObject convOut: QtObject {
         property var process_object: Score.find("conv_out")
         property var alpha1: Score.inlet(process_object, 8)
         property var alpha2: Score.inlet(process_object, 9)
         property var alpha3: Score.inlet(process_object, 10)
+    }
+
+    // The equirectangular stream the conversion chain works from, and the only
+    // place the source format matters: t1 is the domemaster reconstructed by
+    // conv_dome_to_equi, t2 the source itself when it is already
+    // equirectangular. Taking t2 keeps the domemaster hub — and the FOV cap it
+    // imposes — out of equi→equi and equi→cubemap entirely.
+    property QtObject convEquiSrc: QtObject {
+        property var process_object: Score.find("conv_equi_src")
+        property var alpha1: Score.inlet(process_object, 8)
+        property var alpha2: Score.inlet(process_object, 9)
     }
 
     property QtObject convDomeToEqui: QtObject {

@@ -437,9 +437,22 @@ function applyFormat() {
         setTestPatternIndex(1)
         enableDomemaster()
     }
+    applyConversionSource()
     // The effective FOV depends on which branch is live, so the inverse has to
     // be re-told after a format change too.
     applyConversionFov()
+}
+
+// An equirectangular source is already the equirectangular stream, so the
+// conversion chain reads it directly; only a domemaster source goes through
+// conv_dome_to_equi. The hub cost is not resampling but the FOV cap:
+// domemaster_to_equirectangular leaves everything outside the dome's cone
+// transparent, so routing a 360-degree source through it discards the sphere
+// below the dome's rim.
+function applyConversionSource() {
+    const direct = domeportModel.currentFormat === "Equirectangular"
+    Score.setValue(domeportModel.convEquiSrc.alpha1, direct ? 0.0 : 1.0)
+    Score.setValue(domeportModel.convEquiSrc.alpha2, direct ? 1.0 : 0.0)
 }
 
 // ---- Format conversion (pro) ----
@@ -645,6 +658,7 @@ function initialize() {
     // Syphon macOS-only, in score and in the protocols themselves.
     domeportModel.outputBackendList = OutputBackends.available(Qt.platform.os)
     applyConversionFormat()
+    applyConversionSource()
     applyCubemapLayout()
     applyConversionFov()
 
