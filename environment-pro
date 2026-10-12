@@ -1,3 +1,7 @@
 export SCORE_VIDEO_DECODING_METHOD=Auto
 
 export SAT_ADVANCED_IO=1
+
+# A dome viewer plays back; it never captures. Opening an input would ask for
+# the microphone, which on macOS blocks startup before any window appears.
+export SCORE_AUDIO_NO_INPUT=1
